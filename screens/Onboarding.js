@@ -21,10 +21,10 @@ class Onboarding extends React.Component {
       <Block flex style={styles.container}>
         <StatusBar hidden />
         <Block flex center>
-        <ImageBackground
-            source={Images.Onboarding}
-            style={{ height, width, zIndex: 1 }}
-          />
+          <ImageBackground
+              source={Images.Onboarding}
+              style={{ height, width, zIndex: 1 }}
+            />
         </Block>
         <Block center>
           <Image source={Images.LogoOnboarding} style={styles.logo} />
@@ -52,7 +52,7 @@ class Onboarding extends React.Component {
                 <Button
                   style={styles.button}
                   color={argonTheme.COLORS.SECONDARY}
-                  onPress={() => navigation.navigate("Home")}
+                  onPress={() => navigation.navigate("Account")}
                   textStyle={{ color: argonTheme.COLORS.BLACK }}
                 >
                   Get Started

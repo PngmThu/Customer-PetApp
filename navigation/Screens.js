@@ -13,9 +13,10 @@ import Home from "../screens/Home";
 import Onboarding from "../screens/Onboarding";
 import Pro from "../screens/Pro";
 import Profile from "../screens/Profile";
-import Register from "../screens/Register";
+import Login from "../screens/Login";
 import Elements from "../screens/Elements";
 import Articles from "../screens/Articles";
+import Register from "../screens/Register";
 // drawer
 import Menu from "./Menu";
 import DrawerItem from "../components/DrawerItem";
@@ -132,6 +133,31 @@ const HomeStack = createStackNavigator(
     transitionConfig
   }
 );
+
+const LoginStack = createStackNavigator(
+  {
+    Login: {
+      screen: Login,
+      //headerMode: 'none',
+      navigationOptions: {
+        header: null,
+      }
+    },
+    Register: {
+      screen: Register,  
+      //headerMode: 'none',
+      navigationOptions: {
+        header: null,
+      }
+    },
+  
+  },
+  {
+    cardStyle: { backgroundColor: "#454545" },
+    transitionConfig
+  }
+);
+
 // divideru se baga ca si cum ar fi un ecrna dar nu-i nimic duh
 const AppStack = createDrawerNavigator(
   {
@@ -158,10 +184,10 @@ const AppStack = createDrawerNavigator(
       })
     },
     Account: {
-      screen: Register,
+      screen: LoginStack,
       navigationOptions: navOpt => ({
         drawerLabel: ({ focused }) => (
-          <DrawerItem focused={focused} screen="Register" title="Account" />
+          <DrawerItem focused={focused} screen="Login" title="Account" />
         )
       })
     },
