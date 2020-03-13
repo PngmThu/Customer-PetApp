@@ -17,6 +17,7 @@ import Login from "../screens/Login";
 import Elements from "../screens/Elements";
 import Articles from "../screens/Articles";
 import Register from "../screens/Register";
+import ForgetPassword from "../screens/ForgetPassword"
 // drawer
 import Menu from "./Menu";
 import DrawerItem from "../components/DrawerItem";
@@ -138,25 +139,45 @@ const LoginStack = createStackNavigator(
   {
     Login: {
       screen: Login,
-      //headerMode: 'none',
       navigationOptions: {
         header: null,
       }
     },
     Register: {
       screen: Register,  
-      //headerMode: 'none',
       navigationOptions: {
         header: null,
       }
     },
-  
+    ForgetPassword: {
+      screen: ForgetPassword,  
+      navigationOptions: {
+        header: null,
+      }
+    },
   },
   {
     cardStyle: { backgroundColor: "#454545" },
     transitionConfig
   }
 );
+
+// const RegisterStack = createStackNavigator(
+//   {
+//     Register: {
+//       screen: Register,  
+//       //headerMode: 'none',
+//       navigationOptions: {
+//         header: null,
+//       }
+//     },
+  
+//   },
+//   {
+//     cardStyle: { backgroundColor: "#454545" },
+//     transitionConfig
+//   }
+// );
 
 // divideru se baga ca si cum ar fi un ecrna dar nu-i nimic duh
 const AppStack = createDrawerNavigator(
@@ -206,7 +227,15 @@ const AppStack = createDrawerNavigator(
           <DrawerItem focused={focused} screen="Articles" title="Articles" />
         )
       })
-    }
+    },
+    // Register: {
+    //   screen: RegisterStack,
+    //   navigationOptions: navOpt => ({
+    //     drawerLabel: ({ focused }) => (
+    //       <DrawerItem focused={focused} screen="Register" title="Register" />
+    //     )
+    //   })
+    // },
   },
   Menu
 );

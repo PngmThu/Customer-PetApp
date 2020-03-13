@@ -97,8 +97,10 @@ class Login extends React.Component {
                     }
                     style={{backgroundColor: '#333333'}}
                   /> 
-                  <TouchableOpacity>
-                    <Text style={{color: argonTheme.COLORS.PRIMARY,fontSize: 14,textAlign: 'right'}}>Forget Password?</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
+                    <Text style={{color: argonTheme.COLORS.PRIMARY,fontSize: 14,textAlign: 'right'}}>
+                      Forget Password?
+                    </Text>
                   </TouchableOpacity>
                   
                   {/* <Block row style={styles.passwordCheck}>
