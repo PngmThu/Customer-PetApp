@@ -12,12 +12,15 @@ import { Block } from "galio-framework";
 import Home from "../screens/Home";
 import Onboarding from "../screens/Onboarding";
 import Pro from "../screens/Pro";
-import Profile from "../screens/Profile";
+import MyProfile from "../screens/MyProfile";
 import Login from "../screens/Login";
 import Elements from "../screens/Elements";
 import Articles from "../screens/Articles";
 import Register from "../screens/Register";
 import ForgetPassword from "../screens/ForgetPassword"
+import ChangePassword from "../screens/ChangePassword"
+import EditProfile from "../screens/EditProfile"
+
 // drawer
 import Menu from "./Menu";
 import DrawerItem from "../components/DrawerItem";
@@ -93,20 +96,19 @@ const ArticlesStack = createStackNavigator({
 
 const ProfileStack = createStackNavigator(
   {
-    Profile: {
-      screen: Profile,
-      navigationOptions: ({ navigation }) => ({
-        header: (
-          <Header white transparent title="Profile" iconColor={'#FFF'} navigation={navigation} />
-        ),
-        headerTransparent: true
-      })
-    }
+    MyProfile: {
+      screen: MyProfile,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    EditProfile: {
+      screen: EditProfile,
+      navigationOptions: {
+        header: null,
+      }
+    },
   },
-  {
-    cardStyle: { backgroundColor: "#FFFFFF" },
-    transitionConfig
-  }
 );
 
 const HomeStack = createStackNavigator(
@@ -151,6 +153,12 @@ const LoginStack = createStackNavigator(
     },
     ForgetPassword: {
       screen: ForgetPassword,  
+      navigationOptions: {
+        header: null,
+      }
+    },
+    ChangePassword: {
+      screen: ChangePassword,  
       navigationOptions: {
         header: null,
       }
