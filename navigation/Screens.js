@@ -20,6 +20,7 @@ import Register from "../screens/Register";
 import ForgetPassword from "../screens/ForgetPassword"
 import ChangePassword from "../screens/ChangePassword"
 import EditProfile from "../screens/EditProfile"
+import Notification from "../screens/Notification"
 
 // drawer
 import Menu from "./Menu";
@@ -108,7 +109,13 @@ const ProfileStack = createStackNavigator(
         header: null,
       }
     },
-  },
+      Notification: {
+        screen: Notification,
+        navigationOptions: {
+          header: null,
+        }
+    },
+  }
 );
 
 const HomeStack = createStackNavigator(
