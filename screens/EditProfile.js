@@ -24,7 +24,7 @@ const { width, height } = Dimensions.get("screen");
 
 const headerImg = require("../assets/imgs/headerLogin.png");
 
-class ChangePassword extends React.Component {
+class EditProfile extends React.Component {
   render() {
     const { navigation } = this.props;
 
@@ -43,7 +43,7 @@ class ChangePassword extends React.Component {
             <ImageBackground source={require("../assets/imgs/headerLogin.png")} resizeMode='stretch' style={styles.headerImage}>
                 <View style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
                     <Text color="#E1E1E1" size={32} style={{ marginLeft: 15, fontWeight: 'bold'}}>
-                        Change Password
+                        Edit My Profile
                     </Text>
                 </View>
                 {/* <Block flex middle> */}
@@ -57,18 +57,18 @@ class ChangePassword extends React.Component {
 
           <Block flex>
             <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={18} style={{ marginTop: 300, marginRight: 250}}>
-              Old Password 
+              <Text color="#E1E1E1" size={18} style={{ marginTop: 180, marginRight: 280}}>
+              Full Name 
               </Text>
               <Block width={width * 0.9} style={{ marginTop: -5}}>
-                  <Input
+              <Input
                     borderless 
-                    placeholder="Old Password"
+                    placeholder="Full Name"
                     iconContent={
                       <Icon
                         size={16}
                         color={'#5E5454'}
-                        name="password"
+                        name="padlock-unlocked"
                         family="ArgonExtra"
                         style={styles.inputIcons}
                       />
@@ -79,18 +79,18 @@ class ChangePassword extends React.Component {
             </Block>
 
             <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={18} style={{ marginTop: 300, marginRight: 250}}>
-              New Password 
+              <Text color="#E1E1E1" size={18} style={{ marginTop: 180, marginRight: 250 }}>
+              Email Address 
               </Text>
-              <Block width={width * 0.9} style={{ marginTop: -5}}>
-                  <Input
+              <Block width={width * 0.9} style={{ marginTop: -5 }}>
+              <Input
                     borderless 
-                    placeholder="New Password"
+                    placeholder="Email Address"
                     iconContent={
                       <Icon
                         size={16}
                         color={'#5E5454'}
-                        name="password"
+                        name="padlock-unlocked"
                         family="ArgonExtra"
                         style={styles.inputIcons}
                       />
@@ -101,18 +101,40 @@ class ChangePassword extends React.Component {
             </Block>
 
             <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={18} style={{ marginTop: 300, marginRight: 170 }}>
-              Re-enter New Password 
+              <Text color="#E1E1E1" size={18} style={{ marginTop: 180, marginRight: 270 }}>
+              Date of Birth 
               </Text>
-              <Block width={width * 0.9} style={{ marginTop: -5}}>
-                  <Input
+              <Block width={width * 0.9} style={{ marginTop: -5 }}>
+              <Input
                     borderless 
-                    placeholder="Re-enter New Password"
+                    placeholder="Date of Birth"
                     iconContent={
                       <Icon
                         size={16}
                         color={'#5E5454'}
-                        name="password"
+                        name="padlock-unlocked"
+                        family="ArgonExtra"
+                        style={styles.inputIcons}
+                      />
+                    }
+                    style={{backgroundColor: '#333333'}}
+                  />
+                </Block>
+            </Block>
+
+            <Block flex={0.2} middle >
+              <Text color="#E1E1E1" size={18} style={{ marginTop: 180, marginRight: 240 }}>
+              Contact Number 
+              </Text>
+              <Block width={width * 0.9} style={{ marginTop: -5 }}>
+              <Input
+                    borderless 
+                    placeholder="Contact Number"
+                    iconContent={
+                      <Icon
+                        size={16}
+                        color={'#5E5454'}
+                        name="padlock-unlocked"
                         family="ArgonExtra"
                         style={styles.inputIcons}
                       />
@@ -128,9 +150,8 @@ class ChangePassword extends React.Component {
                 behavior="padding"
                 enabled
               >
-
                 <Block flex middle style={{marginBottom: height * 0.08}}>
-                  <Button color="primary" style={styles.button} onPress={() => navigation.navigate("Login")}>
+                  <Button color="primary" style={styles.button} onPress={() => navigation.navigate("MyProfile")}>
                     <Text bold size={18} color={argonTheme.COLORS.WHITE}>
                       Save
                     </Text>
@@ -157,11 +178,16 @@ const styles = StyleSheet.create({
   inputIcons: {
     marginRight: 12,
   },
+  passwordCheck: {
+    paddingLeft: 15,
+    paddingTop: 13,
+    paddingBottom: 30
+  },
   button: {
     width: width * 0.5,
     marginTop: 25,
     borderRadius: 10,
-  }
+  },
 });
 
-export default ChangePassword;
+export default EditProfile;
