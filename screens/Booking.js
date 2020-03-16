@@ -455,7 +455,7 @@ class Booking extends React.Component {
                 
               </Block>
               
-              <View>
+              {/* <View>
                 <Button title="Show Date Picker" onPress={this.showDatePicker()} />
                 <DateTimePickerModal
                   isVisible={this.state.isDatePickerVisible}
@@ -463,7 +463,7 @@ class Booking extends React.Component {
                   onConfirm={this.handleConfirm()}
                   onCancel={this.hideDatePicker()}
                 />
-              </View>
+              </View> */}
               
               <Block flex style={{ alignItems: 'flex-end', marginTop: -30}}>
                 <TouchableOpacity onPress={() => this.setState({ currentPage: 1 })}>
