@@ -24,7 +24,6 @@ import Articles from "../screens/Articles";
 import Register from "../screens/Register";
 import ForgetPassword from "../screens/ForgetPassword"
 import Booking from "../screens/Booking"
-import Bookings from "../screens/Bookings";
 import Notifications from "../screens/Notifications";
 import AddPet from "../screens/AddPet";
 import Settings from "../screens/Settings";
@@ -81,19 +80,19 @@ const transitionConfig = (transitionProps, prevTransitionProps) => ({
   }
 });
 
-const BookingsStack = createStackNavigator({
-  Elements: {
-    screen: Bookings,
-    navigationOptions: ({ navigation }) => ({
-      header: <Header title="Bookings" navigation={navigation} />
-    })
-  }
-},{
-  cardStyle: {
-    backgroundColor: "#F8F9FE"
-  },
-  transitionConfig
-});
+// const BookingStack = createStackNavigator({
+//   Elements: {
+//     screen: Booking,
+//     navigationOptions: ({ navigation }) => ({
+//       header: <Header title="Booking" navigation={navigation} />
+//     })
+//   }
+// },{
+//   cardStyle: {
+//     backgroundColor: "#F8F9FE"
+//   },
+//   transitionConfig
+// });
 
 const NotificationsStack = createStackNavigator({
   Elements: {
@@ -314,11 +313,11 @@ const HomeTab = createBottomTabNavigator(
             ),
       })
     },
-    Bookings: {
-      screen: Bookings,
+    Booking: {
+      screen: Booking,
       navigationOptions: ({ navigation }) => ({
-        header: <Header title="Bookings" navigation={navigation} />,
-        title: "Bookings",
+        header: <Header title="Booking" navigation={navigation} />,
+        title: "Booking",
             tabBarIcon: ({ tintColor }) => (
                 <Icon
                     name="calendar-alt"
