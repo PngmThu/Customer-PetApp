@@ -97,8 +97,10 @@ class Login extends React.Component {
                     }
                     style={{backgroundColor: '#333333'}}
                   /> 
-                  <TouchableOpacity>
-                    <Text style={{color: argonTheme.COLORS.PRIMARY,fontSize: 14,textAlign: 'right'}}>Forget Password?</Text>
+                  <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
+                    <Text style={{color: argonTheme.COLORS.PRIMARY,fontSize: 14,textAlign: 'right'}}>
+                      Forget Password?
+                    </Text>
                   </TouchableOpacity>
                   
                   {/* <Block row style={styles.passwordCheck}>
@@ -143,7 +145,7 @@ class Login extends React.Component {
                 {/* <Block flex style={{flexDirection: "row", justifyContent: "center", marginTop: -110}}> */}
                 <Block flex row style={{justifyContent: "center"}}>
                   <Block middle style={{marginRight: 20}}>
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate("ChangePassword")}>
                       {/* <Image source={require("../assets/imgs/google.png")} 
                             //resizeMode='contain'
                             style={{height: 50, width: 50, flex: 1, resizeMode: 'contain'}}
@@ -156,7 +158,7 @@ class Login extends React.Component {
                     </TouchableOpacity>
                   </Block>
                   <Block middle>  
-                    <TouchableOpacity flex>
+                    <TouchableOpacity onPress={() => navigation.navigate("MyProfile")}>
                       <Avatar
                         rounded
                         size="medium"

@@ -17,7 +17,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import Home from "../screens/Home";
 import Onboarding from "../screens/Onboarding";
 import Pro from "../screens/Pro";
-import Profile from "../screens/Profile";
+import MyProfile from "../screens/MyProfile";
 import Login from "../screens/Login";
 import Elements from "../screens/Elements";
 import Articles from "../screens/Articles";
@@ -29,6 +29,10 @@ import Settings from "../screens/Settings";
 import Logout from "../screens/Logout";
 import PetProfile from "../screens/PetProfile";
 import AccountSettings from "../screens/AccountSettings";
+import ForgetPassword from "../screens/ForgetPassword"
+import ChangePassword from "../screens/ChangePassword"
+import EditProfile from "../screens/EditProfile"
+import Notification from "../screens/Notification"
 
 // drawer
 import Menu from "./Menu";
@@ -147,19 +151,24 @@ const ArticlesStack = createStackNavigator({
 
 const ProfileStack = createStackNavigator(
   {
-    Profile: {
-      screen: Profile,
-      navigationOptions: ({ navigation }) => ({
-        header: (
-          <Header white transparent title="Profile" iconColor={'#FFF'} navigation={navigation} />
-        ),
-        headerTransparent: true
-      })
-    }
-  },
-  {
-    cardStyle: { backgroundColor: "#FFFFFF" },
-    transitionConfig
+    MyProfile: {
+      screen: MyProfile,
+      navigationOptions: {
+        header: null,
+      }
+    },
+    EditProfile: {
+      screen: EditProfile,
+      navigationOptions: {
+        header: null,
+      }
+    },
+      Notification: {
+        screen: Notification,
+        navigationOptions: {
+          header: null,
+        }
+    },
   }
 );
 
@@ -361,25 +370,51 @@ const LoginStack = createStackNavigator(
   {
     Login: {
       screen: Login,
-      //headerMode: 'none',
       navigationOptions: {
         header: null,
       }
     },
     Register: {
       screen: Register,  
-      //headerMode: 'none',
       navigationOptions: {
         header: null,
       }
     },
-  
+    ForgetPassword: {
+      screen: ForgetPassword,  
+      navigationOptions: {
+        header: null,
+      }
+    },
+    ChangePassword: {
+      screen: ChangePassword,  
+      navigationOptions: {
+        header: null,
+      }
+    },
   },
   {
     cardStyle: { backgroundColor: "#454545" },
     transitionConfig
   }
 );
+
+// const RegisterStack = createStackNavigator(
+//   {
+//     Register: {
+//       screen: Register,  
+//       //headerMode: 'none',
+//       navigationOptions: {
+//         header: null,
+//       }
+//     },
+  
+//   },
+//   {
+//     cardStyle: { backgroundColor: "#454545" },
+//     transitionConfig
+//   }
+// );
 
 // divideru se baga ca si cum ar fi un ecrna dar nu-i nimic duh
 const AppStack = createDrawerNavigator(
@@ -475,6 +510,19 @@ const AppStack = createDrawerNavigator(
     //   navigationOptions: navOpt => ({
     //     drawerLabel: ({ focused }) => (
     //       <DrawerItem focused={focused} screen="Notifications" title="Notifications" />
+    Articles: {
+      screen: ArticlesStack,
+      navigationOptions: navOpt => ({
+        drawerLabel: ({ focused }) => (
+          <DrawerItem focused={focused} screen="Articles" title="Articles" />
+        )
+      })
+    },
+    // Register: {
+    //   screen: RegisterStack,
+    //   navigationOptions: navOpt => ({
+    //     drawerLabel: ({ focused }) => (
+    //       <DrawerItem focused={focused} screen="Register" title="Register" />
     //     )
     //   })
     // },
