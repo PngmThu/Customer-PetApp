@@ -1,12 +1,17 @@
-import React from "react";
-import { Easing, Animated } from "react-native";
+import * as React from 'react';
+import { Button, Text, View, StyleSheet, Easing, Animated } from "react-native";
 import {
   createStackNavigator,
   createDrawerNavigator,
-  createAppContainer
+  createAppContainer, 
+  createBottomTabNavigator
 } from "react-navigation";
 
 import { Block } from "galio-framework";
+import Icon from 'react-native-vector-icons/FontAwesome5';
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { NavigationContainer } from '@react-navigation/native';
+
 
 // screens
 import Home from "../screens/Home";
@@ -17,6 +22,14 @@ import Login from "../screens/Login";
 import Elements from "../screens/Elements";
 import Articles from "../screens/Articles";
 import Register from "../screens/Register";
+import Bookings from "../screens/Bookings";
+import Notifications from "../screens/Notifications";
+import AddPet from "../screens/AddPet";
+import Settings from "../screens/Settings";
+import Logout from "../screens/Logout";
+import PetProfile from "../screens/PetProfile";
+import AccountSettings from "../screens/AccountSettings";
+
 // drawer
 import Menu from "./Menu";
 import DrawerItem from "../components/DrawerItem";
@@ -60,6 +73,48 @@ const transitionConfig = (transitionProps, prevTransitionProps) => ({
     }
     return { transform: [{ translateX }] };
   }
+});
+
+const BookingsStack = createStackNavigator({
+  Elements: {
+    screen: Bookings,
+    navigationOptions: ({ navigation }) => ({
+      header: <Header title="Bookings" navigation={navigation} />
+    })
+  }
+},{
+  cardStyle: {
+    backgroundColor: "#F8F9FE"
+  },
+  transitionConfig
+});
+
+const NotificationsStack = createStackNavigator({
+  Elements: {
+    screen: Notifications,
+    navigationOptions: ({ navigation }) => ({
+      header: <Header title="Notifications" navigation={navigation} />
+    })
+  }
+},{
+  cardStyle: {
+    backgroundColor: "#F8F9FE"
+  },
+  transitionConfig
+});
+
+const AddPetStack = createStackNavigator({
+  Elements: {
+    screen: AddPet,
+    navigationOptions: ({ navigation }) => ({
+      header: <Header title="AddPet" navigation={navigation} />
+    })
+  }
+},{
+  cardStyle: {
+    backgroundColor: "#F8F9FE"
+  },
+  transitionConfig
 });
 
 const ElementsStack = createStackNavigator({
@@ -108,23 +163,191 @@ const ProfileStack = createStackNavigator(
   }
 );
 
+const SettingsStack = createStackNavigator(
+  {
+    Profile: {
+      screen: Settings,
+      navigationOptions: ({ navigation }) => ({
+        header: (
+          <Header white transparent title="Settings" iconColor={'#FFF'} navigation={navigation} />
+        ),
+        headerTransparent: true
+      })
+    }
+  },
+  {
+    cardStyle: { backgroundColor: "#FFFFFF" },
+    transitionConfig
+  }
+);
+
+const LogoutStack = createStackNavigator(
+  {
+    Profile: {
+      screen: Logout,
+      navigationOptions: ({ navigation }) => ({
+        header: (
+          <Header white transparent title="Logout" iconColor={'#FFF'} navigation={navigation} />
+        ),
+        headerTransparent: true
+      })
+    }
+  },
+  {
+    cardStyle: { backgroundColor: "#FFFFFF" },
+    transitionConfig
+  }
+);
+
+const AccountSettingsStack = createStackNavigator(
+  {
+    Profile: {
+      screen: AccountSettings,
+      navigationOptions: ({ navigation }) => ({
+        header: (
+          <Header white transparent title="Account Settings" iconColor={'#FFF'} navigation={navigation} />
+        ),
+        headerTransparent: true
+      })
+    }
+  },
+  {
+    cardStyle: { backgroundColor: "#FFFFFF" },
+    transitionConfig
+  }
+);
+
+// const HomeStack = createStackNavigator(
+//   {
+//     Home: {
+//       screen: Home,
+//       navigationOptions: ({ navigation }) => ({
+//         header: <Header search options title="Home" navigation={navigation} />
+//       })
+//     },
+//     AddPet: {
+//       screen: AddPet,
+//       navigationOptions: ({ navigation }) => ({
+//         header: (
+//           <Header left={<Block />} white transparent title="Add a pet!" navigation={navigation} />
+//         ),
+//         headerTransparent: true
+//       })
+//     }
+//   },
+//     Pro: {
+//       screen: Pro,
+//       navigationOptions: ({ navigation }) => ({
+//         header: (
+//           <Header left={<Block />} white transparent title="" navigation={navigation} />
+//         ),
+//         headerTransparent: true
+//       })
+//     }
+//   },
+//   {
+//     cardStyle: {
+//       backgroundColor: "#F8F9FE"
+//     },
+//     transitionConfig
+//   }
+// );
+
 const HomeStack = createStackNavigator(
   {
     Home: {
       screen: Home,
       navigationOptions: ({ navigation }) => ({
-        header: <Header search options title="Home" navigation={navigation} />
+        header: <Header title="Home" navigation={navigation} />
       })
     },
-    Pro: {
-      screen: Pro,
+    AddPet: {
+      screen: AddPet,
       navigationOptions: ({ navigation }) => ({
-        header: (
-          <Header left={<Block />} white transparent title="" navigation={navigation} />
-        ),
-        headerTransparent: true
+        // header: (
+        //   <Header navigation={navigation} />
+        // ),
+        // headerTransparent: true
+      })
+    },
+    PetProfile: {
+      screen: PetProfile,
+      navigationOptions: ({ navigation }) => ({
+        // header: (
+        //   <Header navigation={navigation} />
+        // ),
+        // headerTransparent: true
       })
     }
+  },
+  {
+    cardStyle: {
+      backgroundColor: "#F8F9FE"
+    },
+    transitionConfig
+  }
+);
+
+const HomeTab = createBottomTabNavigator(
+  {
+    Home: {
+      screen: HomeStack,
+      navigationOptions: ({ navigation }) => ({
+        header: <Header search options title="Home" navigation={navigation} />,
+        title: "Home",
+            tabBarIcon: ({ tintColor }) => (
+                <Icon
+                    name="home"
+                    size={20}
+                    color={tintColor} />
+            ),
+      })
+    },
+    Bookings: {
+      screen: Bookings,
+      navigationOptions: ({ navigation }) => ({
+        header: <Header title="Bookings" navigation={navigation} />,
+        title: "Bookings",
+            tabBarIcon: ({ tintColor }) => (
+                <Icon
+                    name="calendar-alt"
+                    size={20}
+                    color={tintColor} />
+            )
+      })
+    },
+    Notifications: {
+      screen: Notifications,
+      navigationOptions: ({ navigation }) => ({
+        header: <Header title="Notifications" navigation={navigation} />,
+        title: "Notifcations",
+            tabBarIcon: ({ tintColor }) => (
+                <Icon
+                    name="bullhorn"
+                    size={19}
+                    color={tintColor} />
+            )
+      })
+    },
+    Profile: {
+      screen: Profile,
+      navigationOptions: ({ navigation }) => ({
+        header: <Header title="Profile" navigation={navigation} />,
+        title: "Profile",
+            tabBarIcon: ({ tintColor }) => (
+                <Icon
+                    name="user-alt"
+                    size={19}
+                    color={tintColor} />
+            )
+      })
+    },
+  },
+  {
+    tabBarOptions: {
+      activeTintColor: 'tomato',
+      inactiveTintColor: 'gray',
+    },
   },
   {
     cardStyle: {
@@ -167,49 +390,99 @@ const AppStack = createDrawerNavigator(
         drawerLabel: () => {}
       }
     },
+    // Home: {
+    //   screen: HomeStack,
+    //   navigationOptions: navOpt => ({
+    //     drawerLabel: ({ focused }) => (
+    //       <DrawerItem focused={focused} title="Home" />
+    //     )
+    //   })
+    // },
     Home: {
-      screen: HomeStack,
+      screen: HomeTab,
       navigationOptions: navOpt => ({
         drawerLabel: ({ focused }) => (
           <DrawerItem focused={focused} title="Home" />
         )
       })
     },
-    Profile: {
-      screen: ProfileStack,
-      navigationOptions: navOpt => ({
-        drawerLabel: ({ focused }) => (
-          <DrawerItem focused={focused} screen="Profile" title="Profile" />
-        )
-      })
-    },
+    // Account: {
+    //   screen: LoginStack,
+    //   navigationOptions: navOpt => ({
+    //     drawerLabel: ({ focused }) => (
+    //       <DrawerItem focused={focused} screen="Login" title="Account" />
+    //     )
+    //   })
+    // },
     Account: {
       screen: LoginStack,
       navigationOptions: navOpt => ({
         drawerLabel: ({ focused }) => (
-          <DrawerItem focused={focused} screen="Login" title="Account" />
+          <DrawerItem focused={focused} screen="AccountSettings" title="Account Settings" />
         )
       })
     },
-    Elements: {
-      screen: ElementsStack,
+    // Settings: {
+    //   screen: SettingsStack,
+    //   navigationOptions: navOpt => ({
+    //     drawerLabel: ({ focused }) => (
+    //       <DrawerItem focused={focused} screen="Settings" title="Settings" />
+    //     )
+    //   })
+    // },
+    Logout: {
+      screen: LogoutStack,
       navigationOptions: navOpt => ({
         drawerLabel: ({ focused }) => (
-          <DrawerItem focused={focused} screen="Elements" title="Elements" />
+          <DrawerItem focused={focused} screen="Logout" title="Logout" />
         )
       })
     },
-    Articles: {
-      screen: ArticlesStack,
-      navigationOptions: navOpt => ({
-        drawerLabel: ({ focused }) => (
-          <DrawerItem focused={focused} screen="Articles" title="Articles" />
-        )
-      })
-    }
+    // Profile: {
+    //   screen: ProfileStack,
+    //   navigationOptions: navOpt => ({
+    //     drawerLabel: ({ focused }) => (
+    //       <DrawerItem focused={focused} screen="Profile" title="Profile" />
+    //     )
+    //   })
+    // },
+    // Elements: {
+    //   screen: ElementsStack,
+    //   navigationOptions: navOpt => ({
+    //     drawerLabel: ({ focused }) => (
+    //       <DrawerItem focused={focused} screen="Elements" title="Elements" />
+    //     )
+    //   })
+    // },
+    // Articles: {
+    //   screen: ArticlesStack,
+    //   navigationOptions: navOpt => ({
+    //     drawerLabel: ({ focused }) => (
+    //       <DrawerItem focused={focused} screen="Articles" title="Articles" />
+    //     )
+    //   })
+    // },
+    // Bookings: {
+    //   screen: BookingsStack,
+    //   navigationOptions: navOpt => ({
+    //     drawerLabel: ({ focused }) => (
+    //       <DrawerItem focused={focused} screen="Bookings" title="Bookings" />
+    //     )
+    //   })
+    // },
+    // Notifications: {
+    //   screen: NotificationsStack,
+    //   navigationOptions: navOpt => ({
+    //     drawerLabel: ({ focused }) => (
+    //       <DrawerItem focused={focused} screen="Notifications" title="Notifications" />
+    //     )
+    //   })
+    // },
   },
   Menu
 );
 
 const AppContainer = createAppContainer(AppStack);
 export default AppContainer;
+
+
