@@ -29,10 +29,10 @@ import Settings from "../screens/Settings";
 import Logout from "../screens/Logout";
 import PetProfile from "../screens/PetProfile";
 import AccountSettings from "../screens/AccountSettings";
-import ForgetPassword from "../screens/ForgetPassword"
-import ChangePassword from "../screens/ChangePassword"
-import EditProfile from "../screens/EditProfile"
-import Notification from "../screens/Notification"
+import ForgetPassword from "../screens/ForgetPassword";
+import ChangePassword from "../screens/ChangePassword";
+import EditProfile from "../screens/EditProfile";
+import Notification from "../screens/Notification";
 
 // drawer
 import Menu from "./Menu";
@@ -339,7 +339,7 @@ const HomeTab = createBottomTabNavigator(
       })
     },
     Profile: {
-      screen: Profile,
+      screen: MyProfile,
       navigationOptions: ({ navigation }) => ({
         header: <Header title="Profile" navigation={navigation} />,
         title: "Profile",
