@@ -158,7 +158,7 @@ class Login extends React.Component {
                     </TouchableOpacity>
                   </Block>
                   <Block middle>  
-                    <TouchableOpacity flex>
+                    <TouchableOpacity flex onPress={() => navigation.navigate("Booking")}>
                       <Avatar
                         rounded
                         size="medium"

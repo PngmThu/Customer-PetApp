@@ -29,7 +29,6 @@ class ResetPassword extends React.Component {
     const { navigation } = this.props;
 
     return (
-      // <Block flex middle >
       <Block flex middle >
         {/* <StatusBar hidden /> */}
         
@@ -37,13 +36,9 @@ class ResetPassword extends React.Component {
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1}}
         >
-          {/* <Block flex={0.4} middle > */}
           <Block flex={0.15} style={{justifyContent:'flex-start'}}>
-            {/* <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='contain' style={styles.headerImage}> */}
             <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='contain' style={styles.headerImage}>
-                {/* <Block flex middle> */}
                 <Block flex>
-                    {/* <MaterialIcons name='keyboard-backspace' size={40} style={{left: -170, top: -65}} */}
                     <MaterialIcons name='keyboard-backspace' size={40} style={{left: 15, top: 35}}
                                   onPress={() => navigation.goBack()}/>
                 </Block>
