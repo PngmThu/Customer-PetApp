@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, Dimensions, ImageBackground, ScrollView } from 'react-native';
+import { Alert, Text, View, StyleSheet, Dimensions, ImageBackground, ScrollView } from 'react-native';
 
 import { Input, Icon, Button } from "../components";
 import { Images, argonTheme } from "../constants";
@@ -8,6 +8,11 @@ import { Avatar } from 'react-native-elements';
 const { width, height } = Dimensions.get("screen");
 
 export default class AddPet extends React.Component {
+
+  addPetAlert=()=>{
+    alert('Pet added!');
+  }
+
   render() {
   return (
     // <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
@@ -28,7 +33,7 @@ export default class AddPet extends React.Component {
       <Input
         borderless 
         placeholder="  Name"
-        placeholderTextColor='#6300ff'
+        placeholderTextColor='#000000'
         style={{backgroundColor: '#f49e19'}}
       />
     </View>
@@ -36,7 +41,7 @@ export default class AddPet extends React.Component {
       <Input
         borderless 
         placeholder="  Animal Type"
-        placeholderTextColor='#6300ff'
+        placeholderTextColor='#000000'
         style={{backgroundColor: '#f49e19'}}
       />
     </View>
@@ -44,7 +49,7 @@ export default class AddPet extends React.Component {
       <Input
         borderless 
         placeholder="  Breed"
-        placeholderTextColor='#6300ff'
+        placeholderTextColor='#000000'
         style={{backgroundColor: '#f49e19'}}
       />
     </View>
@@ -52,7 +57,7 @@ export default class AddPet extends React.Component {
       <Input
         borderless 
         placeholder="  Gender"
-        placeholderTextColor='#6300ff'
+        placeholderTextColor='#000000'
         style={{backgroundColor: '#f49e19'}}
       />
     </View>
@@ -60,7 +65,7 @@ export default class AddPet extends React.Component {
       <Input
         borderless 
         placeholder="  Weight"
-        placeholderTextColor='#6300ff'
+        placeholderTextColor='#000000'
         style={{backgroundColor: '#f49e19'}}
       />
     </View>
@@ -68,13 +73,13 @@ export default class AddPet extends React.Component {
       <Input
         borderless 
         placeholder="  Allergies/Medical Information"
-        placeholderTextColor='#6300ff'
+        placeholderTextColor='#000000'
         style={{backgroundColor: '#f49e19'}}
       />
     </View>
     <View> 
-    <Button color="primary" style={{marginLeft: 130, marginTop: 15, width: width * 0.3}}>
-      <Text bold size={14} color={'#9857ff'}>
+    <Button onPress={this.addPetAlert} color="primary" style={{marginLeft: 130, marginTop: 15, width: width * 0.3}}>
+      <Text bold size={14} color={'#00bfff'}>
         Add My Pet!
       </Text>
     </Button>

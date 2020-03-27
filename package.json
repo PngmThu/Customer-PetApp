@@ -27,6 +27,7 @@
     "react-native-image-filter-kit": "^0.7.0",
     "react-native-modal-datetime-picker": "^8.5.1",
     "react-native-modal-dropdown": "^0.6.2",
+    "react-native-popup-dialog": "^0.18.3",
     "react-native-radial-gradient": "^1.0.6",
     "react-native-reanimated": "^1.7.0",
     "react-native-screens": "^2.0.0-beta.10",
@@ -34,7 +35,8 @@
     "react-native-step-indicator": "0.0.11",
     "react-native-vector-icons": "^6.6.0",
     "react-navigation": "^3.11.0",
-    "rn-viewpager": "^1.2.9"
+    "rn-viewpager": "^1.2.9",
+    "toggle-switch-react-native": "^2.1.0"
   },
   "devDependencies": {
     "babel-preset-expo": "^7.0.0"
