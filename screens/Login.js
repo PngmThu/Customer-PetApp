@@ -6,7 +6,8 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Image,
-  View
+  View,
+  Alert
 } from "react-native";
 import { Block, Checkbox, Text, theme } from "galio-framework";
 
@@ -14,21 +15,39 @@ import { Button,
   Icon, 
   Input } from "../components";
 import { Images, argonTheme } from "../constants";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 
 import { Avatar } from 'react-native-elements';
-//import { Icon } from 'react-native-elements';
-// import RadialGradient from 'react-native-radial-gradient';
-// import {
-//   RadialGradient,
-//   ImageBackgroundPlaceholder
-// } from 'react-native-image-filter-kit';
+import AuthAPI from '../api/AuthAPI';
 
 const { width, height } = Dimensions.get("screen");
 
 const headerImg = require("../assets/imgs/headerLogin.png");
 
 class Login extends React.Component {
+  state = {
+    email: "",
+    password: ""
+  }
+
+  constructor(props){
+    super(props);
+    this.authAPI = new AuthAPI();
+    this.login = this.login.bind(this);
+  }
+
+  login(){
+    this.authAPI.login(this.state.email, this.state.password, (res) => {
+      if(res == true){
+        this.props.navigation.navigate('Home')
+      }
+      else{
+        Alert.alert('Error', res,
+          [{text: 'Ok'}])
+      }
+    })
+  }
+
   render() {
     const { navigation } = this.props;
 
@@ -57,251 +76,79 @@ class Login extends React.Component {
                 Welcome to PetWorld
               </Text>
             </Block>
-            <Block flex center>
+            
+            <Block flex={0.85} center>
               <KeyboardAvoidingView
-                style={{ flex: 1 }}
-                behavior="padding"
-                enabled
+                  behavior="padding" 
+                  keyboardVerticalOffset={100}
               >
-                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
-                  <Input
-                    borderless 
-                    placeholder="Email"
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={'#5E5454'}
-                        name="ic_mail_24px"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
-                  />
-                </Block>
-                <Block width={width * 0.9}>
-                  <Input
-                    password
-                    viewPass
-                    borderless
-                    placeholder="Password"
-                    iconContent={
-                      <Icon
-                        size={16}
-                        //color={argonTheme.COLORS.ICON}
-                        color={'#5E5454'}
-                        name="padlock-unlocked"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
-                  /> 
-                  <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
-                    <Text style={{color: argonTheme.COLORS.PRIMARY,fontSize: 14,textAlign: 'right'}}>
-                      Forget Password?
-                    </Text>
-                  </TouchableOpacity>
-                  
-                  {/* <Block row style={styles.passwordCheck}>
-                    <Text size={12} color={argonTheme.COLORS.MUTED}>
-                      password strength:
-                    </Text>
-                    <Text bold size={12} color={argonTheme.COLORS.SUCCESS}>
-                      {" "}
-                      strong
-                    </Text>
+                  <ScrollView>
+                  <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                    <Input
+                      borderless 
+                      placeholder="Email"
+                      onChangeText={(email) => {this.setState({email})}}
+                      value={this.state.email}
+                      iconContent={
+                        <Icon
+                          size={16}
+                          color={'white'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      }
+                      style={{backgroundColor: '#333333'}}
+                    />
                   </Block>
-                </Block>
-                <Block row width={width * 0.75}>
-                  <Checkbox
-                    checkboxStyle={{
-                      borderWidth: 3
-                    }}
-                    color={argonTheme.COLORS.PRIMARY}
-                    label="I agree with the"
-                  />
-                  <Button
-                    style={{ width: 100 }}
-                    color="transparent"
-                    textStyle={{
-                      color: argonTheme.COLORS.PRIMARY,
-                      fontSize: 14
-                    }}
-                  >
-                    Privacy Policy
-                  </Button> */}
-                </Block> 
-                <Block flex middle>
-                  <Button color="primary" style={styles.loginButton} onPress={() => navigation.navigate("Home")}>
-                    <Text bold size={14} color={argonTheme.COLORS.WHITE}>
-                      Login
-                    </Text>
-                  </Button>
-                </Block>
-                <Text flex size={14} color={'#676767'} style={{textAlign: 'center', marginTop: 20}}>
-                  OR
-                </Text>
-                {/* <Block flex style={{flexDirection: "row", justifyContent: "center", marginTop: -110}}> */}
-                <Block flex row style={{justifyContent: "center"}}>
-                  <Block middle style={{marginRight: 20}}>
-                    <TouchableOpacity onPress={() => navigation.navigate("ChangePassword")}>
-                      {/* <Image source={require("../assets/imgs/google.png")} 
-                            //resizeMode='contain'
-                            style={{height: 50, width: 50, flex: 1, resizeMode: 'contain'}}
-                      /> */}
-                      <Avatar
-                        rounded
-                        size="medium"
-                        source={require("../assets/imgs/google.png")}
-                      />
+                  <Block width={width * 0.9}>
+                    <Input
+                      password
+                      viewPass
+                      borderless
+                      placeholder="Password"
+                      onChangeText={(password) => {this.setState({password})}}
+                      value={this.state.password}
+                      iconContent={
+                        <Icon
+                          size={16}
+                          //color={argonTheme.COLORS.ICON}
+                          color={'white'}
+                          name="padlock-unlocked"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      }
+                      style={{backgroundColor: '#333333'}}
+                    /> 
+                    <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
+                      <Text style={{color: argonTheme.COLORS.PRIMARY,fontSize: 14,textAlign: 'right'}}>
+                        Forget Password?
+                      </Text>
                     </TouchableOpacity>
+
+                  </Block> 
+                  <Block flex middle>
+                    <Button color="primary" style={styles.loginButton} onPress={this.login}>
+                      <Text bold size={14} color={argonTheme.COLORS.WHITE}>
+                        Login
+                      </Text>
+                    </Button>
                   </Block>
-                  <Block middle>  
-                    <TouchableOpacity flex onPress={() => navigation.navigate("Booking")}>
-                      <Avatar
-                        rounded
-                        size="medium"
-                        source={require("../assets/imgs/facebook.png")}
-                      />
-                    </TouchableOpacity>
-                  </Block>
-                </Block>
-                <Block row flex center style={{marginBottom: height * 0.05}}>
+
+                <Block row flex center style={{marginBottom: height * 0.05, marginTop: 30}}>
                   <Text size={14} color={argonTheme.COLORS.WHITE}>Don't have an account?</Text>
-                  {/* <Button
-                    style={{ width: 100 }}
-                    color="transparent"
-                    textStyle={{
-                      color: argonTheme.COLORS.PRIMARY,
-                      fontSize: 14
-                    }}
-                  >
-                    Register now
-                  </Button> */}
                   <TouchableOpacity onPress={() => navigation.navigate("Register")}>
                     <Text style={{color: argonTheme.COLORS.PRIMARY, fontSize: 14}}>
                       {"  "}Register now
                     </Text>
                   </TouchableOpacity>
                 </Block>
+                </ScrollView>
               </KeyboardAvoidingView>
             </Block>
           </Block>
 
-          {/* <Block flex middle>
-            <Block style={styles.registerContainer}>
-              <Block flex={0.5} middle style={styles.socialConnect}>  
-                <Image source={Images.petsImg} />
-              </Block> 
-              <Block flex>
-                <Block flex={0.17}>
-                  <Text color="#8898AA" size={25} style={{ marginLeft: 15, marginTop: 15}}>
-                    Welcome to PetWorld
-                  </Text>
-                </Block>
-                <Block flex center>
-                  <KeyboardAvoidingView
-                    style={{ flex: 1 }}
-                    behavior="padding"
-                    enabled
-                  >
-                    <Block width={width * 0.8} style={{ marginBottom: 15 }}>
-                      <Input
-                        borderless
-                        placeholder="Name"
-                        iconContent={
-                          <Icon
-                            name='sc-telegram'
-                            type='evilicon'
-                            color='#517fa4'
-                          />
-                        }
-                      />
-            
-                    </Block>
-                    <Block width={width * 0.8} style={{ marginBottom: 15 }}>
-                      <Input
-                        borderless
-                        placeholder="Email"
-                        iconContent={
-                          <Icon
-                            name='sc-telegram'
-                            type='evilicon'
-                            color='#517fa4'
-                          />
-                        }   
-                      />
-                      
-                    </Block>
-                    <Block width={width * 0.8} style={{ marginBottom: 15 }}>
-                      <Input
-                        borderless
-                        placeholder="Email"
-                        iconContent={
-                          <Icon
-                            name='sc-telegram'
-                            type='evilicon'
-                            color='#517fa4'
-                          />
-                        }
-                      />
-                    </Block>
-                    <Block width={width * 0.8}>
-                      <Input
-                        password
-                        borderless
-                        placeholder="Password"
-                        iconContent={
-                          <Icon
-                            name='sc-telegram'
-                            type='evilicon'
-                            color='#517fa4'
-                          />
-                        }
-                      />
-                      
-                      <Block row style={styles.passwordCheck}>
-                        <Text size={12} color={argonTheme.COLORS.MUTED}>
-                          password strength:
-                        </Text>
-                        <Text bold size={12} color={argonTheme.COLORS.SUCCESS}>
-                          {" "}
-                          strong
-                        </Text>
-                      </Block>
-                    </Block>
-                    <Block row width={width * 0.75}>
-                      <Checkbox
-                        checkboxStyle={{
-                          borderWidth: 3
-                        }}
-                        color={argonTheme.COLORS.PRIMARY}
-                        label="I agree with the"
-                      />
-                      <Button
-                        style={{ width: 100 }}
-                        color="transparent"
-                        textStyle={{
-                          color: argonTheme.COLORS.PRIMARY,
-                          fontSize: 14
-                        }}
-                      >
-                        Privacy Policy
-                      </Button>
-                    </Block>
-                    <Block middle>
-                      <Button color="primary" style={styles.createButton}>
-                        <Text bold size={14} color={argonTheme.COLORS.WHITE}>
-                          CREATE ACCOUNT
-                        </Text>
-                      </Button>
-                    </Block>
-                  </KeyboardAvoidingView>
-                </Block>
-              </Block>
-            </Block>
-          </Block> */}
         </ImageBackground>
       </Block>  
     );
