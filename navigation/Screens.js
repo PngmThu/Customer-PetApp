@@ -453,11 +453,13 @@ const BookingStack = createStackNavigator(
 // divideru se baga ca si cum ar fi un ecrna dar nu-i nimic duh
 // const AppStack = createDrawerNavigator(
 //   {
-//     Onboarding: {
-//       screen: Onboarding,
-//       navigationOptions: {
-//         drawerLabel: () => {}
-//       }
+//     Account: {
+//       screen: LoginStack,
+//       navigationOptions: navOpt => ({
+//         drawerLabel: ({ focused }) => (
+//           <DrawerItem focused={focused} screen="AccountSettings" title="Account Settings" />
+//         )
+//       })
 //     },
     // Home: {
     //   screen: HomeStack,
@@ -491,6 +493,7 @@ const BookingStack = createStackNavigator(
     //     )
     //   })
     // },
+
     // Settings: {
     //   screen: SettingsStack,
     //   navigationOptions: navOpt => ({
