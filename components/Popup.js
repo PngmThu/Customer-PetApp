@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
     },
     text: {
         paddingHorizontal: 10,
+        fontFamily: 'opensans',
         fontSize: 18,
         fontWeight: "300",
         color: "#fefefe"
