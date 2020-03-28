@@ -19,7 +19,7 @@ import { Button,
 import { Images, argonTheme } from "../constants";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { Avatar } from 'react-native-elements';
+import { Tooltip } from 'react-native-elements';
 
 import { MaterialIcons, Entypo, AntDesign, FontAwesome } from '@expo/vector-icons';
 
@@ -364,13 +364,15 @@ class Booking extends React.Component {
               coords: { latitude, longitude }
             } = location
             return (
-              <Marker
-                key={idx}
-                coordinate={{ latitude, longitude }}
-                onPress={this.onMarkerPress(location)}
-              >
-                {/* <MaterialIcons name='pets' size={30} style={{color: '#885DDA'}}/> */}
-              </Marker>
+              <Tooltip popover={<Text>Info here</Text>}>
+                <Marker
+                  key={idx}
+                  coordinate={{ latitude, longitude }}
+                  onPress={this.onMarkerPress(location)}
+                >
+                  {/* <MaterialIcons name='pets' size={30} style={{color: '#885DDA'}}/> */}
+                </Marker>
+              </Tooltip>
             )
           })
         }
