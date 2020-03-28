@@ -7,7 +7,7 @@ export default class NotificationAPI{
         this.globals = new Globals();
     }
 
-    async getUnavailableDateByVendorId(vendor){
+    async getUnavailableDateByVendor(vendor){
         const url = this.globals.serverHost + '/api/schedule/vendorId/'+vendor._id;
 
         let options = {
