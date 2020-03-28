@@ -36,6 +36,9 @@ export default class App extends React.Component {
     isLoadingComplete: false,
   }
   
+  componentDidMount(){
+  }
+  
   render() {
     if(!this.state.isLoadingComplete) {
       return (
