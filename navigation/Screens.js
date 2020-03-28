@@ -96,8 +96,8 @@ const transitionConfig = (transitionProps, prevTransitionProps) => ({
 // });
 
 const NotificationsStack = createStackNavigator({
-  Notifications: {
-    screen: Notifications,
+  Notification: {
+    screen: Notification,
     navigationOptions: ({ navigation }) => ({
       header: <Header title="Notification" navigation={navigation} />
     })
