@@ -1,6 +1,6 @@
 import BaseModel from './BaseModel.js';
 
-export class Schedule extends BaseModel{
+export class Service extends BaseModel{
 
     constructor(obj){
         super(obj, Schedule.schema)

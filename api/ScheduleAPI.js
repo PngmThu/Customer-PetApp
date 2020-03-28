@@ -2,10 +2,12 @@ import axios from 'axios';
 import Globals from '../globals/globals';
 import AuthAPI from './AuthAPI';
 
-export default class NotificationAPI{
+export default class ScheduleAPI{
     constructor() {
         this.globals = new Globals();
     }
+
+
 
     async getUnavailableDateByVendor(vendor){
         const url = this.globals.serverHost + '/api/schedule/vendorId/'+vendor._id;
@@ -16,5 +18,6 @@ export default class NotificationAPI{
 
         return axios.get(url,options);
     }
+
 
 }

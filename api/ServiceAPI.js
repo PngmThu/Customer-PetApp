@@ -2,7 +2,7 @@ import axios from 'axios';
 import Globals from '../globals/globals';
 import AuthAPI from './AuthAPI';
 
-export default class NotificationAPI{
+export default class ServiceAPI{
     constructor() {
         this.globals = new Globals();
     }
