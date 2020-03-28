@@ -57,6 +57,9 @@ export default class App extends React.Component {
     }
   };
   
+  componentDidMount(){
+  }
+  
   render() {
     if(!this.state.isLoadingComplete || !this.state.internetConnection) {
       return (
