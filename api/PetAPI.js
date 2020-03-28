@@ -1,12 +1,14 @@
 import axios from 'axios';
 import Globals from '../globals/globals';
+import AuthAPI from '../api/AuthAPI';
 
 export default class PetAPI{
     constructor() {
         this.globals = new Globals();
     }
 
-    postPet(token, name, dateOfBirth, weight, height, type){
+    createPet(pet){
+        const token = AuthAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/add';
 
@@ -14,23 +16,27 @@ export default class PetAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        let body = {name: name, dateOfBirth: dateOfBirth, weight: weight, height: height, type:type};
+        let body = {pet};
+
         return axios.post(url, body, options)
     }
 
-    updatePetById(token, name, dateOfBirth, weight, height, type){
-        const url = this.globals.serverHost + '/api/pet/:id';
+    updatePetById(pet, petId){
+        const token = AuthAPI.retrieveToken();
+
+        const url = this.globals.serverHost + '/api/pet/' + petId;
 
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        let body = {name: name, dateOfBirth: dateOfBirth, weight: weight, height: height, type:type};
+        let body = {pet};
         return axios.post(url, body, options)
 
     }
 
-    getPetById(token,petId){
+    getPetById(petId){
+        const token = AuthAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/'+ petId;
 
@@ -41,7 +47,8 @@ export default class PetAPI{
         return axios.get(url, options)
     }
 
-    getPetByCustomerId(token,customerId){
+    getPetByCustomerId(customerId){
+        const token = AuthAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/customer/'+ customerId;
 
@@ -52,7 +59,9 @@ export default class PetAPI{
         return axios.get(url, options)
     }
 
-    deletePetByPetId(token,petId){
+    deletePetByPetId(petId){
+        const token = AuthAPI.retrieveToken();
+
         const url = this.globals.serverHost + '/api/pet/'+ petId;
 
         let options = {

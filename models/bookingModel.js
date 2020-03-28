@@ -3,10 +3,11 @@ import BaseModel from './BaseModel';
 export class Booking extends BaseModel {
 
 	constructor(obj) {
-		super(obj, Vendor.schema);
+		super(obj, Booking.schema);
     }
     
 	static schema = {
+        _id: {type: 'string'},
         petId: {type: 'string'},
         time: {type: 'string'},
         createdAt: {type: 'string'},
