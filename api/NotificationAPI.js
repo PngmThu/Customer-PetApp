@@ -40,15 +40,4 @@ export default class NotificationAPI{
         return axios.get(url, options)
     }
 
-    getNotificationByPetId(token,petId){
-
-        const url = this.globals.serverHost + '/api/notification/pet/'+petId;
-
-        let options = {
-            headers: {token: token, 'Access-Control-Allow-Origin':'*'}
-        };
-
-        return axios.get(url, options)
-    }
-
 }
