@@ -8,8 +8,7 @@ import {
   Picker,
   View,
   ScrollView, 
-  Image,
-  TouchableOpacity
+  Image
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { argonTheme } from "../constants";
@@ -51,22 +50,23 @@ class Home extends React.Component {
     this.state.services.forEach((item, index) => {
         if(index % 2 == 0 && index + 1 < this.state.services.length){
             table.push(
-              <Block key={index} style={styles.container}>
-                    <TouchableOpacity style={{...styles.cardService, marginRight: 10}} onPress={() => this.props.navigation.navigate('PetProfile')}>
-                        <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
-                        <Text style={styles.priceTxt}>{item.animal}</Text>
+              <Block style={{marginTop: 30}}>
+                <Block key={index} style={styles.container}>
+                    <View style={{...styles.cardService, marginRight: 10, marginTop: 10}}>
+                    <Avatar borderColor='#fea87d' rounded resizeMode="cover" source={{ uri: item.avatar_url }} />
+                        <Text style={styles.priceTxt}> {item.animal}</Text>
                         <View style={styles.cardFooter}>
                             <Text style={styles.itemTxt}>{item.name}</Text>
                         </View>
-                    </TouchableOpacity> 
-
-                    <TouchableOpacity style={{...styles.cardService}}  onPress={() => this.props.navigation.navigate('PetProfile')} >
-                        <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
-                        <Text style={styles.priceTxt}>{item.animal}</Text>
+                    </View>
+                    <View style={{...styles.cardService}}>
+                    <Avatar rounded resizeMode="cover" source={{ uri: item.avatar_url }} />
+                        <Text style={styles.priceTxt}> {item.animal}</Text>
                         <View style={styles.cardFooter}>
                             <Text style={styles.itemTxt}>{item.name}</Text>
                         </View>
-                    </TouchableOpacity>
+                    </View>
+                </Block>
                 </Block>
             )
         }
@@ -74,7 +74,7 @@ class Home extends React.Component {
             table.push(
                 <Block key={index} style={styles.container}>
                     <View style={{...styles.cardService}}>
-                    <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
+                    <Avatar rounded resizeMode="cover" source={{ uri: item.avatar_url }} />
                         <Text style={styles.priceTxt}> {item.animal} </Text>
                         <View style={styles.cardFooter}>
                             <Text style={styles.itemTxt}>{item.name}</Text>
@@ -97,20 +97,20 @@ class Home extends React.Component {
           style={{ width, height, zIndex: 1 }}
         >
         
-            <Block middle >
+            <Block flex={0.2} middle >
             <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='contain' style={styles.headerImage}/>
-            <Text color="#ffffff" size={40} style={{ marginRight: 80, marginTop: 40, fontFamily: 'ITCKRIST'}}>
+            <Text color="#ffffff" size={40} style={{ marginRight: 80, marginTop: 20, fontFamily: 'ITCKRIST'}}>
                 Home
             </Text>
             </Block>
 
-          <View style={{marginBottom: 10 }}>
+          <ScrollView style={{flex: 0.6, marginBottom: 60 }}>
               <Block center>
                 {this.renderCard()}
               </Block>
-          </View>
+          </ScrollView>
           
-          <Block >
+          <Block style={{flex: 0.2}} >
           <Icon
          reverse
           raised
@@ -142,8 +142,7 @@ const styles = StyleSheet.create({
       width: "90%",
       flexDirection: "row",
       justifyContent: 'space-between',
-      marginBottom: 10, 
-      marginTop: 50
+      marginBottom: 30
   },
   cardService: {
       backgroundColor: 'rgba(100, 100, 100, 0.5)',
@@ -169,12 +168,12 @@ const styles = StyleSheet.create({
   },
   priceTxt: {
       marginTop: 15,
-      fontFamily: "opensans",
+      // fontFamily: "opensans",
       fontSize: 16,
       color: '#fafafa'
   },
   itemTxt: {
-      fontFamily: 'opensans',
+      // fontFamily: 'opensans',
       color: '#fafafa',
       fontSize: 18,
       textAlign: 'center',

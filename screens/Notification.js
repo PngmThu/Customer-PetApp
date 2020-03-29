@@ -1,5 +1,4 @@
 import React from "react";
-import axios from 'axios';
 import {
   StyleSheet,
   ImageBackground,
@@ -27,11 +26,6 @@ const { width, height } = Dimensions.get("screen");
 const headerImg = require("../assets/imgs/headerLogin.png");
 
 class Notification extends React.Component {
-
-  constructor(props){
-    super(props);
-  }
-  
   render() {
     const { navigation } = this.props;
 

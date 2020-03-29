@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, StyleSheet, ImageBackground, ScrollView, Dimensions, FlatList, Alert } from 'react-native';
+import { Text, View, StyleSheet, ImageBackground, ScrollView, Dimensions, FlatList } from 'react-native';
 
-import { Input, Button } from "../components";
+import { Input, Icon, Button } from "../components";
 import { Images, argonTheme } from "../constants";
-import { Avatar, ListItem, Icon } from 'react-native-elements';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
-
-import BookingAPI from '../api/BookingAPI';
+import { Avatar, ListItem } from 'react-native-elements';
 
 const { width, height } = Dimensions.get("screen");
 
@@ -14,60 +11,17 @@ export default class PetProfile extends React.Component {
 
   constructor(props) {
     super(props);
-    this.bookingAPI = new BookingAPI();
+
     this.state = {   
       loading: false,
       listData: [
         { bookingID: '1', dateandtime: '10-2-2020  1.30pm', venue:'Animal World Vet Clinic' },
         { bookingID: '2', dateandtime: '3-1-2020  10.00am', venue:'Stars Vet Clinic' },
       ],
-      error: null, 
+      error: null,
     };
   }
-
-  getBookingByPetId(){
-    this.bookingAPI.getBookingByPetId(this.state.petId, (res) => {
-          console.log(res.data);
-          this.setState({
-              loading: false,
-              axiosData: res.data
-          })
-      })
-      .catch(error => {
-          console.log(error);
-      });
-  }
-
-  componentWillMount() {
-    this.getBookingByPetId();
-  }
-
-  deleteBookingById(){
-    this.bookingAPI.deleteBookingById(this.state.bookingId, (res) => {
-          console.log(res.data);
-          this.setState({
-              loading: false,
-              axiosData: res.data
-          })
-      })
-      .catch(error => {
-          console.log(error);
-      });
-  }
-
-  updateBookingById(){
-    this.bookingAPI.deleteBookingById(this.state.bookingId,this.state.booking, (res) => {
-          console.log(res.data);
-          this.setState({
-              loading: false,
-              axiosData: res.data
-          })
-      })
-      .catch(error => {
-          console.log(error);
-      });
-  }
-
+   
 //   renderSeperator = () => {
 //     return (
 //       <View
@@ -80,24 +34,10 @@ export default class PetProfile extends React.Component {
 //     );
 //   };
 
-showAlert1() {  
-  Alert.alert(  
-      'Delete Booking',  
-      'Do you want to delete this booking?',  
-      [  
-        {  
-          text: 'Cancel',  
-          onPress: () => console.log('Cancel Pressed'),  
-          style: 'cancel',  
-      },  
-      {text: 'OK', onPress: this.deleteBookingById},  
-      ],  
-      {cancelable: false}  
-  )  
-}  
+    
 
   render() {
-     let { axiosData } = this.state;
+     let { listData } = this.state;
     const { navigation } = this.props;
   return (
     <ImageBackground source={require("../assets/imgs/background2.gif")} resizeMode='cover' style={{flex: 1, width: '100%', height: '100%'}}>
@@ -122,19 +62,17 @@ showAlert1() {
     </View>
     <View style={styles.container}>
     <FlatList
-          keyExtractor={item => item.bookingID}
+          keyExtractor={item => item.name}
           style={{ marginTop: 0}}
-          data={axiosData}
+          data={listData}
           renderItem={({ item }) => {
             return (
               <View>
-              <ListItem containerStyle={{backgroundColor: '#003d6d', borderRadius: 50, marginBottom: 10}}
-              title={item.time}
-              titleStyle={{color:'#ffffff', marginLeft: 15}}
-              subtitle={item.vendorId}
-              subtitleStyle={{color:'#ffffff', marginLeft: 15}}
-              leftIcon={<Icon type="font-awesome" color="#ff7343" size={25} name="edit" onPress={this.updateBookingById} />}
-              rightElement={<Icon type="font-awesome" color="#ff7343" size={25} name="trash" onPress={this.showAlert1} />}
+              <ListItem containerStyle={{backgroundColor: '#FFFFFF', borderRadius: 50, marginBottom: 10}}
+              title={item.dateandtime}
+              titleStyle={{color:'#000000', marginLeft: 15}}
+              subtitle={item.venue}
+              subtitleStyle={{color:'#808080', marginLeft: 15}}
             //   bottomDivider='true'
               />
               </View>
