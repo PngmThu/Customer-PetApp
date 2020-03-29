@@ -25,6 +25,7 @@ import Articles from "../screens/Articles";
 import Register from "../screens/Register";
 import ForgetPassword from "../screens/ForgetPassword"
 import Booking from "../screens/Booking"
+import Notifications from "../screens/Notifications";
 import AddPet from "../screens/AddPet";
 import Settings from "../screens/Settings";
 import Logout from "../screens/Logout";
@@ -96,10 +97,10 @@ const transitionConfig = (transitionProps, prevTransitionProps) => ({
 // });
 
 const NotificationsStack = createStackNavigator({
-  Notification: {
-    screen: Notification,
+  Notifications: {
+    screen: Notifications,
     navigationOptions: ({ navigation }) => ({
-      header: <Header title="Notification" navigation={navigation} />
+      header: <Header title="Notifications" navigation={navigation} />
     })
   }
 },{
@@ -360,10 +361,10 @@ const HomeTab = createBottomTabNavigator(
             )
       })
     },
-    Notification: {
-      screen: Notification,
+    Notifications: {
+      screen: Notifications,
       navigationOptions: ({ navigation }) => ({
-        header: <Header title="Notification" navigation={navigation} />,
+        header: <Header title="Notifications" navigation={navigation} />,
         title: "Notifcations",
             tabBarIcon: ({ tintColor }) => (
                 <Icon

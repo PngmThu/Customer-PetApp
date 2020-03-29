@@ -19,9 +19,11 @@ import { Button,
 import { Images, argonTheme } from "../constants";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { Tooltip } from 'react-native-elements';
+import { Avatar } from 'react-native-elements';
 
 import { MaterialIcons, Entypo, AntDesign, FontAwesome } from '@expo/vector-icons';
+
+import { ViewPager } from 'rn-viewpager'
 
 import StepIndicator from 'react-native-step-indicator'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
@@ -29,12 +31,14 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import DatePicker from 'react-native-datepicker';
 import { Dialog, ConfirmDialog } from 'react-native-simple-dialogs';
 
+//import  MapView  from 'expo';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
+import { Polyline } from '@mapbox/polyline';
 import { Marker }from 'react-native-maps';
 import MapView from 'react-native-maps';
-
-import DataAPI from '../api/DataAPI';
+//import { Polyline } from 'react-native-maps';
+import { IntentLauncherAndroid } from 'expo';
 
 
 const { width, height } = Dimensions.get("screen");
@@ -43,42 +47,42 @@ const locations = [
   {
       "name": "Singapore Turf Club Equine Hospital",
       "address": "338 Ang Mo Kio Avenue 1 #01-1671",
-      // "coords": {
+      "coords": {
           "latitude": 1.422900,
           "longitude": 103.763064
-      //},
+      },
   },
   {
       "name": "AAVC - Animal & Avian Veterinary Clinic",
       "address": "716 Yishun Street 71 #01-254",
-      //"coords": {
+      "coords": {
           "latitude": 1.426181,
           "longitude": 103.827479
-      //},
+      },
   },
   {
       "name": "Acacia Veterinary Clinic",
       "address": "338 Ang Mo Kio Avenue 1 #01-1671",
-      //"coords": {
+      "coords": {
           "latitude": 1.363953,
           "longitude": 103.849044
-      //},
+      },
   },
   {
       "name": "Allpets & Aqualife Vets Pte Ltd ",
       "address": "24 Jalan Kelulut",
-      //"coords": {
+      "coords": {
           "latitude": 1.383402,
           "longitude": 103.875629
-      //},
+      },
   },
   {
       "name": "Amber Veterinary Practice Pte Ltd",
       "address": "50 Burnfoot Terrace, Frankel Estate",
-      //"coords": {
+      "coords": {
           "latitude": 1.312755,
           "longitude": 103.922726
-      //},
+      },
   }
 ]
 
@@ -116,6 +120,10 @@ const getStepIndicatorIconConfig = ({ position, stepStatus }) => {
     size: 15
   }
   switch (position) {
+    // case 0: {
+    //   iconConfig.name = 'shopping-cart'
+    //   break
+    // }
     case 0: {
       iconConfig.name = 'location-on'
       break
@@ -128,6 +136,10 @@ const getStepIndicatorIconConfig = ({ position, stepStatus }) => {
       iconConfig.name = 'payment'
       break
     }
+    // case 4: {
+    //   iconConfig.name = 'track-changes'
+    //   break
+    // }
     default: {
       break
     }
@@ -209,8 +221,8 @@ var pets = [
 ];
 
 class Booking extends React.Component {
-  constructor (props) {
-    super(props);
+  constructor () {
+    super()
     this.state = {
       currentPage: 0,
       clinicInput: "",
@@ -222,29 +234,8 @@ class Booking extends React.Component {
       successDialogVisible: false,
       latitude: null,
       longitude: null,
-      //locations: locations
-      locations: null,
-      isLoading: true,
-    };
-    this.DataAPI = new DataAPI();
-  }
-
-  async getAllClinics(){
-    this.DataAPI.getAllClinics( (res) => {
-      //console.log("res.data: " + JSON.stringify(res.data));
-      if(res != null) {
-        this.setState({ 
-          locations: res.data,
-          isLoading: false
-        });
-      }
-      else{
-        Alert.alert('Error', res,
-          [{text: 'Ok'}])
-      }
-    });
-    //console.log("this.state.locations: " + this.state.locations);
-
+      locations: locations
+    }
   }
 
   onStepPress = position => {
@@ -269,10 +260,6 @@ class Booking extends React.Component {
     )
   }
 
-  componentWillMount() {
-    this.getAllClinics();
-  }
-
   async componentDidMount() {
     const { status } = await Permissions.getAsync(Permissions.LOCATION)
 
@@ -282,11 +269,27 @@ class Booking extends React.Component {
 
     let location = await Location.getCurrentPositionAsync({enableHighAccuracy:true});
 
+    //console.log('latitude is ' + location.coords.latitude.toString())
+    //console.log('longitude is ' + location.coords.longitude.toString())
+
     this.setState({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     });
 
+    // navigator.geolocation.getCurrentPosition(
+    //   ({ coords: { latitude, longitude } }) => this.setState({ latitude, longitude }, this.mergeCoords),
+    //   (error) => console.log('Error:', error)
+    // )
+
+    // const { locations: [ sampleLocation ] } = this.state
+
+    // console.log("sampleLocation: " + JSON.stringify(sampleLocation));
+
+    // this.setState({
+    //   desLatitude: sampleLocation.coords.latitude,
+    //   desLongitude: sampleLocation.coords.longitude
+    // }, this.mergeCoords)
   }
 
   mergeCoords = () => {
@@ -331,9 +334,11 @@ class Booking extends React.Component {
   }
 
   onMarkerPress = location => () => {
-    //const { coords: { latitude, longitude } } = location;
-    const { latitude, longitude } = location;
+  //onMarkerPress = (id, location) => () => {
+    const { coords: { latitude, longitude } } = location;
 
+    console.log("AAAAAAAA");
+    console.log("location chose: " + JSON.stringify(location));
     this.setState({
       destination: location,
       desLatitude: latitude,
@@ -342,35 +347,35 @@ class Booking extends React.Component {
 
   }
 
-    renderMarkers = () => {
+  renderMarkers = () => {
     const { locations } = this.state;
-  
-    if (locations)
-      return (
-        <View>
-          {locations.map((location, idx) => {
-              const latitude = parseFloat(location.latitude);
-              const longitude = parseFloat(location.longitude);
 
-              //console.log("latitude: " + latitude);
-              //console.log("longitude: " + longitude);
-              return (
-                (latitude && longitude) ? <Tooltip popover={<Text>Info here</Text>}>
-                  <Marker
-                    key={idx}
-                    coordinate={{ latitude, longitude }}
-                    onPress={this.onMarkerPress(location)}
-                  >
-                    {/* <MaterialIcons name='pets' size={30} style={{color: '#885DDA'}}/> */}
-                  </Marker>
-                </Tooltip> : null
-              )}
+    const {
+      coords: { latitude, longitude }
+    } = locations[0];
+
+    console.log("locations[0]: " + JSON.stringify(locations[0]));
+
+    return (
+      <View>
+        {
+          locations.map((location, idx) => {
+            const {
+              coords: { latitude, longitude }
+            } = location
+            return (
+              <Marker
+                key={idx}
+                coordinate={{ latitude, longitude }}
+                onPress={this.onMarkerPress(location)}
+              >
+                {/* <MaterialIcons name='pets' size={30} style={{color: '#885DDA'}}/> */}
+              </Marker>
             )
-          }
-        </View>
-      )
-    else 
-      return null;
+          })
+        }
+      </View>
+    )
   }
 
   showMap = () => {
@@ -587,7 +592,6 @@ class Booking extends React.Component {
   chooseClinicView = () => {
     const {timeTaken, distance} = this.state;
 
-    //console.log("this.state.locations: " + this.state.locations);
     return (
       <Block flex>
         <Block flex middle>
@@ -620,7 +624,7 @@ class Booking extends React.Component {
                   itemTextStyle={{ color: '#E1E1E1' }}
                   itemsContainerStyle={{ maxHeight: 150 }}
                   //items={items}
-                  items={this.state.locations}
+                  items={locations}
                   resetValue={false}
                   value={this.state.clinicInput}
                   textInputProps={
@@ -1043,7 +1047,7 @@ class Booking extends React.Component {
             </ImageBackground> 
           </Block>
           
-          {!this.state.isLoading && this.renderPage(this.state.currentPage)}
+          {this.renderPage(this.state.currentPage)}
 
           <ConfirmDialog
             title="Confirmation"
