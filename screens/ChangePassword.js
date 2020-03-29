@@ -5,163 +5,191 @@ import {
   Dimensions,
   StatusBar,
   KeyboardAvoidingView,
-  Image,
-  View
+  Picker,
+  View,
+  ScrollView
 } from "react-native";
-import { Block, Checkbox, Text, theme } from "galio-framework";
-
-import { Button, 
-  Icon, 
-  Input } from "../components";
-import { Images, argonTheme } from "../constants";
-import { TouchableOpacity } from "react-native-gesture-handler";
-
-import { Avatar } from 'react-native-elements';
-
-import { MaterialIcons } from '@expo/vector-icons';
-
+import { Block, Text, theme } from "galio-framework";
+import { argonTheme } from "../constants";
+import { Button, Icon, Input } from "../components";
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import ToggleSwitch from 'toggle-switch-react-native';
+import Popup from '../components/Popup';
 const { width, height } = Dimensions.get("screen");
 
-const headerImg = require("../assets/imgs/headerLogin.png");
-
 class ChangePassword extends React.Component {
+  state = {
+    popUpDialog: false,
+    oldPwd: "",
+    newPwd: "",
+    rePwd: ""
+  }
+
+  constructor(props){
+    super(props);
+    //console.log(this.props.navigation.state.params);
+    this.clickSave = this.clickSave.bind(this);
+    this.updatePwd = this.updatePwd.bind(this);
+  }
+
+  updatePwd(bool){
+    if(bool){
+      console.log("Updated!");
+    }
+    this.setState({popUpDialog: false})
+  }
+
+  clickSave(event){
+    this.setState({popUpDialog: true})
+  }
+
   render() {
     const { navigation } = this.props;
 
     return (
-      // <Block flex middle >
-      <Block flex middle >
-        {/* <StatusBar hidden /> */}
-        
+      <Block flex center style={styles.home}>
         <ImageBackground
           source={require("../assets/imgs/background2.gif")}
-          style={{ width, height, zIndex: 1}}
+          style={{ width, height, zIndex: 1 }}
         >
-          {/* <Block flex={0.4} middle > */}
-          <Block flex={0.15} style={{justifyContent:'flex-start'}}>
-            {/* <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='contain' style={styles.headerImage}> */}
-            <ImageBackground source={require("../assets/imgs/headerLogin.png")} resizeMode='stretch' style={styles.headerImage}>
-                <View style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text color="#E1E1E1" size={32} style={{ marginLeft: 15, fontWeight: 'bold'}}>
-                        Change Password
-                    </Text>
-                </View>
-                {/* <Block flex middle> */}
-                <Block flex>
-                    {/* <MaterialIcons name='keyboard-backspace' size={40} style={{left: -170, top: -65}} */}
-                    <MaterialIcons name='keyboard-backspace' size={40} style={{left: 15, top: 35}}
-                                  onPress={() => navigation.goBack()}/>
-                </Block>
-            </ImageBackground> 
-          </Block>
+        
+        <Popup visible={this.state.popUpDialog} choice={this.updatePwd} question={"Do you want to update password?"}/> 
+        <Block flex={0.3} middle >
+          <ImageBackground source={require("../assets/imgs/headerPwd.png")} resizeMode='contain' style={styles.headerImage}/>
+          <MaterialIcons name='keyboard-backspace' size={40} style={styles.backBtn}
+                                  onPress={() => navigation.navigate("Profile")}/>
+          <Text color="#ffffff" size={33} style={{ marginLeft: 15, marginTop: 20}}>
+            Change Password
+          </Text>
+        </Block>
 
-          <Block flex>
-            <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={18} style={{ marginTop: 300, marginRight: 250}}>
-              Old Password 
-              </Text>
-              <Block width={width * 0.9} style={{ marginTop: -5}}>
-                  <Input
-                    borderless 
-                    placeholder="Old Password"
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={'#5E5454'}
-                        name="password"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
-                  />
-                </Block>
-            </Block>
-
-            <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={18} style={{ marginTop: 300, marginRight: 250}}>
-              New Password 
-              </Text>
-              <Block width={width * 0.9} style={{ marginTop: -5}}>
-                  <Input
-                    borderless 
-                    placeholder="New Password"
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={'#5E5454'}
-                        name="password"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
-                  />
-                </Block>
-            </Block>
-
-            <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={18} style={{ marginTop: 300, marginRight: 170 }}>
-              Re-enter New Password 
-              </Text>
-              <Block width={width * 0.9} style={{ marginTop: -5}}>
-                  <Input
-                    borderless 
-                    placeholder="Re-enter New Password"
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={'#5E5454'}
-                        name="password"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
-                  />
-                </Block>
-            </Block>
-
-            <Block flex center>
+          <ScrollView>
+            <Block flex={0.5} center>
               <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior="padding"
                 enabled
               >
+                <Block width={width * 0.9} style={{marginTop: 120, marginBottom: 15 }}>
+                  <Input
+                    borderless
+                    password
+                    viewPass
+                    placeholder="Old password"
+                    onChangeText={(oldPwd) => {this.setState({oldPwd})}}
+                    value={this.state.oldPwd}
+                    style={{backgroundColor: '#333333'}}
+                    iconContent={
+                        <Icon
+                          size={16}
+                          color={'#5E5454'}
+                          name="padlock-unlocked"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      }
+                  />
+                </Block>
+                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                  <Input
+                    borderless 
+                    password
+                    viewPass
+                    placeholder="New Password"
+                    onChangeText={(newPwd) => {this.setState({newPwd})}}
+                    value={this.state.newPwd}
+                    style={{backgroundColor: '#333333'}}
+                    iconContent={
+                        <Icon
+                          size={16}
+                          color={'#5E5454'}
+                          name="padlock-unlocked"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      }
+                  />
+                </Block>
 
-                <Block flex middle style={{marginBottom: height * 0.08}}>
-                  <Button color="primary" style={styles.button} onPress={() => navigation.navigate("Login")}>
-                    <Text bold size={18} color={argonTheme.COLORS.WHITE}>
+                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                  <Input
+                    borderless 
+                    password
+                    viewPass
+                    placeholder="Re-enter new Password"
+                    onChangeText={(rePwd) => {this.setState({rePwd})}}
+                    value={this.state.rePwd}
+                    style={{backgroundColor: '#333333'}}
+                    iconContent={
+                        <Icon
+                          size={16}
+                          color={'#5E5454'}
+                          name="padlock-unlocked"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      }
+                  />
+                </Block>
+
+                <Block flex={0.1} middle style={{marginBottom: height * 0.1}}>
+                  <Button style={styles.passwordBtn} onPress={() => {this.clickSave()}}>
+                    <Text bold size={16} color={argonTheme.COLORS.WHITE}>
                       Save
                     </Text>
                   </Button>
                 </Block>
               </KeyboardAvoidingView>
             </Block>
-          </Block>
+          </ScrollView>
         </ImageBackground>
-      </Block>  
+      </Block>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  home: {
+    width: width,    
+    paddingBottom: 20
+  },
   headerImage: {
     width: width,
-    height: height * 0.15,
-    //justifyContent:'flex-start',
+    height: height,
+    justifyContent:'flex-start',
     borderRadius: 4,
-    //elevation: 1,
-    //overflow: "hidden"
+    position: 'absolute',
+    marginTop: -80
+  },
+  registerContainer: {
+    width: width * 0.9,  //0.9
+    height: height * 0.78,
+    backgroundColor: "#05060A", //#F4F5F7
+    borderRadius: 4,
+    shadowColor: argonTheme.COLORS.BLACK,
+    shadowOffset: {
+      width: 0,
+      height: 4
+    },
+    shadowRadius: 8,
+    shadowOpacity: 0.1,
+    elevation: 1,
+    overflow: "hidden"
   },
   inputIcons: {
     marginRight: 12,
   },
-  button: {
-    width: width * 0.5,
-    marginTop: 25,
-    borderRadius: 10,
-  }
+  passwordBtn: {
+    backgroundColor: "grey",
+    marginTop: 15
+  },
+  backBtn: {
+    position: 'absolute', 
+    marginTop: 100,
+    paddingTop: 20, 
+    marginLeft: 18,
+    alignSelf: 'flex-start',
+    color: 'white'}
 });
 
 export default ChangePassword;

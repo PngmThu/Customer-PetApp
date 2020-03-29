@@ -1,182 +1,297 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   StyleSheet,
   ImageBackground,
   Dimensions,
   StatusBar,
   KeyboardAvoidingView,
-  Image,
-  View
+  Picker,
+  View,
+  ScrollView
 } from "react-native";
-import { Block, Checkbox, Text, theme } from "galio-framework";
-
-import { Button, 
-  Icon, 
-  Input } from "../components";
-import { Images, argonTheme } from "../constants";
-import { TouchableOpacity } from "react-native-gesture-handler";
-
-import { Avatar } from 'react-native-elements';
-
-import { MaterialIcons } from '@expo/vector-icons';
+import { Block, Text, theme } from "galio-framework";
+import { argonTheme } from "../constants";
+import { Button, Icon, Input } from "../components";
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import ToggleSwitch from 'toggle-switch-react-native';
+import Popup from '../components/Popup';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DatePicker from "react-native-datepicker";
+import { hide } from "expo/build/launch/SplashScreen";
 
 const { width, height } = Dimensions.get("screen");
 
-const headerImg = require("../assets/imgs/headerLogin.png");
+const Example = () => {
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
+
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = date => {
+    console.warn("A date has been picked: ", date);
+    hideDatePicker();
+  };
+};
+
 
 class MyProfile extends React.Component {
+  state = {
+    dob: "", 
+    edit: false, 
+    popUpDialog: false,
+    name: "",
+    email: "",
+    mobile: ""
+  }
+
+  constructor(props){
+    super(props);
+    //console.log(this.props.navigation.state.params);
+    this.logout = this.logout.bind(this);
+    this.clickLogout = this.clickLogout.bind(this);
+  }
+
+  logout(bool){
+    if(bool){
+      console.log("Logged out!");
+    }
+    this.setState({popUpDialog: false})
+  }
+
+  clickLogout(event){
+    this.setState({popUpDialog: true})
+  }
+
   render() {
     const { navigation } = this.props;
 
+    if(this.state.edit){
+      var updateInfo = <Button style={styles.loginButton} onPress={() => {navigation.navigate("Home")}}>
+                          <Text bold size={16} color={argonTheme.COLORS.WHITE}>
+                            Update Info
+                          </Text>
+                        </Button>
+    }
+    else{
+      updateInfo = null
+    }
+
     return (
-      // <Block flex middle >
-      <Block flex middle >
-        {/* <StatusBar hidden /> */}
-        
+      <Block flex center style={styles.home}>
         <ImageBackground
           source={require("../assets/imgs/background2.gif")}
-          style={{ width, height, zIndex: 1}}
+          style={{ width, height, zIndex: 1 }}
         >
-          {/* <Block flex={0.4} middle > */}
-          <Block flex={0.15} style={{justifyContent:'flex-start'}}>
-            {/* <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='contain' style={styles.headerImage}> */}
-            <ImageBackground source={require("../assets/imgs/headerLogin.png")} resizeMode='stretch' style={styles.headerImage}>
-                <View style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text color="#E1E1E1" size={32} style={{ marginLeft: 15, fontWeight: 'bold'}}>
-                        My Profile
-                    </Text>
-                </View>
-                {/* <Block flex middle> */}
-                <Block flex>
-                    {/* <MaterialIcons name='keyboard-backspace' size={40} style={{left: -170, top: -65}} */}
-                    <MaterialIcons name='keyboard-backspace' size={40} style={{left: 15, top: 35}}
-                                  onPress={() => navigation.goBack()}/>
-                </Block>
-            </ImageBackground> 
-          </Block>
+        
+        <Popup visible={this.state.popUpDialog} choice={this.logout} question={"Do you want to log out?"}/> 
+        <Block flex={0.6} middle >
+          <ImageBackground source={require("../assets/imgs/Schedule1.png")} resizeMode='contain' style={styles.headerImage}/>
+          <Text color="#ffffff" size={40} style={{ marginLeft: 15 }}>
+            Your info
+          </Text>
+        </Block>
 
-          <Block flex>
-            <Block>
-              <Block>
-                <TouchableOpacity onPress={() => navigation.navigate("Login")}>
-                  <Text color="#FF0000" size={17} style={{ marginTop: 30, marginLeft: 20}}>
-                    <Icon
-                    size={17}
-                    color={'#FF0000'}
-                    name="padlock-unlocked"
-                    family="ArgonExtra"
-                    style={styles.inputIcons}
-                  />
-                  Logout
-                  </Text>
-                </TouchableOpacity>
-              </Block>
-              <Block>
-                <Button color="primary" style={styles.buttonEdit} onPress={() => navigation.navigate("EditProfile")}>
-                   <Text bold size={18} color={argonTheme.COLORS.WHITE}>
-                      Edit
-                   </Text>
-                </Button>
-              </Block>
+          <ScrollView>
+            <Block flex={0.1} row style={styles.action} >
+              <View style={{alignContent:'flex-start', flex:1, flexDirection: 'row'}} onTouchStart={(event) => {this.clickLogout(event)}}>
+                <MaterialCommunityIcons name="logout-variant" size={30} style={styles.logoutIcon}></MaterialCommunityIcons>
+                <Text size={20} style={styles.logoutTxt}>Logout</Text>
+              </View>
+
+              <View style={{justifyContent:'flex-end', flex: 1, flexDirection: 'row'}}>
+                <ToggleSwitch
+                  isOn={this.state.edit}
+                  onColor={"#333333"}
+                  offColor={"#999999"}
+                  onToggle={(isOn) => {this.setState({edit: isOn})}}
+                />
+                <Text size={20} style={styles.editTxt}>Edit</Text>
+              </View>
             </Block>
 
-            <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={18} style={{ marginTop: 80, marginRight: 280}}>
-              Full Name 
-              </Text>
-              <Block width={width * 0.9} style={{ marginTop: -5}}>
-                  <Input
-                    editable = {false}
-                    borderless 
-                    placeholder="Ng Wee Hau, Zaphyr"
-                  />
-                </Block>
-            </Block>
-
-            <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={18} style={{ marginTop: 80, marginRight: 250 }}>
-              Email Address 
-              </Text>
-              <Block width={width * 0.9} style={{ marginTop: -5 }}>
-                  <Input
-                    editable = {false}
-                    borderless 
-                    placeholder="weehau1996@hotmail.com"
-                  />
-                </Block>
-            </Block>
-
-            <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={18} style={{ marginTop: 80, marginRight: 260}}>
-              Date of Birth 
-              </Text>
-              <Block width={width * 0.35} style={{ marginTop: -5, marginRight: 230}}>
-                  <Input
-                    editable = {false}
-                    borderless 
-                    placeholder="12 March 1996"
-                  />
-                </Block>
-            </Block>
-
-            <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={18} style={{ marginTop: 80, marginRight: 235}}>
-              Contact Number 
-              </Text>
-              <Block width={width * 0.35} style={{ marginTop: -5, marginRight: 230}}>
-                  <Input
-                    editable = {false}
-                    borderless 
-                    placeholder="90408085"
-                  />
-                </Block>
-            </Block>
-
-            <Block flex center>
+            <Block flex={0.4} center>
               <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior="padding"
                 enabled
               >
-                <Block flex middle style={{marginBottom: height * 0.08}}>
-                  <Button color="primary" style={styles.button} onPress={() => navigation.navigate("Notification")}>
-                    <Text bold size={18} color={argonTheme.COLORS.WHITE}>
+                <Block width={width * 0.9} style={{marginTop: 20, marginBottom: 15 }}>
+                  <Input
+                    borderless
+                    placeholder="Your name"
+                    onChangeText={(name) => {this.setState({name})}}
+                    value={this.state.name}
+                    editable={this.state.edit}
+                    iconContent={
+                      <Icon
+                        size={16}
+                        color={'#ffffff'}
+                        name="hat-3"
+                        family="ArgonExtra"
+                        style={styles.inputIcons}
+                      />
+                    }
+                    style={{backgroundColor: '#333333'}}
+                  />
+                </Block>
+
+                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                  <Input
+                    borderless 
+                    placeholder="Email"
+                    editable={this.state.edit}
+                    onChangeText={(email) => {this.setState({email})}}
+                    value={this.state.email}
+                    iconContent={
+                      <Icon
+                        size={16}
+                        color={'#ffffff'}
+                        name="ic_mail_24px"
+                        family="ArgonExtra"
+                        style={styles.inputIcons}
+                      />
+                    }
+                    style={{backgroundColor: '#333333'}}
+                  />
+                </Block>
+
+                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                <Input onPress={showDatePicker}
+                    borderless 
+                    placeholder="Date of Birth"
+                    editable={this.state.edit}
+                    onChangeText={(dob) => {this.setState({dob})}}
+                    value={this.state.dob}
+                    
+                    iconContent={
+                      <Icon
+                        size={16}
+                        color={'#ffffff'}
+                        name="ic_mail_24px"
+                        family="ArgonExtra"
+                        style={styles.inputIcons}
+                      />
+                    }
+                    style={{backgroundColor: '#333333'}}
+                  />
+                  <DateTimePickerModal
+                    isVisible={isDatePickerVisible}
+                    mode="date"
+                    onConfirm={handleConfirm}
+                    onCancel={hideDatePicker}
+                  />
+                </Block>
+
+                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                  <Input
+                    borderless 
+                    placeholder="Phone number"
+                    editable={this.state.edit}
+                    onChangeText={(phone) => {this.setState({phone})}}
+                    value={this.state.phone}
+                    iconContent={
+                      <MaterialIcons
+                        size={16}
+                        color={'#ffffff'}
+                        name="phone"
+                        family="ArgonExtra"
+                        style={styles.inputIcons}
+                      />
+                    }
+                    style={{backgroundColor: '#333333'}}
+                  />
+                  <DateTimePickerModal>
+                    onC
+                  </DateTimePickerModal>
+                </Block>
+
+                <Block flex={0.1} middle style={{marginBottom: height * 0.1}}>
+                  {updateInfo}
+                  <Button style={styles.passwordBtn} onPress={() => {navigation.navigate("ChangePassword")}}>
+                    <Text bold size={16} color={argonTheme.COLORS.WHITE}>
                       Change Password
                     </Text>
                   </Button>
                 </Block>
               </KeyboardAvoidingView>
             </Block>
-          </Block>
+          </ScrollView>
         </ImageBackground>
-      </Block>  
+      </Block>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  home: {
+    width: width,    
+    paddingBottom: 20
+  },
   headerImage: {
     width: width,
-    height: height * 0.15,
-    //justifyContent:'flex-start',
+    height: height,
+    justifyContent:'flex-start',
     borderRadius: 4,
-    //elevation: 1,
-    //overflow: "hidden"
+    position: 'absolute'
+  },
+  registerContainer: {
+    width: width * 0.9,  //0.9
+    height: height * 0.78,
+    backgroundColor: "#05060A", //#F4F5F7
+    borderRadius: 4,
+    shadowColor: argonTheme.COLORS.BLACK,
+    shadowOffset: {
+      width: 0,
+      height: 4
+    },
+    shadowRadius: 8,
+    shadowOpacity: 0.1,
+    elevation: 1,
+    overflow: "hidden"
   },
   inputIcons: {
     marginRight: 12,
   },
-  button: {
-    width: width * 0.5,
-    marginTop: 25,
-    borderRadius: 10,
+  logoutIcon:{
+    color: 'red',
+    fontWeight: '200',
   },
-  buttonEdit: {
-    width: width * 0.15,
-    height: 25,
-    marginLeft: 325,
-    marginTop: -25,
-    borderRadius: 10,
+  action: {
+    width:"90%",
+    alignSelf: 'center',
+    marginTop: 10
+  },
+  logoutTxt: {
+    color: 'red',
+    marginLeft: 5
+  },
+  editIcon: {
+    color: 'white',
+    fontWeight: '200',
+    textAlign: 'left'
+  },
+  editTxt: {
+    color: 'white',
+    marginLeft: 5,
+    textAlign: 'left'
+  },
+  passwordBtn: {
+    backgroundColor: "grey",
+    marginTop: 15
+  },
+  picker: {
+    width: '100%',
+    paddingBottom: 0,
+    backgroundColor: 'transparent',
+    paddingLeft: 0,
+    transform: [{scaleX: 0.77}, {scaleY: 0.77}],
+    position: 'absolute',
+    color: "#cccccc"
   }
 });
 
