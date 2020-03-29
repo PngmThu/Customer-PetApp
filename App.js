@@ -34,28 +34,7 @@ function cacheImages(images) {
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false,
-    internetConnection: false,
-    userToken: false
   }
-
-  componentDidMount(){
-    this.CheckConnectivity();
-  }
-
-  CheckConnectivity(){
-    // For Android devices
-    if (Platform.OS === "android") {
-      NetInfo.isConnected.fetch().then(isConnected => {
-        if (isConnected) {
-          this.setState({internetConnection: true})
-        } else {
-          Alert.alert('Internet connection', 'Please connect to the Internet!', 
-          [{text: 'Ok', onPress: () => {BackHandler.exitApp()}}],
-          { cancelable: false });
-        }
-      });
-    }
-  };
   
   render() {
     if(!this.state.isLoadingComplete) {
