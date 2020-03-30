@@ -19,7 +19,7 @@ import { Button,
 import { Images, argonTheme } from "../constants";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-import { Tooltip } from 'react-native-elements';
+import { Avatar } from 'react-native-elements';
 
 import { MaterialIcons, Entypo, AntDesign, FontAwesome } from '@expo/vector-icons';
 
@@ -39,7 +39,9 @@ import { Marker }from 'react-native-maps';
 import MapView from 'react-native-maps';
 //import { Polyline } from 'react-native-maps';
 import { IntentLauncherAndroid } from 'expo';
+import Tooltip from 'react-native-walkthrough-tooltip';
 
+import DataAPI from '../api/DataAPI';
 
 const { width, height } = Dimensions.get("screen");
 
@@ -47,42 +49,42 @@ const locations = [
   {
       "name": "Singapore Turf Club Equine Hospital",
       "address": "338 Ang Mo Kio Avenue 1 #01-1671",
-      "coords": {
+      //"coords": {
           "latitude": 1.422900,
           "longitude": 103.763064
-      },
+      //},
   },
   {
       "name": "AAVC - Animal & Avian Veterinary Clinic",
       "address": "716 Yishun Street 71 #01-254",
-      "coords": {
+      //"coords": {
           "latitude": 1.426181,
           "longitude": 103.827479
-      },
+      //},
   },
   {
       "name": "Acacia Veterinary Clinic",
       "address": "338 Ang Mo Kio Avenue 1 #01-1671",
-      "coords": {
+      //"coords": {
           "latitude": 1.363953,
           "longitude": 103.849044
-      },
+      //},
   },
   {
       "name": "Allpets & Aqualife Vets Pte Ltd ",
       "address": "24 Jalan Kelulut",
-      "coords": {
+      //"coords": {
           "latitude": 1.383402,
           "longitude": 103.875629
-      },
+      //},
   },
   {
       "name": "Amber Veterinary Practice Pte Ltd",
       "address": "50 Burnfoot Terrace, Frankel Estate",
-      "coords": {
+      //"coords": {
           "latitude": 1.312755,
           "longitude": 103.922726
-      },
+      //},
   }
 ]
 
@@ -234,8 +236,30 @@ class Booking extends React.Component {
       successDialogVisible: false,
       latitude: null,
       longitude: null,
-      locations: locations
-    }
+      //locations: locations
+      locations: null,
+      isLoading: true,
+      clickMarker: false,
+      toolTipVisible: false,
+    };
+    this.DataAPI = new DataAPI();
+  }
+
+  getAllClinics(){
+    this.DataAPI.getAllClinics( (res) => {
+      //console.log("res.data: " + JSON.stringify(res.data));
+      if(res != null) {
+        this.setState({ 
+          locations: res.data,
+          isLoading: false
+        });
+      }
+      else{
+        Alert.alert('Error', res,
+          [{text: 'Ok'}])
+      }
+    });
+    //console.log("this.state.locations: " + this.state.locations);
   }
 
   onStepPress = position => {
@@ -260,6 +284,10 @@ class Booking extends React.Component {
     )
   }
 
+  componentWillMount() {
+    this.getAllClinics();
+  }
+
   async componentDidMount() {
     const { status } = await Permissions.getAsync(Permissions.LOCATION)
 
@@ -269,8 +297,8 @@ class Booking extends React.Component {
 
     let location = await Location.getCurrentPositionAsync({enableHighAccuracy:true});
 
-    //console.log('latitude is ' + location.coords.latitude.toString())
-    //console.log('longitude is ' + location.coords.longitude.toString())
+    // console.log('latitude is ' + location.coords.latitude.toString())
+    // console.log('longitude is ' + location.coords.longitude.toString())
 
     this.setState({
       latitude: location.coords.latitude,
@@ -335,14 +363,18 @@ class Booking extends React.Component {
 
   onMarkerPress = location => () => {
   //onMarkerPress = (id, location) => () => {
-    const { coords: { latitude, longitude } } = location;
+    //const { coords: { latitude, longitude } } = location;
+    const { latitude, longitude } = location;
 
-    console.log("AAAAAAAA");
-    console.log("location chose: " + JSON.stringify(location));
+    //console.log("AAAAAAAA");
+    //console.log("location chose: " + JSON.stringify(location));
     this.setState({
       destination: location,
       desLatitude: latitude,
-      desLongitude: longitude
+      desLongitude: longitude,
+      clinicInput: location.name,
+      clickMarker: true,
+      toolTipVisible: true,
     }, this.mergeCoords);
 
   }
@@ -350,34 +382,52 @@ class Booking extends React.Component {
   renderMarkers = () => {
     const { locations } = this.state;
 
-    const {
-      coords: { latitude, longitude }
-    } = locations[0];
+    // const {
+    //   latitude, longitude
+    // } = locations[0];
 
-    console.log("locations[0]: " + JSON.stringify(locations[0]));
+    //console.log("locations[0]: " + JSON.stringify(locations[0]));
+    if (locations)
+      return (
+        <View>
+          {
+            locations.map((location, idx) => {
+              // const {
+              //   coords: { latitude, longitude }
+              // } = location
+              const latitude = parseFloat(location.latitude);
+              const longitude = parseFloat(location.longitude);
 
-    return (
-      <View>
-        {
-          locations.map((location, idx) => {
-            const {
-              coords: { latitude, longitude }
-            } = location
-            return (
-              <Tooltip popover={<Text>Info here</Text>}>
-                <Marker
-                  key={idx}
-                  coordinate={{ latitude, longitude }}
-                  onPress={this.onMarkerPress(location)}
-                >
-                  {/* <MaterialIcons name='pets' size={30} style={{color: '#885DDA'}}/> */}
-                </Marker>
-              </Tooltip>
-            )
-          })
-        }
-      </View>
-    )
+              //console.log("latitude: " + latitude);
+              //console.log("longitude: " + longitude);
+              return (
+                (latitude && longitude) ? 
+                  <Tooltip
+                    animated={true}
+                    arrowSize={{ width: 16, height: 8 }}
+                    backgroundColor="rgba(0,0,0,0)" // Color of the fullscreen background beneath the tooltip.
+                    isVisible={this.state.toolTipVisible}
+                    content={<Text>{location.name}</Text>} //(Must) This is the view displayed in the tooltip
+                    placement="top"  //(Must) top, bottom, left, right, auto.
+                    onClose={() => this.setState({ toolTipVisible: false })}
+                  >
+                    <Marker
+                      key={idx}
+                      coordinate={{ latitude, longitude }}
+                      onPress={this.onMarkerPress(location)}
+                      pinColor="navy"
+                    >
+                      {/* <MaterialIcons name='pets' size={30} style={{color: '#885DDA'}}/> */}
+                    </Marker>
+                  </Tooltip>
+                : null
+              )
+            })
+          }
+        </View>
+      )
+    else 
+      return null;
   }
 
   showMap = () => {
@@ -552,6 +602,8 @@ class Booking extends React.Component {
       destination
     } = this.state;
 
+    //console.log('latitude is ' + latitude);
+    //console.log('longitude is ' + longitude);
     if (latitude) {
       return (
         <MapView
@@ -594,6 +646,9 @@ class Booking extends React.Component {
   chooseClinicView = () => {
     const {timeTaken, distance} = this.state;
 
+    //console.log("this.showMap(): ", this.showMap());
+    //const test = this.state.clickMarker ? this.state.clinicInput : undefined;
+    //console.log("this.state.clickMarker ? this.state.clinicInput : undefined -> " + test);
     return (
       <Block flex>
         <Block flex middle>
@@ -626,15 +681,30 @@ class Booking extends React.Component {
                   itemTextStyle={{ color: '#E1E1E1' }}
                   itemsContainerStyle={{ maxHeight: 150 }}
                   //items={items}
-                  items={locations}
+                  items={this.state.locations}
                   resetValue={false}
                   value={this.state.clinicInput}
-                  textInputProps={
+                  onFocus={() => this.setState({clickMarker: false})}
+                  textInputProps={this.state.clickMarker ? 
                     {
                       placeholder: "Choose...",
                       placeholderTextColor: "#525151",
                       underlineColorAndroid: "transparent",
-                      //value: "",
+                      value: this.state.clinicInput,
+                      style: {
+                          padding: 5,
+                          marginLeft: 10,
+                          color: "#E1E1E1"
+                      },
+                    }
+                      :
+                    {
+                      placeholder: "Choose...",
+                      placeholderTextColor: "#525151",
+                      underlineColorAndroid: "transparent",
+                      //value: this.state.clinicInput,
+                      //value: this.state.clickMarker ? this.state.clinicInput : undefined,
+                      //value: undefined,
                       style: {
                           padding: 5,
                           marginLeft: 10,
@@ -646,6 +716,7 @@ class Booking extends React.Component {
                       // }
                     }
                   }
+                  //textInputProps={this.state.clickMarker ? {value: this.state.clinicInput} : undefined}
                   listProps={
                     {
                       nestedScrollEnabled: true,
@@ -678,7 +749,7 @@ class Booking extends React.Component {
               <Block flex center style={{height: width * 0.95, width: width * 0.95,
                                   borderRadius: 30, overflow: 'hidden',
                                   marginTop: -height * 0.06}}>
-                <this.showMap />
+                {this.showMap()}
               </Block>
               
               <Block flex middle style={{ elevation: 1, height: height * 0.3, marginTop: -height * 0.05}}>
@@ -1049,7 +1120,7 @@ class Booking extends React.Component {
             </ImageBackground> 
           </Block>
           
-          {this.renderPage(this.state.currentPage)}
+          {!this.state.isLoading && this.renderPage(this.state.currentPage)}
 
           <ConfirmDialog
             title="Confirmation"

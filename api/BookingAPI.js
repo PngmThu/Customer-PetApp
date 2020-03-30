@@ -67,10 +67,10 @@ export default class BookingAPI{
         return axios.get(url,options);
     }
 
-    getBookingByPetId(PetId){
+    getBookingByPetId(petId){
         const token = AuthAPI.retrieveToken();
 
-        const url = this.globals.serverHost + '/api/booking/pet/' + PetId;
+        const url = this.globals.serverHost + '/api/booking/pet/' + petId;
         
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
