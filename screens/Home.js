@@ -17,6 +17,8 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Popup from '../components/Popup';
 import { Avatar } from "react-native-elements";
+import UserProfileAPI from '../api/UserProfileAPI';
+
 const { width, height } = Dimensions.get("screen");
 
 class Home extends React.Component {
@@ -43,6 +45,13 @@ class Home extends React.Component {
   constructor(props){
     super(props);
     //console.log(this.props.navigation.state.params);
+  }
+
+  componentDidMount(){
+    this.userProfileAPI = new UserProfileAPI();
+    this.userProfileAPI.getUserById('5e7e21a3b2d11d00172337de', (res) => {
+      console.log(res);
+    });
   }
 
   renderCard(){

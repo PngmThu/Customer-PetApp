@@ -12,32 +12,15 @@ import {
 import { Block, Text, theme } from "galio-framework";
 import { argonTheme } from "../constants";
 import { Button, Icon, Input } from "../components";
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Popup from '../components/Popup';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import DatePicker from "react-native-datepicker";
 import { hide } from "expo/build/launch/SplashScreen";
 
+
 const { width, height } = Dimensions.get("screen");
-
-const Example = () => {
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
-
-  const handleConfirm = date => {
-    console.warn("A date has been picked: ", date);
-    hideDatePicker();
-  };
-};
-
 
 class MyProfile extends React.Component {
   state = {
@@ -89,7 +72,7 @@ class MyProfile extends React.Component {
         >
         
         <Popup visible={this.state.popUpDialog} choice={this.logout} question={"Do you want to log out?"}/> 
-        <Block flex={0.6} middle >
+        <Block flex={0.2} middle style={{ marginBottom: 10 }} >
           <ImageBackground source={require("../assets/imgs/Schedule1.png")} resizeMode='contain' style={styles.headerImage}/>
           <Text color="#ffffff" size={40} style={{ marginLeft: 15 }}>
             Your info
@@ -97,7 +80,7 @@ class MyProfile extends React.Component {
         </Block>
 
           <ScrollView>
-            <Block flex={0.1} row style={styles.action} >
+            <Block flex={0.8} row style={styles.action} >
               <View style={{alignContent:'flex-start', flex:1, flexDirection: 'row'}} onTouchStart={(event) => {this.clickLogout(event)}}>
                 <MaterialCommunityIcons name="logout-variant" size={30} style={styles.logoutIcon}></MaterialCommunityIcons>
                 <Text size={20} style={styles.logoutTxt}>Logout</Text>
@@ -161,29 +144,47 @@ class MyProfile extends React.Component {
                 </Block>
 
                 <Block width={width * 0.9} style={{ marginBottom: 15 }}>
-                <Input onPress={showDatePicker}
-                    borderless 
-                    placeholder="Date of Birth"
-                    editable={this.state.edit}
-                    onChangeText={(dob) => {this.setState({dob})}}
-                    value={this.state.dob}
-                    
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={'#ffffff'}
-                        name="ic_mail_24px"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
-                  />
-                  <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
+                <DatePicker
+                    style={{width: width * 0.9, 
+                            backgroundColor: "#333333", borderRadius: 10,
+                            justifyContent: 'center', }}
+                    date={this.state.date}
+                    disabled={!this.state.edit}
                     mode="date"
-                    onConfirm={handleConfirm}
-                    onCancel={hideDatePicker}
+                    placeholder="Date of Birth"
+                    format="YYYY-MM-DD"
+                    minDate="1996-01-01"
+                    maxDate="2022-02-06"
+                    confirmBtnText="Confirm"
+                    cancelBtnText="Cancel"
+                    iconComponent={
+                      <FontAwesome name='calendar-check-o' size={16} color='#ffffff' style={{padding: 10}} />
+                    }
+                    customStyles={{
+                      dateIcon: {
+                        position: 'absolute',
+                        left: 0,
+                        top: 4,
+                        marginLeft: 0,
+                      },
+                      dateInput: {
+                        borderWidth: 0,
+                        alignItems: "flex-start",
+                        padding: 10,
+                        marginLeft: 10,
+                      },
+                      dateText: {
+                        color: "#ffffff",
+                      },
+                      modalStyle: {
+                        backgroundColor: "#333333",
+                      },
+                      modalOverlayStyle: {
+                        backgroundColor: "#333333",
+                      }
+                      // ... You can check the source to find the other keys.
+                    }}
+                    onDateChange={(date) => {this.setState({date: date})}}
                   />
                 </Block>
 
@@ -205,9 +206,6 @@ class MyProfile extends React.Component {
                     }
                     style={{backgroundColor: '#333333'}}
                   />
-                  <DateTimePickerModal>
-                    onC
-                  </DateTimePickerModal>
                 </Block>
 
                 <Block flex={0.1} middle style={{marginBottom: height * 0.1}}>
@@ -230,7 +228,7 @@ class MyProfile extends React.Component {
 const styles = StyleSheet.create({
   home: {
     width: width,    
-    paddingBottom: 20
+    paddingBottom: 20,
   },
   headerImage: {
     width: width,

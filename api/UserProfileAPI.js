@@ -5,6 +5,7 @@ import AuthAPI from '../api/AuthAPI';
 export default class UserProfileAPI{
     constructor() {
         this.globals = new Globals();
+        this.authAPI = new AuthAPI();
     }
 
     createCustomer(customer){
@@ -49,8 +50,8 @@ export default class UserProfileAPI{
 
     }
 
-    getUserById(customerId){
-        const token = AuthAPI.retrieveToken();
+    async getUserById(customerId, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/customer/'+ customerId;
 
@@ -58,6 +59,14 @@ export default class UserProfileAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        return axios.get(url, options)
+        console.log(token)
+
+        axios.get(url, options)
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            console.log(err.response.data)
+        })
     }
 }

@@ -42,6 +42,7 @@ export default class App extends React.Component {
     this.CheckConnectivity();
   }
 
+
   CheckConnectivity(){
     // For Android devices
     if (Platform.OS === "android") {
@@ -57,8 +58,6 @@ export default class App extends React.Component {
     }
   };
   
-  componentDidMount(){
-  }
   
   render() {
     if(!this.state.isLoadingComplete || !this.state.internetConnection) {
