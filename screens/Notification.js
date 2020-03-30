@@ -5,38 +5,27 @@ import {
   Dimensions,
   StatusBar,
   KeyboardAvoidingView,
-  Image,
+  Picker,
   View,
   ScrollView
 } from "react-native";
-import { Block, Checkbox, Text, theme } from "galio-framework";
-
-import { Button, 
-  Icon, 
-  Input } from "../components";
-import { Images, argonTheme } from "../constants";
-import { TouchableOpacity } from "react-native-gesture-handler";
-
-import { Avatar } from 'react-native-elements';
-
-import { MaterialIcons } from '@expo/vector-icons';
+import { Block, Text, theme } from "galio-framework";
+import { argonTheme } from "../constants";
+import { Button, Icon, Input } from "../components";
+import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { width, height } = Dimensions.get("screen");
 
-const headerImg = require("../assets/imgs/headerLogin.png");
-
 class Notification extends React.Component {
+  state = {address: ""}
+
   render() {
     const { navigation } = this.props;
-
     return (
-      // <Block flex middle >
-      <Block flex middle >
-        {/* <StatusBar hidden /> */}
-        
+      <Block flex center style={styles.home}>
         <ImageBackground
           source={require("../assets/imgs/background2.gif")}
-          style={{ width, height, zIndex: 1}}
+          style={{ width, height, zIndex: 1 }}
         >
         <Block flex={0.2} middle >
           <ImageBackground source={require("../assets/imgs/Schedule1.png")} resizeMode='contain' style={styles.headerImage}/>
@@ -210,99 +199,24 @@ class Notification extends React.Component {
 
               </KeyboardAvoidingView>
             </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/02/2020 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/01/2020 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/12/2019 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/11/2019 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/10/2019 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/09/2019 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/08/2019 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            </ScrollView>
+          </ScrollView>
         </ImageBackground>
-      </Block>  
+      </Block>
     );
   }
 }
 
 const styles = StyleSheet.create({
+  home: {
+    width: width,    
+    paddingBottom: 20
+  },
   headerImage: {
     width: width,
-    height: height * 0.15,
-    //justifyContent:'flex-start',
+    height: height,
+    justifyContent:'flex-start',
     borderRadius: 4,
-    //elevation: 1,
-    //overflow: "hidden"
+    position: 'absolute'
   },
   inputIcons: {
     marginLeft: 5,
@@ -324,11 +238,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     flexDirection: 'row'
   },
-  item: {
-    padding: 10,
-    backgroundColor: '#D3D3D3',
-    borderRadius: 20
-  }
 });
 
 export default Notification;
