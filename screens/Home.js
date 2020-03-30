@@ -49,7 +49,8 @@ class Home extends React.Component {
 
   componentDidMount(){
     this.userProfileAPI = new UserProfileAPI();
-    this.userProfileAPI.getUserById('5e7e21a3b2d11d00172337de', (res) => {
+    this.updateUserById.customer.email = "cz2006@gmail.com"
+    this.userProfileAPI.updateUserById('5e7e21a3b2d11d00172337de', (res) => {
       console.log(res);
     });
   }
