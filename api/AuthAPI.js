@@ -26,7 +26,9 @@ export default class AuthAPI{
             }
         })
         .catch(err => {
-            callback(err.response.data)
+            console.log(err)
+
+            //callback(err.response.data)
         })
     }
 

@@ -21,11 +21,51 @@ import { Avatar } from 'react-native-elements';
 
 import { MaterialIcons } from '@expo/vector-icons';
 
+import NotificationAPI from '../api/NotificationAPI'
+
 const { width, height } = Dimensions.get("screen");
 
 const headerImg = require("../assets/imgs/headerLogin.png");
 
 class Notification extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      notifications:[]
+    }
+  }
+  async componentDidMount(){
+    notificationAPI = new NotificationAPI();
+    await notificationAPI.getNotificationByCustomer({
+      _id:"5e7e21a3b2d11d00172337de",
+      email:"2006@gmail.com",
+      password:"$2b$10$xblnGajBExBEfY/.4zZr/uuazV9i5HwtlgqLnl8VqQNE7.WQemOFq",
+      mobile:"90865103",
+      firstName:"Louis",
+      lastName:"Phung",
+      createdAt:"2020-03-27T15:54:11.731+00:00",
+      __v:0
+    },(err,res)=>{
+      if (!err) {
+        console.log(notif)
+        this.setState({notifications: res.map((notif)=>{
+          <Block style={{ marginTop: 160}}>
+            <Block style={ styles.item }>
+                <Text style={{fontWeight: 'bold', fontSize: 24}}>
+                    Booking Successfully
+                </Text>
+                <Text style={{ fontSize: 18 }}>
+                    Your booking for {notif.petId} on {notif.time} at 
+                    {notif.vendorId} is {notif.status}
+                </Text>
+             </Block>
+          </Block>        })})
+      }
+      else console.log(err);
+
+    });
+    
+  }
   render() {
     const { navigation } = this.props;
 
@@ -56,95 +96,10 @@ class Notification extends React.Component {
             </ImageBackground> 
           </Block>
           <ScrollView>
-          <Block style={{ marginTop: 160}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/03/2020 is successful
-                </Text>
-             </Block>
-            </Block>
 
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/02/2020 is successful
-                </Text>
-             </Block>
-            </Block>
+            {this.state.notifications  }          
 
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/01/2020 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/12/2019 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/11/2019 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/10/2019 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/09/2019 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            <Block style={{ marginTop: 10}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/08/2019 is successful
-                </Text>
-             </Block>
-            </Block>
-
-            </ScrollView>
+          </ScrollView>
         </ImageBackground>
       </Block>  
     );
