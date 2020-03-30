@@ -19,7 +19,7 @@ export default class NotificationAPI{
         return axios.post(url, body, options)
     }
 
-    getNotificationById(token,id){
+    async getNotificationById(token,id){
 
         const url = this.globals.serverHost + '/api/notification/'+id;
 
@@ -27,28 +27,37 @@ export default class NotificationAPI{
             headers: {token: this.authAPI.retrieveToken(), 'Access-Control-Allow-Origin':'*'}
         };
 
-        return axios.get(url, options)
+        await axios.get(url, options)
+        .then(res =>{
+            if (res.status==200){
+
+            }
+        })
     }
 
     async getNotificationByCustomer(customer,callback){
 
-        const url = this.globals.serverHost + '/api/notification/customer/';
+        const url = this.globals.serverHost + '/api/notification/customer/'+customer._id;
         const token = await this.authAPI.retrieveToken();
         let options = {
             headers: {'token':token, 'Access-Control-Allow-Origin':'*'}
         };
-        let body = {customerId: customer._id};
-        console.log(options);
-        await axios.get(url,body,options)
+        console.log(customer._id)
+        console.log("options: "+options.headers['token'])
+        console.log("aaaaa");
+        await axios.get(url,options)
              .then(res=>{
                  if (res.status==200){
+                     console.log(res)
                      callback(false,res.data);
                  }
                  else {
+                     console.log("errr1")
                      callback(res.data);
                  }
              })
              .catch(err=>{
+                 console.log("error2")
                  callback(err);
              })
 

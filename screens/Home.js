@@ -8,7 +8,8 @@ import {
   Picker,
   View,
   ScrollView, 
-  Image
+  Image,
+  TouchableOpacity
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { argonTheme } from "../constants";
