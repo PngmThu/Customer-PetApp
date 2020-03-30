@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, StyleSheet, ImageBackground, ScrollView, Dimensions, FlatList, Alert } from 'react-native';
 
-import { Input, Icon, Button } from "../components";
+import { Input, Button } from "../components";
 import { Images, argonTheme } from "../constants";
 import { Avatar, ListItem, Icon } from 'react-native-elements';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
@@ -17,16 +17,16 @@ export default class PetProfile extends React.Component {
     this.bookingAPI = new BookingAPI();
     this.state = {   
       loading: false,
-      listData = this.getBookingByPetId(),
-      // listData: [
-      //   { bookingID: '1', dateandtime: '10-2-2020  1.30pm', venue:'Animal World Vet Clinic' },
-      //   { bookingID: '2', dateandtime: '3-1-2020  10.00am', venue:'Stars Vet Clinic' },
-      // ],
+      // listData = this.getBookingByPetId(),
+      listData: [
+        { bookingID: '1', dateandtime: '10-2-2020  1.30pm', venue:'Animal World Vet Clinic' },
+        { bookingID: '2', dateandtime: '3-1-2020  10.00am', venue:'Stars Vet Clinic' },
+      ],
       error: null,
     };
   }
    
-  getBookingByPetId(){
+  async getBookingByPetId(){
     this.bookingAPI.getBookingByPetId(this.state.petId, (res) => {
           console.log("res.data: " + JSON.stringify(res.data));
           this.setState({
