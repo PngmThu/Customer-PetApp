@@ -25,7 +25,6 @@ import Articles from "../screens/Articles";
 import Register from "../screens/Register";
 import ForgetPassword from "../screens/ForgetPassword"
 import Booking from "../screens/Booking"
-import Notifications from "../screens/Notifications";
 import AddPet from "../screens/AddPet";
 import Settings from "../screens/Settings";
 import Logout from "../screens/Logout";
@@ -96,11 +95,11 @@ const transitionConfig = (transitionProps, prevTransitionProps) => ({
 //   transitionConfig
 // });
 
-const NotificationsStack = createStackNavigator({
+/*const NotificationsStack = createStackNavigator({
   Notifications: {
-    screen: Notifications,
+    screen: Notification,
     navigationOptions: ({ navigation }) => ({
-      header: <Header title="Notifications" navigation={navigation} />
+      header: <Header title="Notification" navigation={navigation} />
     })
   }
 },{
@@ -108,7 +107,7 @@ const NotificationsStack = createStackNavigator({
     backgroundColor: "#F8F9FE"
   },
   transitionConfig
-});
+});*/
 
 const AddPetStack = createStackNavigator({
   AddPet: {
@@ -361,11 +360,11 @@ const HomeTab = createBottomTabNavigator(
             )
       })
     },
-    Notifications: {
-      screen: Notifications,
+    Notification: {
+      screen: Notification,
       navigationOptions: ({ navigation }) => ({
-        header: <Header title="Notifications" navigation={navigation} />,
-        title: "Notifcations",
+        header: <Header title="Notification" navigation={navigation} />,
+        title: "Notifcation",
             tabBarIcon: ({ tintColor }) => (
                 <Icon
                     name="bullhorn"

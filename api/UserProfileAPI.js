@@ -8,8 +8,8 @@ export default class UserProfileAPI{
         this.authAPI = new AuthAPI();
     }
 
-    createCustomer(customer){
-        const token = AuthAPI.retrieveToken();
+    async createCustomer(customer, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/account/customer';
 
@@ -17,13 +17,22 @@ export default class UserProfileAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        let body = {customer};
-
-        return axios.post(url, body, options)
+        axios.post(url, customer, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(true);
+            }
+            else{
+                callback(false);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data)
+        })
     }
 
-    updateUserById(customer, customerId){
-        const token = AuthAPI.retrieveToken();
+    async updateUserById(customer, customerId){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/customer/' + customerId;
 
@@ -31,13 +40,22 @@ export default class UserProfileAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        let body = {customer};
-        return axios.post(url, body, options)
-
+        axios.put(url, customer, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(true);
+            }
+            else{
+                callback(false);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data)
+        })
     }
 
     updatePasswordById(customer, customerId){
-        const token = AuthAPI.retrieveToken();
+        const token = this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/customer/password/' + customerId;
 
