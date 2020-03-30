@@ -391,7 +391,8 @@ const HomeTab = createBottomTabNavigator(
   {
     tabBarOptions: {
       activeTintColor: 'tomato',
-      inactiveTintColor: 'gray',
+      inactiveTintColor: '#ffffff',
+      backgroundColor:'#808080'
     },
   },
   {

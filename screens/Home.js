@@ -17,6 +17,8 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Popup from '../components/Popup';
 import { Avatar } from "react-native-elements";
+import UserProfileAPI from '../api/UserProfileAPI';
+
 const { width, height } = Dimensions.get("screen");
 
 class Home extends React.Component {
@@ -45,28 +47,34 @@ class Home extends React.Component {
     //console.log(this.props.navigation.state.params);
   }
 
+  componentDidMount(){
+    this.userProfileAPI = new UserProfileAPI();
+    this.userProfileAPI.getUserById('5e7e21a3b2d11d00172337de', (res) => {
+      console.log(res);
+    });
+  }
+
   renderCard(){
     var table = [];
     this.state.services.forEach((item, index) => {
         if(index % 2 == 0 && index + 1 < this.state.services.length){
             table.push(
-              <Block style={{marginTop: 30}}>
-                <Block key={index} style={styles.container}>
-                    <View style={{...styles.cardService, marginRight: 10, marginTop: 10}}>
-                    <Avatar borderColor='#fea87d' rounded resizeMode="cover" source={{ uri: item.avatar_url }} />
-                        <Text style={styles.priceTxt}> {item.animal}</Text>
+              <Block key={index} style={styles.container}>
+                    <TouchableOpacity style={{...styles.cardService, marginRight: 10}} onPress={() => this.props.navigation.navigate('PetProfile')}>
+                        <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
+                        <Text style={styles.priceTxt}>{item.animal}</Text>
                         <View style={styles.cardFooter}>
                             <Text style={styles.itemTxt}>{item.name}</Text>
                         </View>
-                    </View>
-                    <View style={{...styles.cardService}}>
-                    <Avatar rounded resizeMode="cover" source={{ uri: item.avatar_url }} />
-                        <Text style={styles.priceTxt}> {item.animal}</Text>
+                        </TouchableOpacity>
+
+                        <TouchableOpacity style={{...styles.cardService}}  onPress={() => this.props.navigation.navigate('PetProfile')} >
+                            <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
+                            <Text style={styles.priceTxt}>{item.animal}</Text>
                         <View style={styles.cardFooter}>
                             <Text style={styles.itemTxt}>{item.name}</Text>
                         </View>
-                    </View>
-                </Block>
+                </TouchableOpacity>
                 </Block>
             )
         }
@@ -74,7 +82,7 @@ class Home extends React.Component {
             table.push(
                 <Block key={index} style={styles.container}>
                     <View style={{...styles.cardService}}>
-                    <Avatar rounded resizeMode="cover" source={{ uri: item.avatar_url }} />
+                    <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
                         <Text style={styles.priceTxt}> {item.animal} </Text>
                         <View style={styles.cardFooter}>
                             <Text style={styles.itemTxt}>{item.name}</Text>
@@ -97,20 +105,20 @@ class Home extends React.Component {
           style={{ width, height, zIndex: 1 }}
         >
         
-            <Block flex={0.2} middle >
+            <Block middle >
             <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='contain' style={styles.headerImage}/>
-            <Text color="#ffffff" size={40} style={{ marginRight: 80, marginTop: 20, fontFamily: 'ITCKRIST'}}>
+            <Text color="#ffffff" size={40} style={{ marginRight: 80, marginTop: 40, fontFamily: 'ITCKRIST'}}>
                 Home
             </Text>
             </Block>
 
-          <ScrollView style={{flex: 0.6, marginBottom: 60 }}>
+            <View style={{marginBottom: 10 }}>
               <Block center>
                 {this.renderCard()}
               </Block>
-          </ScrollView>
+          </View>
           
-          <Block style={{flex: 0.2}} >
+          <Block>
           <Icon
          reverse
           raised
@@ -142,7 +150,8 @@ const styles = StyleSheet.create({
       width: "90%",
       flexDirection: "row",
       justifyContent: 'space-between',
-      marginBottom: 30
+      marginBottom: 10, 
+      marginTop: 50
   },
   cardService: {
       backgroundColor: 'rgba(100, 100, 100, 0.5)',
@@ -168,12 +177,12 @@ const styles = StyleSheet.create({
   },
   priceTxt: {
       marginTop: 15,
-      // fontFamily: "opensans",
+      fontFamily: "opensans",
       fontSize: 16,
       color: '#fafafa'
   },
   itemTxt: {
-      // fontFamily: 'opensans',
+      fontFamily: 'opensans',
       color: '#fafafa',
       fontSize: 18,
       textAlign: 'center',

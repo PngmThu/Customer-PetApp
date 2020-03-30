@@ -42,6 +42,7 @@ export default class App extends React.Component {
     this.CheckConnectivity();
   }
 
+
   CheckConnectivity(){
     // For Android devices
     if (Platform.OS === "android") {

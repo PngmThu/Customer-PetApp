@@ -5,6 +5,7 @@ import AuthAPI from '../api/AuthAPI';
 export default class BookingAPI{
     constructor() {
         this.globals = new Globals();
+        this.authAPI = new AuthAPI();
     }
 
     createBooking(booking){
@@ -21,8 +22,8 @@ export default class BookingAPI{
         return axios.post(url, body, options);
     }
     
-    getBookingById(bookingId){
-        const token = AuthAPI.retrieveToken();
+    async getBookingById(bookingId, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/booking/' + bookingId;
         
@@ -30,7 +31,16 @@ export default class BookingAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         }
 
-        return axios.get(url,options);
+        console.log(token)
+
+        axios.get(url, options)
+        .then(res => {
+            callback(res.data)
+        })
+        .catch(err => {
+            console.log(err.response.data)
+        })
+
     }
 
     getBookingByVendorId(vendorId){
@@ -57,10 +67,10 @@ export default class BookingAPI{
         return axios.get(url,options);
     }
 
-    getBookingByPetId(PetId){
+    getBookingByPetId(petId){
         const token = AuthAPI.retrieveToken();
 
-        const url = this.globals.serverHost + '/api/booking/pet/' + PetId;
+        const url = this.globals.serverHost + '/api/booking/pet/' + petId;
         
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
