@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, ImageBackground, ScrollView, Dimensions, FlatLi
 
 import { Input, Icon, Button } from "../components";
 import { Images, argonTheme } from "../constants";
-import { Avatar, ListItem, Icon } from 'react-native-elements';
+import { Avatar, ListItem } from 'react-native-elements';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import BookingAPI from '../api/BookingAPI';
@@ -17,7 +17,7 @@ export default class PetProfile extends React.Component {
     this.bookingAPI = new BookingAPI();
     this.state = {   
       loading: false,
-      listData = this.getBookingByPetId(),
+      listData: this.getBookingByPetId(),
       // listData: [
       //   { bookingID: '1', dateandtime: '10-2-2020  1.30pm', venue:'Animal World Vet Clinic' },
       //   { bookingID: '2', dateandtime: '3-1-2020  10.00am', venue:'Stars Vet Clinic' },
