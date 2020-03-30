@@ -3,7 +3,7 @@ import { Text, View, StyleSheet, ImageBackground, ScrollView, Dimensions, FlatLi
 
 import { Input, Button } from "../components";
 import { Images, argonTheme } from "../constants";
-import { Avatar, ListItem, Icon } from 'react-native-elements';
+import { Avatar, ListItem } from 'react-native-elements';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import BookingAPI from '../api/BookingAPI';

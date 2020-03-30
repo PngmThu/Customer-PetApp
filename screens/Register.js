@@ -3,137 +3,211 @@ import {
   StyleSheet,
   ImageBackground,
   Dimensions,
-  StatusBar,
+  ScrollView,
   KeyboardAvoidingView,
-  Image,
-  View
+  Picker,
+  View,
+  Text,
+  Alert
 } from "react-native";
-import { Block, Checkbox, Text, theme } from "galio-framework";
-
+import { Block, Checkbox, theme } from "galio-framework";
 import { Button, 
   Icon, 
-  Input } from "../components";
+  Input, Select } from "../components";
 import { Images, argonTheme } from "../constants";
-import { TouchableOpacity } from "react-native-gesture-handler";
-
-import { Avatar } from 'react-native-elements';
-
 import { MaterialIcons } from '@expo/vector-icons';
-
+import UserProfileAPI from '../api/UserProfileAPI';
 const { width, height } = Dimensions.get("screen");
 
 const headerImg = require("../assets/imgs/headerLogin.png");
 
 class Register extends React.Component {
+  
+  constructor(props){
+    super(props);
+    this.handleRegister = this.handleRegister.bind(this);
+    this.userProfileAPI = new UserProfileAPI();
+  }
+
+  componentDidMount(){
+
+  }
+
+  state = {
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: "",
+    rePassword: "",
+  }
+
+  handleRegister(){
+    if(!this.state.email || !this.state.firstName || !this.state.password || !this.state.lastName){
+      Alert.alert('Error', "Input field can not be empty",
+      [{text: 'Ok'}])
+      return;
+    }
+    else if(this.state.password != this.state.rePassword){
+      Alert.alert('Error', "Password field not match",
+      [{text: 'Ok'}]);
+      return;
+    }
+    this.customer = new Object({
+      email: this.state.email,
+      mobile: this.state.phone,
+      firstName: this.state.firstName,
+      password: this.state.password,
+      lastName: this.state.lastName
+    });
+    
+    this.userProfileAPI.createCustomer(this.customer, (res) => {
+      if(res == true){
+        Alert.alert('Succesfully', 'User is created successfully! You can log in now',
+          [{text: 'Ok' , onPress: () => this.props.navigation.navigate('Login')}]
+        );
+      }
+      else{
+        Alert.alert('Error', res,
+        [{text: 'Ok'}]);
+      }
+    })
+  }
+  
   render() {
     const { navigation } = this.props;
-
     return (
       <Block flex middle >
-        {/* <StatusBar hidden /> */}
         
         <ImageBackground
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1 }}
         >
-          <Block flex={0.4} middle>
+          <Block flex={0.3} middle>
             <ImageBackground source={require("../assets/imgs/headerRegister.png")} resizeMode='contain' style={styles.headerImage}>
                 <Block flex middle>
-                    <MaterialIcons name='keyboard-backspace' size={40} style={{left: -170, top: -65}}
-                                  onPress={() => navigation.goBack()}/>
+                    <MaterialIcons name='keyboard-backspace' size={40} style={{left: -170, top: -35, color:'white'}}
+                                  onPress={() => navigation.navigate('Login')}/>
                 </Block>
             </ImageBackground> 
           </Block>
 
-          <Block flex>
-            <Block flex={0.15}>
-              <Text color="#E1E1E1" size={32} style={{ marginLeft: 15, marginTop: 20, fontWeight: 'bold'}}>
+          <Block flex={0.7}>
+            <Block flex={0.1}>
+              <Text style={{ marginLeft: 15, fontSize: 32, fontWeight: 'bold', color:'white'}}>
                 Create an account
               </Text>
             </Block>
-            <Block flex center>
-              <KeyboardAvoidingView
-                style={{ flex: 1 }}
-                behavior="padding"
-                enabled
-              >
-                <Block width={width * 0.9} style={{marginTop: 20, marginBottom: 15 }}>
-                  <Input
-                    borderless
-                    placeholder="Your name"
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={'#5E5454'}
-                        name="hat-3"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
-                  />
-                </Block>
-                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
-                  <Input
-                    borderless 
-                    placeholder="Email"
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={'#5E5454'}
-                        name="ic_mail_24px"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
-                  />
-                </Block>
-                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
-                  <Input
-                    password
-                    viewPass
-                    borderless
-                    placeholder="Password"
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={'#5E5454'}
-                        name="padlock-unlocked"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
-                  />                 
-                </Block> 
-                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
-                  <Input
-                    password
-                    viewPass
-                    borderless
-                    placeholder="Re-enter password"
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={'#5E5454'}
-                        name="padlock-unlocked"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
-                  />            
-                </Block>
 
-                <Block flex middle style={{marginBottom: height * 0.1}}>
-                  <Button color="primary" style={styles.loginButton} onPress={() => navigation.navigate("Register")}>
-                    <Text bold size={14} color={argonTheme.COLORS.WHITE}>
-                      Register
-                    </Text>
-                  </Button>
-                </Block>
-              </KeyboardAvoidingView>
+            <Block flex={0.9} center style={{paddingBottom: 50}}>
+                <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={300}>
+                  <ScrollView>
+                    <Block width={width * 0.9} style={{marginTop: 20, marginBottom: 15 }}>
+                      <Input
+                        borderless
+                        placeholder="First name"
+                        onChangeText={(firstName) => {this.setState({firstName})}}
+                        value={this.state.firstName}
+                        iconContent={
+                          <Icon
+                            size={16}
+                            color={'white'}
+                            name="hat-3"
+                            family="ArgonExtra"
+                            style={styles.inputIcons}
+                          />
+                        }
+                        style={{backgroundColor: '#333333'}}
+                      />
+                    </Block>
+
+                    <Block width={width * 0.9} style={{marginBottom: 15 }}>
+                      <Input
+                        borderless
+                        placeholder="Last name"
+                        onChangeText={(lastName) => {this.setState({lastName})}}
+                        value={this.state.lastName}
+                        iconContent={
+                          <Icon
+                            size={16}
+                            color={'white'}
+                            name="hat-3"
+                            family="ArgonExtra"
+                            style={styles.inputIcons}
+                          />
+                        }
+                        style={{backgroundColor: '#333333'}}
+                      />
+                    </Block>
+
+                    <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                      <Input
+                        borderless 
+                        placeholder="Email"
+                        onChangeText={(email) => {this.setState({email})}}
+                        value={this.state.email}
+                        iconContent={
+                          <Icon
+                            size={16}
+                            color={'white'}
+                            name="ic_mail_24px"
+                            family="ArgonExtra"
+                            style={styles.inputIcons}
+                          />
+                        }
+                        style={{backgroundColor: '#333333'}}
+                      />
+                    </Block>
+
+                    <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                      <Input
+                        password
+                        viewPass
+                        borderless
+                        placeholder="Password"
+                        onChangeText={(password) => {this.setState({password})}}
+                        value={this.state.password}
+                        iconContent={
+                          <Icon
+                            size={16}
+                            color={'white'}
+                            name="padlock-unlocked"
+                            family="ArgonExtra"
+                            style={styles.inputIcons}
+                          />
+                        }
+                        style={{backgroundColor: '#333333'}}
+                      />                 
+                    </Block> 
+                    <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                      <Input
+                        password
+                        viewPass
+                        borderless
+                        placeholder="Re-enter password"
+                        onChangeText={(rePassword) => {this.setState({rePassword})}}
+                        value={this.state.rePassword}
+                        iconContent={
+                          <Icon
+                            size={16}
+                            color={'white'}
+                            name="padlock-unlocked"
+                            family="ArgonExtra"
+                            style={styles.inputIcons}
+                          />
+                        }
+                        style={{backgroundColor: '#333333'}}
+                      />            
+                    </Block>
+
+                    <Block middle style={{marginBottom: 20}}>
+                      <Button color="primary" style={styles.loginButton} onPress={this.handleRegister}>
+                        <Text bold size={14} color={'white'} style={{color: 'white'}}>
+                          Register
+                        </Text>
+                      </Button>
+                    </Block>
+                  </ScrollView>
+                </KeyboardAvoidingView>
             </Block>
           </Block>
         </ImageBackground>

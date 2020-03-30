@@ -38,33 +38,177 @@ class Notification extends React.Component {
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1}}
         >
-          {/* <Block flex={0.4} middle > */}
-          <Block flex={0.15} style={{justifyContent:'flex-start'}}>
-            {/* <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='contain' style={styles.headerImage}> */}
-            <ImageBackground source={require("../assets/imgs/headerLogin.png")} resizeMode='stretch' style={styles.headerImage}>
-                <View style={{position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, justifyContent: 'center', alignItems: 'center'}}>
-                    <Text color="#E1E1E1" size={32} style={{ marginLeft: 15, fontWeight: 'bold'}}>
-                        Notification
-                    </Text>
-                </View>
-                {/* <Block flex middle> */}
-                <Block flex>
-                    {/* <MaterialIcons name='keyboard-backspace' size={40} style={{left: -170, top: -65}} */}
-                    <MaterialIcons name='keyboard-backspace' size={40} style={{left: 15, top: 35}}
-                                  onPress={() => navigation.goBack()}/>
-                </Block>
-            </ImageBackground> 
-          </Block>
-          <ScrollView>
-          <Block style={{ marginTop: 160}}>
-            <Block style={ styles.item }>
-                <Text style={{fontWeight: 'bold', fontSize: 24}}>
-                    Booking Successfully
-                </Text>
-                <Text style={{ fontSize: 18 }}>
-                    Your booking for Tom Holland on 02/03/2020 is successful
-                </Text>
-             </Block>
+        <Block flex={0.2} middle >
+          <ImageBackground source={require("../assets/imgs/Schedule1.png")} resizeMode='contain' style={styles.headerImage}/>
+          <Text color="#ffffff" size={40} style={{ marginLeft: 15 }}>
+            Notification
+          </Text>
+        </Block>
+
+          <ScrollView flex={0.8} style={{width: "100%", marginBottom: 100 }}>
+
+            <Block center>
+              <KeyboardAvoidingView
+                style={{ flex: 1 }}
+                behavior="padding"
+                enabled
+              >
+              <Block center style={{width: width, paddingBottom: 50}}>
+              <View style={styles.agenda}>
+                    <View style={styles.leftDetail}>
+                      <View style={{ flexDirection: 'row', backgroundColor: "purple", marginTop: 20, marginLeft: 40, width: 40, height: 40, borderRadius: 20 }}>
+                        <Icon
+                          size={30}
+                          color={'#ffffff'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      </View>
+                      <Text style={{fontWeight:'100', fontSize: 20, color: '#ffffff', paddingTop: 12, paddingLeft: 10, paddingRight: 10}}>
+                          Your booking for Tom Holland on 20/03/2020 is successful
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.agenda}>
+                    <View style={styles.leftDetail}>
+                      <View style={{ flexDirection: 'row', backgroundColor: "purple", marginTop: 20, marginLeft: 40, width: 40, height: 40, borderRadius: 20 }}>
+                        <Icon
+                          size={30}
+                          color={'#ffffff'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      </View>
+                      <Text style={{fontWeight:'100', fontSize: 20, color: '#ffffff', paddingTop: 12, paddingLeft: 10, paddingRight: 10}}>
+                          Your booking for Tom Holland on 20/03/2020 is successful
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.agenda}>
+                    <View style={styles.leftDetail}>
+                      <View style={{ flexDirection: 'row', backgroundColor: "purple", marginTop: 20, marginLeft: 40, width: 40, height: 40, borderRadius: 20 }}>
+                        <Icon
+                          size={30}
+                          color={'#ffffff'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      </View>
+                      <Text style={{fontWeight:'100', fontSize: 20, color: '#ffffff', paddingTop: 12, paddingLeft: 10, paddingRight: 10}}>
+                          Your booking for Tom Holland on 20/03/2020 is successful
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.agenda}>
+                    <View style={styles.leftDetail}>
+                      <View style={{ flexDirection: 'row', backgroundColor: "purple", marginTop: 20, marginLeft: 40, width: 40, height: 40, borderRadius: 20 }}>
+                        <Icon
+                          size={30}
+                          color={'#ffffff'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      </View>
+                      <Text style={{fontWeight:'100', fontSize: 20, color: '#ffffff', paddingTop: 12, paddingLeft: 10, paddingRight: 10}}>
+                          Your booking for Tom Holland on 20/03/2020 is successful
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.agenda}>
+                    <View style={styles.leftDetail}>
+                      <View style={{ flexDirection: 'row', backgroundColor: "purple", marginTop: 20, marginLeft: 40, width: 40, height: 40, borderRadius: 20 }}>
+                        <Icon
+                          size={30}
+                          color={'#ffffff'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      </View>
+                      <Text style={{fontWeight:'100', fontSize: 20, color: '#ffffff', paddingTop: 12, paddingLeft: 10, paddingRight: 10}}>
+                          Your booking for Tom Holland on 20/03/2020 is successful
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.agenda}>
+                    <View style={styles.leftDetail}>
+                      <View style={{ flexDirection: 'row', backgroundColor: "purple", marginTop: 20, marginLeft: 40, width: 40, height: 40, borderRadius: 20 }}>
+                        <Icon
+                          size={30}
+                          color={'#ffffff'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      </View>
+                      <Text style={{fontWeight:'100', fontSize: 20, color: '#ffffff', paddingTop: 12, paddingLeft: 10, paddingRight: 10}}>
+                          Your booking for Tom Holland on 20/03/2020 is successful
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.agenda}>
+                    <View style={styles.leftDetail}>
+                      <View style={{ flexDirection: 'row', backgroundColor: "purple", marginTop: 20, marginLeft: 40, width: 40, height: 40, borderRadius: 20 }}>
+                        <Icon
+                          size={30}
+                          color={'#ffffff'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      </View>
+                      <Text style={{fontWeight:'100', fontSize: 20, color: '#ffffff', paddingTop: 12, paddingLeft: 10, paddingRight: 10}}>
+                          Your booking for Tom Holland on 20/03/2020 is successful
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.agenda}>
+                    <View style={styles.leftDetail}>
+                      <View style={{ flexDirection: 'row', backgroundColor: "purple", marginTop: 20, marginLeft: 40, width: 40, height: 40, borderRadius: 20 }}>
+                        <Icon
+                          size={30}
+                          color={'#ffffff'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      </View>
+                      <Text style={{fontWeight:'100', fontSize: 20, color: '#ffffff', paddingTop: 12, paddingLeft: 10, paddingRight: 10}}>
+                          Your booking for Tom Holland on 20/03/2020 is successful
+                      </Text>
+                    </View>
+                  </View>
+
+                  <View style={styles.agenda}>
+                    <View style={styles.leftDetail}>
+                      <View style={{ flexDirection: 'row', backgroundColor: "purple", marginTop: 20, marginLeft: 40, width: 40, height: 40, borderRadius: 20 }}>
+                        <Icon
+                          size={30}
+                          color={'#ffffff'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      </View>
+                      <Text style={{fontWeight:'100', fontSize: 20, color: '#ffffff', paddingTop: 12, paddingLeft: 10, paddingRight: 10}}>
+                          Your booking for Tom Holland on 20/03/2020 is successful
+                      </Text>
+                    </View>
+                  </View>
+              </Block>
+
+              </KeyboardAvoidingView>
             </Block>
 
             <Block style={{ marginTop: 10}}>
@@ -161,7 +305,24 @@ const styles = StyleSheet.create({
     //overflow: "hidden"
   },
   inputIcons: {
-    marginRight: 12,
+    marginLeft: 5,
+    marginTop: 5,
+  },
+  agenda: {
+    width: "92%",
+    alignItems: 'center',
+    alignSelf: "center"
+  },
+  leftDetail: {
+    width: "100%",
+    borderRadius: 12,
+    backgroundColor: 'rgba(45, 45, 45, 0.8)',
+    height: 80,
+    paddingLeft: 20,
+    paddingRight: 20,
+    justifyContent: "center",
+    marginBottom: 10,
+    flexDirection: 'row'
   },
   item: {
     padding: 10,
