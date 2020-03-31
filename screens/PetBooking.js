@@ -6,6 +6,7 @@ import { Images, argonTheme } from "../constants";
 import { Avatar, ListItem } from 'react-native-elements';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
+import AuthAPI from '../api/AuthAPI';
 import BookingAPI from '../api/BookingAPI';
 
 const { width, height } = Dimensions.get("screen");
@@ -14,60 +15,66 @@ export default class PetProfile extends React.Component {
 
   constructor(props) {
     super(props);
+    this.authAPI = new AuthAPI();
     this.bookingAPI = new BookingAPI();
-    this.state = {   
-      loading: false,
-      // listData = this.getBookingByPetId(),
-      listData: [
-        { bookingID: '1', dateandtime: '10-2-2020  1.30pm', venue:'Animal World Vet Clinic' },
-        { bookingID: '2', dateandtime: '3-1-2020  10.00am', venue:'Stars Vet Clinic' },
-      ],
-      error: null,
-    };
+    this.retrieveData = this.retrieveData.bind(this);
+    const {petId} = route.params;
+    // this.state = {   
+    //   loading: false,
+    //   listData: [
+    //     { bookingID: '1', dateandtime: '10-2-2020  1.30pm', venue:'Animal World Vet Clinic' },
+    //     { bookingID: '2', dateandtime: '3-1-2020  10.00am', venue:'Stars Vet Clinic' },
+    //   ],
+    //   error: null,
+    // };
+  }
+
+  state = {
+    bookedDate: [],
+    bookingData: [],
+    loading: true,
   }
    
-  async getBookingByPetId(){
-    this.bookingAPI.getBookingByPetId(this.state.petId, (res) => {
-          console.log("res.data: " + JSON.stringify(res.data));
-          this.setState({
-              loading: false,
-              listData: res.data
-          })
+  componentDidMount(){
+    this.didFocus = this.props.navigation.addListener('willFocus', () => {
+      this.setState({loading: true}, () => {
+        this.retrieveData();
       })
-      .catch(error => {
-          console.log(error);
-      });
+    })
   }
 
-  componentWillMount() {
-    this.getBookingByPetId();
+  componentWillUnmount(){
+    this.didFocus.remove();
   }
 
-  deleteBookingById(){
-    this.bookingAPI.deleteBookingById(this.state.bookingId, (res) => {
-          console.log("res.data: " + JSON.stringify(res.data));
-          this.setState({
-              loading: false,
-              listData: res.data
-          })
-      })
-      .catch(error => {
-          console.log(error);
-      });
+  async retrieveData(){
+    let customerId = await this.authAPI.retrieveCustomerId();
+  
+        this.bookingAPI.getBookingByPetId(petId, (bookings) => {
+          let bookedDate = [];
+          console.log(bookings);
+          bookings.forEach(v => {
+            let time = new Date(v.time);
+            v.time = time;
+            let month = time.getMonth() < 9 ? "0" + (time.getMonth() + 1) : (time.getMonth() + 1);
+            let date = time.getDate() < 9 ? "0" + (time.getDate() + 1) : (time.getDate() + 1);
+            let parsedDate = time.getFullYear() + "-" + month + "-" + date;
+            
+            if(!bookedDate.includes(parsedDate)){
+              bookedDate.push(parsedDate); 
+            }
+          }) 
+  
+          //bookings.sort((a, b) => { return a.time - b.time});
+          this.setState({bookedDate: bookedDate, bookingData: bookings}, () => {
+            this.setState({loading: false})
+          })   
+        })
   }
 
-  updateBookingById(){
-    this.bookingAPI.deleteBookingById(this.state.bookingId,this.state.booking, (res) => {
-          console.log("res.data: " + JSON.stringify(res.data));
-          this.setState({
-              loading: false,
-              listData: res.data
-          })
-      })
-      .catch(error => {
-          console.log(error);
-      });
-  }
+  // componentWillMount() {
+  //   this.getBookingByPetId();
+  // }
 
   showAlert1() {  
     Alert.alert(  
