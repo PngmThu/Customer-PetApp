@@ -20,7 +20,7 @@ export default class PetBooking extends React.Component {
     this.bookingAPI = new BookingAPI();
     this.petAPI = new PetAPI();
     this.retrieveData = this.retrieveData.bind(this);
-    this.petId = route.params;
+    //this.petId = route.params;
     // this.state = {   
     //   loading: false,
     //   listData: [

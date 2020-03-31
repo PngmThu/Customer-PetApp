@@ -56,7 +56,7 @@ export default class PetAPI{
         )
     }
 
-    async getPetByCustomerId(customerId){
+    async getPetByCustomerId(customerId,callback){
         const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/customer/'+ customerId;

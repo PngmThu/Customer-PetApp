@@ -50,6 +50,7 @@ export default class BookingAPI{
         })
         .catch(err => {
             console.log(err.response.data);
+            console.log("error")
         })
 
     }
@@ -88,6 +89,8 @@ export default class BookingAPI{
             if(res.status == 200){
                 callback(res.data);
             }
+            else {console.log("error backend")}
+
         })
         .catch(err => {
             console.log(err.response.data);
@@ -107,10 +110,13 @@ export default class BookingAPI{
         .then(res => {
             if(res.status == 200){
                 callback(res.data);
+                console.log("resdata" +res.data)
+
             }
         })
         .catch(err => {
-            console.log(err.response.data);
+            //console.log(err.response.data);
+            console.log(err)
         })
     }
 

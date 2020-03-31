@@ -40,4 +40,22 @@ export default class DataAPI{
             callback(err.response.data)
         })
     }
+
+    getClinicByVendor(clinicId, callback){
+
+        const url = this.globals.serverHost + '/api/vendorLocation/vendor' + clinicId;
+
+        axios.get(url)
+        .then(res => {
+            if(res.status == 200){
+                callback(false,res.data);
+            }
+            else{
+                callback(true,"Cannot retrieve data!")
+            }
+        })
+        .catch(err => {
+            callback(true,err.response.data)
+        })
+    }
 }
