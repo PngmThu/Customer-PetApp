@@ -41,7 +41,7 @@ import MapView from 'react-native-maps';
 import { IntentLauncherAndroid } from 'expo';
 import Tooltip from 'react-native-walkthrough-tooltip';
 
-import DataAPI from '../api/DataAPI';
+import VendorLocationAPI from '../api/VendorLocationAPI';
 
 const { width, height } = Dimensions.get("screen");
 
@@ -242,11 +242,11 @@ class Booking extends React.Component {
       clickMarker: false,
       toolTipVisible: false,
     };
-    this.DataAPI = new DataAPI();
+    this.VendorLocationAPI = new VendorLocationAPI();
   }
 
   getAllClinics(){
-    this.DataAPI.getAllClinics( (res) => {
+    this.VendorLocationAPI.getAllClinics( (res) => {
       //console.log("res.data: " + JSON.stringify(res.data));
       if(res != null) {
         this.setState({ 
@@ -402,15 +402,15 @@ class Booking extends React.Component {
               //console.log("longitude: " + longitude);
               return (
                 (latitude && longitude) ? 
-                  <Tooltip
-                    animated={true}
-                    arrowSize={{ width: 16, height: 8 }}
-                    backgroundColor="rgba(0,0,0,0)" // Color of the fullscreen background beneath the tooltip.
-                    isVisible={this.state.toolTipVisible}
-                    content={<Text>{location.name}</Text>} //(Must) This is the view displayed in the tooltip
-                    placement="top"  //(Must) top, bottom, left, right, auto.
-                    onClose={() => this.setState({ toolTipVisible: false })}
-                  >
+                  // <Tooltip
+                  //   animated={true}
+                  //   arrowSize={{ width: 16, height: 8 }}
+                  //   backgroundColor="rgba(0,0,0,0)" // Color of the fullscreen background beneath the tooltip.
+                  //   isVisible={this.state.toolTipVisible}
+                  //   content={<Text>{location.name}</Text>} //(Must) This is the view displayed in the tooltip
+                  //   placement="top"  //(Must) top, bottom, left, right, auto.
+                  //   onClose={() => this.setState({ toolTipVisible: false })}
+                  // >
                     <Marker
                       key={idx}
                       coordinate={{ latitude, longitude }}
@@ -419,7 +419,7 @@ class Booking extends React.Component {
                     >
                       {/* <MaterialIcons name='pets' size={30} style={{color: '#885DDA'}}/> */}
                     </Marker>
-                  </Tooltip>
+                  // </Tooltip>
                 : null
               )
             })
