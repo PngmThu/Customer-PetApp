@@ -41,9 +41,9 @@ export default class DataAPI{
         })
     }
 
-    getClinicByVendor(clinicId, callback){
+    getClinicByVendorId(vendorId, callback){
 
-        const url = this.globals.serverHost + '/api/vendorLocation/vendor' + clinicId;
+        const url = this.globals.serverHost + '/api/vendorLocation/vendor/' + vendorId;
 
         axios.get(url)
         .then(res => {
