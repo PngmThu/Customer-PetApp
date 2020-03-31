@@ -5,6 +5,7 @@ import AuthAPI from '../api/AuthAPI';
 export default class PetAPI{
     constructor() {
         this.globals = new Globals();
+        this.authAPI = new AuthAPI();
     }
 
     createPet(pet){
@@ -35,8 +36,8 @@ export default class PetAPI{
 
     }
 
-    getPetById(petId){
-        const token = AuthAPI.retrieveToken();
+    async getPetById(petId,callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/'+ petId;
 
@@ -44,7 +45,15 @@ export default class PetAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        return axios.get(url, options)
+        await axios.get(url, options).then( (res)=>{
+            if (res.status!=200) 
+            {
+                callback("Error");
+                console.log("Pet here")}
+            else {
+                callback(false,res.data)}
+        }
+        )
     }
 
     getPetByCustomerId(customerId){

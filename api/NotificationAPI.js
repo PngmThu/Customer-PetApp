@@ -35,14 +35,13 @@ export default class NotificationAPI{
         })
     }
 
-    async getNotificationByCustomer(customer,callback){
+    async getNotificationByCustomer(customerId,callback){
 
-        const url = this.globals.serverHost + '/api/notification/customer/'+customer._id;
+        const url = this.globals.serverHost + '/api/notification/customer/'+customerId;
         const token = await this.authAPI.retrieveToken();
         let options = {
             headers: {'token':token, 'Access-Control-Allow-Origin':'*'}
         };
-        console.log(customer._id)
         console.log("options: "+options.headers['token'])
         console.log("aaaaa");
         await axios.get(url,options)
