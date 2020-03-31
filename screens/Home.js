@@ -31,6 +31,7 @@ class Home extends React.Component {
     this.authAPI = new AuthAPI();
     state = {
       popUpDialog: false,
+      pets:[]
       // pets: [{
       //         name: "Brownie",
       //         animal: "Dog",
@@ -63,11 +64,11 @@ class Home extends React.Component {
 
   renderCard(){
     var table = [];
-    this.state.pets.forEach((item, index) => {
+    this.state.pets.forEach((pet, index) => {
         if(index % 2 == 0 && index + 1 < this.state.pets.length){
             table.push(
               <Block key={index} style={styles.container}>
-                    <TouchableOpacity style={{...styles.cardService, marginRight: 10}} onPress={() => this.props.navigation.navigate('PetBooking')}>
+                    <TouchableOpacity style={{...styles.cardService, marginRight: 10}} onPress={() => this.props.navigation.navigate('PetBooking', pet._id)}>
                         <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
                         <Text style={styles.priceTxt}>{item.animal}</Text>
                         <View style={styles.cardFooter}>
@@ -75,7 +76,7 @@ class Home extends React.Component {
                         </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{...styles.cardService}}  onPress={() => this.props.navigation.navigate('PetBooking')} >
+                        <TouchableOpacity style={{...styles.cardService}}  onPress={() => this.props.navigation.navigate('PetBooking', pet._id)} >
                             <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
                             <Text style={styles.priceTxt}>{item.animal}</Text>
                         <View style={styles.cardFooter}>

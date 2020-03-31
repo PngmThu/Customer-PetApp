@@ -56,8 +56,8 @@ export default class PetAPI{
         )
     }
 
-    getPetByCustomerId(customerId){
-        const token = AuthAPI.retrieveToken();
+    async getPetByCustomerId(customerId){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/customer/'+ customerId;
 
@@ -65,7 +65,15 @@ export default class PetAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        return axios.get(url, options)
+        await axios.get(url, options).then( (res)=>{
+            if (res.status!=200) 
+            {
+                callback("Error");
+                console.log("Pet here")}
+            else {
+                callback(false,res.data)}
+        }
+        )
     }
 
     deletePetByPetId(petId){
