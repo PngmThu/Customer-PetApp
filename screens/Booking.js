@@ -846,16 +846,7 @@ class Booking extends React.Component {
   DetailsView = () => {
     var todayDate = new Date().toISOString().slice(0,10);
 
-    // const {date, time} = this.state;
-    // console.log("this.state.date: " + this.state.date);
-    // console.log("this.state.time: " + this.state.time);
-    // let datetime = new Date(this.state.date + "T" + this.state.time + ":00").toString();
-    // var d = this.state.date.split('-');
-    // var t = this.state.time.split(':');
-    // if (date && time) {
-    //   var mydate = new Date(parseInt(d[0]), parseInt(d[1]) - 1, parseInt(d[2]), parseInt(t[0]), parseInt(t[1]), 0, 0); 
-    // }
-
+    //console.log("this.state.date: " + this.state.date);
     return (
       <Block flex>
         <Block flex middle>
@@ -875,7 +866,7 @@ class Booking extends React.Component {
                 </Text>
               </Block>
               
-              <CalendarView vendor={this.state.chosenClinic}/>
+              <CalendarView vendor={this.state.chosenClinic} onSelect={(date) => {this.setState({date})}}/>
 
               <Block>
                 <Text color="#E1E1E1" size={20} 
@@ -1009,7 +1000,7 @@ class Booking extends React.Component {
               <Block style={{width: width * 0.9, height: height * 0.4, marginTop: -height * 0.5 + 90, 
                              flexDirection: 'row', justifyContent: 'space-between',
                              alignSelf: 'center'}}>
-                <Block>
+                {/* <Block>
                   <Block>
                     <Text flex color="#E1E1E1" size={20} 
                           style={{ marginBottom: 5, fontWeight: 'bold'}}>
@@ -1061,7 +1052,7 @@ class Booking extends React.Component {
                     }}
                     onDateChange={(date) => {this.setState({date: date})}}
                   />
-                </Block>
+                </Block> */}
 
                 <Block>
                   <Block>
@@ -1071,7 +1062,7 @@ class Booking extends React.Component {
                     </Text>
                   </Block>
                   <DatePicker
-                    style={{width: width * 0.4, height: 50, marginBottom: height * 2, 
+                    style={{width: width * 0.9, height: 50, marginBottom: height * 2, 
                             backgroundColor: "#282828", borderRadius: 10,
                             justifyContent: 'center', }}
                     date={this.state.time}
@@ -1153,7 +1144,8 @@ class Booking extends React.Component {
       customerId: customerId,
     })
     
-    this.serviceAPI.createBooking(booking, (res) => {
+    this.bookingAPI.createBooking(booking, (res) => {
+      console.log("canBook?: ", res);
       if(res){
         // Alert.alert('Successfully', "Service is created successfully!",
         // [{text: 'Ok', onPress: () => {this.props.navigation.goBack()}}])

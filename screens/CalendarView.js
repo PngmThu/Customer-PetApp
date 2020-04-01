@@ -10,6 +10,7 @@ import BookingAPI from '../api/BookingAPI';
 import VendorModel from '../models/VendorModel';
 import ServiceAPI from '../api/ServiceAPI';
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Dialog } from 'react-native-simple-dialogs';
 
 const { width, height } = Dimensions.get('screen');
 
@@ -23,11 +24,11 @@ class CalendarView extends React.Component {
     this.serviceAPI = new ServiceAPI();
     this.calendarRef = React.createRef();
     this.toggleDateStatus = this.toggleDateStatus.bind(this);
-    this.scheduleDetail = this.scheduleDetail.bind(this);
+    //this.scheduleDetail = this.scheduleDetail.bind(this);
     this.dateStatusChoice = this.dateStatusChoice.bind(this);
     this.retrieveData = this.retrieveData.bind(this);
-    this.scrollTo = this.scrollTo.bind(this);
-    this.scrollPos = [];
+    //this.scrollTo = this.scrollTo.bind(this);
+    //this.scrollPos = [];
   }
 
   state = {
@@ -35,11 +36,12 @@ class CalendarView extends React.Component {
     question: null,
     clickedDate: null,
     unavailableDate: [],
-    bookedDate: [],
-    bookingData: [],
+    //bookedDate: [],
+    //bookingData: [],
     servicesData: [],
     //loading: true,
     loading: false,
+    warningDialogVisible: false,
   }
 
   componentDidMount(){
@@ -55,26 +57,38 @@ class CalendarView extends React.Component {
     //this.didFocus.remove();
   }
 
-  scheduleDetail(index){
-    this.props.navigation.navigate("ScheduleDetails", {data: this.state.bookingData[index]});
-  }
+  // scheduleDetail(index){
+  //   this.props.navigation.navigate("ScheduleDetails", {data: this.state.bookingData[index]});
+  // }
 
   toggleDateStatus(marked, date){
 
     this.setState({clickedDate: date});
-    if(!marked){
-      this.setState({question: "Do you want to mark " + date + " as unavailable?"});
+
+    // if(!marked){
+    //   this.setState({question: "Do you want to mark " + date + " as unavailable?"});
+    // }
+    // else{
+    //   this.setState({question: "Do you want to unmark " + date + " ?"});
+    // }
+    if (!marked) {
+      this.setState({question: "Do you want to choose " + date + " ?"});
+      this.setState({popUpDialog: true});
+    } else {
+      this.setState({warningDialogVisible: true});
+      setTimeout(() => {
+        this.setState({
+          warningDialogVisible: false,
+        });
+      }, 2000);
     }
-    else{
-      this.setState({question: "Do you want to unmark " + date + " ?"});
-    }
-    this.setState({popUpDialog: true});
   }
 
   dateStatusChoice(bool){
 
     if(bool){
       this.calendarRef.current.updateDate(this.state.clickedDate);
+      this.props.onSelect(this.state.clickedDate);
     }
     this.setState({popUpDialog: false});
   }
@@ -89,14 +103,22 @@ class CalendarView extends React.Component {
       //console.log("this.state.servicesData: " + this.state.servicesData);
       this.scheduleAPI.getUnavailableDateByVendor(vendor, async (unavailable) => {
         let unavailableDate = [];
-        //console.log("unavailable: " + JSON.stringify(unavailable));
+        console.log("unavailable: " + JSON.stringify(unavailable));
         await unavailable.forEach(v => {
-          unavailableDate.push(v.date)
+          var date =  new Date(v.date);
+          const offset = date.getTimezoneOffset();
+          date = new Date(date.getTime() + (offset * 60 * 1000));
+          var dateString = date.toISOString().split("T")[0];
+
+          unavailableDate.push(dateString);
         });
         
-        this.setState({unavailableDate: unavailableDate, bookedDate: bookedDate, bookingData: bookings}, () => {
+        this.setState({unavailableDate: unavailableDate, 
+          //bookedDate: bookedDate, bookingData: bookings
+        }, () => {
           this.calendarRef.current.processDate();
           this.setState({loading: false})
+          console.log("this.state.unavailableDate: " + this.state.unavailableDate);
         })  
 
         // this.bookingAPI.getBookingByVendorId(vendorId, (bookings) => {
@@ -124,64 +146,64 @@ class CalendarView extends React.Component {
     })
   }
 
-  renderTimeSchedule(index){
-    let table = [];
-    let lastDate = this.state.bookingData[index].time;
+  // renderTimeSchedule(index){
+  //   let table = [];
+  //   let lastDate = this.state.bookingData[index].time;
 
-    for(var i = index; i < this.state.bookingData.length; i++){
-      let time = this.state.bookingData[i].time;
+  //   for(var i = index; i < this.state.bookingData.length; i++){
+  //     let time = this.state.bookingData[i].time;
       
-      if(!this.compareDate(lastDate, time)){
-        break;
-      }
+  //     if(!this.compareDate(lastDate, time)){
+  //       break;
+  //     }
 
-      table.push(
-        <TouchableOpacity key={i} style={styles.leftDetail} onPress={this.scheduleDetail.bind(this, i)}>
-          <Text style={styles.time}>{time.getHours()}:{time.getMinutes()}</Text>
-          <Text style={styles.service}>{this.state.servicesData.find( v => { return v._id == this.state.bookingData[i].serviceId}).name}</Text>
-          <MaterialCommunityIcons name={iconStatus[this.state.bookingData[i].status]} 
-            size={22} style={{...styles.statusIcon}} color={iconColor[this.state.bookingData[i].status]}/>
-        </TouchableOpacity>
-      )
-    }
+  //     table.push(
+  //       <TouchableOpacity key={i} style={styles.leftDetail} onPress={this.scheduleDetail.bind(this, i)}>
+  //         <Text style={styles.time}>{time.getHours()}:{time.getMinutes()}</Text>
+  //         <Text style={styles.service}>{this.state.servicesData.find( v => { return v._id == this.state.bookingData[i].serviceId}).name}</Text>
+  //         <MaterialCommunityIcons name={iconStatus[this.state.bookingData[i].status]} 
+  //           size={22} style={{...styles.statusIcon}} color={iconColor[this.state.bookingData[i].status]}/>
+  //       </TouchableOpacity>
+  //     )
+  //   }
 
-    return table
-  }
+  //   return table
+  // }
 
-  renderDaySchedule(month){
-    let table = [];
-    let lastDate = new Date('0000-01-01');
-    let counter = 0;
+  // renderDaySchedule(month){
+  //   let table = [];
+  //   let lastDate = new Date('0000-01-01');
+  //   let counter = 0;
 
-    for(var i = 0; i < this.state.bookingData.length; i++){
+  //   for(var i = 0; i < this.state.bookingData.length; i++){
 
-      if(!this.compareDate(lastDate, this.state.bookingData[i].time)){
-        lastDate = this.state.bookingData[i].time;
-        table.push(
-          <View key={counter} style={styles.agenda}
-            onLayout={event => {
-              const layout = event.nativeEvent.layout;
-              this.scrollPos.push(layout.y);
-            }}
-          >
-            <View style={styles.dayBackground}> 
-              <Text style={styles.day}>{lastDate.getDate() + 1}</Text>
-            </View>
+  //     if(!this.compareDate(lastDate, this.state.bookingData[i].time)){
+  //       lastDate = this.state.bookingData[i].time;
+  //       table.push(
+  //         <View key={counter} style={styles.agenda}
+  //           onLayout={event => {
+  //             const layout = event.nativeEvent.layout;
+  //             this.scrollPos.push(layout.y);
+  //           }}
+  //         >
+  //           <View style={styles.dayBackground}> 
+  //             <Text style={styles.day}>{lastDate.getDate() + 1}</Text>
+  //           </View>
 
-            <View style={styles.month}>
-              <Text style={styles.monthTxt}>{monthName[lastDate.getMonth()]}</Text>
-            </View>
+  //           <View style={styles.month}>
+  //             <Text style={styles.monthTxt}>{monthName[lastDate.getMonth()]}</Text>
+  //           </View>
 
-            {this.renderTimeSchedule(i)}
-          </View>
-        )
+  //           {this.renderTimeSchedule(i)}
+  //         </View>
+  //       )
         
-        counter += 1;
-      }
-    }
+  //       counter += 1;
+  //     }
+  //   }
 
-    return table
-  }
+  //   return table
+  // }
 
   compareDate(date1, date2){
     if(date1.getMonth() == date2.getMonth() && date1.getDate() == date2.getDate() && date1.getFullYear() == date2.getFullYear()){
@@ -191,18 +213,18 @@ class CalendarView extends React.Component {
     return false;
   }
 
-  scrollTo(day){
-    let counter = 0;
+  // scrollTo(day){
+  //   let counter = 0;
 
-    for(var i = 0; i < this.state.bookedDate.length; i++){
-      if(day == this.state.bookedDate[i]){
-        break;
-      }
-      counter += 1;
-    }
+  //   for(var i = 0; i < this.state.bookedDate.length; i++){
+  //     if(day == this.state.bookedDate[i]){
+  //       break;
+  //     }
+  //     counter += 1;
+  //   }
 
-    this.scrollview_ref.scrollTo({ x: 0, y: this.scrollPos[counter], animated: true })
-  }
+  //   this.scrollview_ref.scrollTo({ x: 0, y: this.scrollPos[counter], animated: true })
+  // }
 
   render() {
     const { navigation } = this.props;
@@ -243,7 +265,7 @@ class CalendarView extends React.Component {
               </Text>
               <View style={{...styles.circle, backgroundColor: '#ffecd9'}}/>
               <Text color="#ffffff" size={12} style={{ marginLeft: 5, marginRight: 10, fontFamily: 'opensans'}}>
-                Booked
+                Chosen
               </Text>
               <View style={{...styles.circle, backgroundColor: '#bd4902'}}/>
               <Text color="#ffffff" size={12} style={{ marginLeft: 5, marginRight: 10, fontFamily: 'opensans'}}>
@@ -253,17 +275,32 @@ class CalendarView extends React.Component {
 
             <Block flex={0.57} center style={styles.calendar}>
               <Calendar ref={this.calendarRef} unavailableDate={this.state.unavailableDate} 
-                        scrollTo={this.scrollTo}
-                        bookedDate={this.state.bookedDate} markDate={this.state.clickedDate} toggleDateStatus={this.toggleDateStatus}/>
+                        //bookedDate={this.state.bookedDate} 
+                        markDate={this.state.clickedDate} toggleDateStatus={this.toggleDateStatus}/>
             </Block>
 
-            <Block flex={0.46} center style={{width: width, paddingBottom: 50}}>
+            {/* <Block flex={0.46} center style={{width: width, paddingBottom: 50}}>
               <ScrollView scrollToOverflowEnabled={true} bounces={true} style={{width: "100%", marginBottom: 50}}  
                       ref={ref => {this.scrollview_ref = ref;}}>
                 {this.renderDaySchedule()}
               </ScrollView>
-            </Block>
+            </Block> */}
           </View>
+
+          <Dialog
+            visible={this.state.warningDialogVisible}
+            dialogStyle={{
+              borderRadius: 15, backgroundColor: "#232124", 
+              borderWidth: 4, width: width * 0.6,
+              alignSelf: 'center',
+            }}
+            onTouchOutside={() => this.setState({successDialogVisible: false})} >
+            <Block flex middle style={{flexDirection: 'row'}}>
+              <Text bold style={{color: '#E1E1E1', fontSize: 16, marginBottom: -4}}>
+                Unavailable Day!
+              </Text>
+            </Block>
+          </Dialog>  
         </ImageBackground>
       </Block>
     );

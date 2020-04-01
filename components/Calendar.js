@@ -5,7 +5,8 @@ import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 class CalendarComponent extends React.Component {
 
     state= {
-        markedDate: {}
+        markedDate: {},
+        chosenDay: null,
     }
 
     constructor(props){
@@ -14,20 +15,20 @@ class CalendarComponent extends React.Component {
         this.processDate = this.processDate.bind(this);
         this.todayDate = this.todayDate.bind(this);
         this.updateDate = this.updateDate.bind(this);
-        this.scrollTo = this.scrollTo.bind(this);
     }
 
     componentDidMount(){
     }
 
     processDate(){
-        var bookedDate = this.props.bookedDate;
+        //var bookedDate = this.props.bookedDate;
         var unavailableDate = this.props.unavailableDate;
         var markedDate = {}
 
-        for(var i = 0; i < bookedDate.length; i ++){
-            markedDate[bookedDate[i]] = {selected: true, customStyles: bookedDay};
-        }
+        // for(var i = 0; i < bookedDate.length; i ++){
+        //     markedDate[bookedDate[i]] = {selected: true, customStyles: bookedDay};
+        // }
+        //markedDate["2020-04-18"] = {selected: true, customStyles: chosenDay};
 
         for(var i = 0; i < unavailableDate.length; i ++ ){
             markedDate[unavailableDate[i]] = {selected: true, customStyles: unavailable};
@@ -39,14 +40,22 @@ class CalendarComponent extends React.Component {
     }
 
     updateDate(clickedDate){
+        console.log("clickedDate: " + clickedDate);
         var markedDate = {...this.state.markedDate};
-        if(this.state.markedDate[clickedDate] && this.state.markedDate[clickedDate].customStyles == unavailable){
-            delete markedDate[clickedDate]
+        const {chosenDay} = this.state;
+
+        if (chosenDay) {
+            delete markedDate[chosenDay]
         }
-        else{
-            markedDate[clickedDate] = {selected: true, customStyles: unavailable};
-        }
-        this.setState({markedDate});
+        markedDate[clickedDate] = {selected: true, customStyles: chosenStyle};
+
+        // if(this.state.markedDate[clickedDate] && this.state.markedDate[clickedDate].customStyles == unavailable){
+        //     delete markedDate[clickedDate]
+        // }
+        // else{
+        //     markedDate[clickedDate] = {selected: true, customStyles: unavailable};
+        // }
+        this.setState({markedDate: markedDate, chosenDay: clickedDate});
     }
 
     setDate(day){
@@ -105,9 +114,9 @@ class CalendarComponent extends React.Component {
                 markedDates={this.state.markedDate}
                 markingType={'custom'}
                 // Handler which gets executed on day press. Default = undefined
-                onDayPress={(day) => {this.scrollTo(day)}}
+                onDayPress={(day) => {this.setDate(day)}}
                 // Handler which gets executed on day long press. Default = undefined
-                onDayLongPress={(day) => {this.setDate(day)}}
+                //onDayLongPress={(day) => {this.setDate(day)}}
                 // Month format in calendar title. Formatting values: http://arshaw.com/xdate/#Formatting
                 monthFormat={'yyyy MMMM'}
                 // Handler which gets executed when visible month changes in calendar. Default = undefined
@@ -142,13 +151,15 @@ const today = {
       }
 }
 
-const bookedDay = {
+const chosenStyle = {
     container: {
         backgroundColor: '#ffecd9',
         elevation: 2
       },
       text: {
         color: '#333333',
+        fontFamily: 'opensans',
+        fontWeight: '600'
       }
 }
 

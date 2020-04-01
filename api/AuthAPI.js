@@ -14,10 +14,12 @@ export default class AuthAPI{
             headers: {'Access-Control-Allow-Origin':'*'}
         };
 
-        let body = {email: email, password: password};
+        let body = {email: email.trim(), password: password};
         axios.post(url, body, options)
         .then(res => {
+            console.log(res.data)
             if(res.status == 200){
+                console.log(res.data.token)
                 this.storeToken(res.data.token);
                 this.storeCustomerId(res.data.id);
                 callback(true);
