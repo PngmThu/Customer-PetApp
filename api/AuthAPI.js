@@ -78,4 +78,27 @@ export default class AuthAPI{
     async clearToken(){
         await AsyncStorage.removeItem('token');
     }
+
+    async storeCustomerId(id){
+        try{
+            await AsyncStorage.setItem('id', id);
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    async retrieveCustomerId(){
+        try {
+            const value = await AsyncStorage.getItem('id');
+            if (value !== null) {
+              return value
+            }
+            else{
+                return null
+            }
+        } catch (error) {
+            return null
+        }
+    }
 }

@@ -5,10 +5,11 @@ import AuthAPI from '../api/AuthAPI';
 export default class PetAPI{
     constructor() {
         this.globals = new Globals();
+        this.authAPI = new AuthAPI();
     }
 
-    createPet(pet){
-        const token = AuthAPI.retrieveToken();
+    async createPet(pet, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/add';
 
@@ -16,13 +17,24 @@ export default class PetAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        let body = {pet};
+        let body = pet;
 
-        return axios.post(url, body, options)
+        axios.post(url, body, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(true);
+            }
+            else{
+                callback(false);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data)
+        })
     }
 
-    updatePetById(pet, petId){
-        const token = AuthAPI.retrieveToken();
+    async updatePetById(pet, petId, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/' + petId;
 
@@ -30,13 +42,24 @@ export default class PetAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        let body = {pet};
-        return axios.post(url, body, options)
+        let body = pet;
+        axios.put(url, body, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(true);
+            }
+            else{
+                callback(false);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data)
+        })
 
     }
 
-    getPetById(petId){
-        const token = AuthAPI.retrieveToken();
+    async getPetById(petId, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/'+ petId;
 
@@ -44,11 +67,19 @@ export default class PetAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        return axios.get(url, options)
+        axios.get(url, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(res.data);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data);
+        })
     }
 
-    getPetByCustomerId(customerId){
-        const token = AuthAPI.retrieveToken();
+    async getPetByCustomerId(customerId, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/customer/'+ customerId;
 
@@ -56,11 +87,19 @@ export default class PetAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        return axios.get(url, options)
+        axios.get(url, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(res.data);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data);
+        })
     }
 
-    deletePetByPetId(petId){
-        const token = AuthAPI.retrieveToken();
+    async deletePetByPetId(petId, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/pet/'+ petId;
 
@@ -68,7 +107,18 @@ export default class PetAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         }
 
-        return axios.delete(url,options);
+        axios.delete(url,options)
+        .then(res => {
+            if(res.status == 200){
+                callback(true);
+            }
+            else{
+                callback(false);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data);
+        })
     }
 
 }

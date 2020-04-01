@@ -15,20 +15,21 @@ import { Button, Icon, Input } from "../components";
 import { MaterialIcons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Popup from '../components/Popup';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
 import DatePicker from "react-native-datepicker";
-import { hide } from "expo/build/launch/SplashScreen";
+import AuthAPI from '../api/AuthAPI'
+import UserProfileAPI from '../api/UserProfileAPI'
+import UserProfileModel from '../models/UserProfileModel'
 
 
 const { width, height } = Dimensions.get("screen");
 
 class MyProfile extends React.Component {
   state = {
-    dob: "", 
     edit: false, 
     popUpDialog: false,
     name: "",
     email: "",
+    dob: "", 
     mobile: ""
   }
 
@@ -37,13 +38,42 @@ class MyProfile extends React.Component {
     //console.log(this.props.navigation.state.params);
     this.logout = this.logout.bind(this);
     this.clickLogout = this.clickLogout.bind(this);
+    this.authAPI = new AuthAPI();
+    this.userProfileAPI = new UserProfileAPI();
+    this.retrieveData = this.retrieveData.bind(this);
   }
 
-  logout(bool){
-    if(bool){
-      console.log("Logged out!");
-    }
+  componentDidMount(){
+    this.didFocus = this.props.navigation.addListener('willFocus', () => {
+      this.setState({ loading: true }, () => {
+        this.retrieveData();
+      })
+    })
+
+  }
+
+  componentWillUnmount(){
+    this.didFocus.remove();
+  }
+
+  async retrieveData(user){
+    let customerId = await this.authAPI.retrieveCustomerId();
+    let customer = new UserProfileModel({_id: customerId});
+    
+    this.userProfileAPI.getUserById(customer, (userProfile) => {
+      this.setState({name: userProfile})
+      this.setState({email: userProfile})
+      this.setState({dob: userProfile})
+      this.setState({mobile: userProfile})
+    })
+  }
+
+  async logout(bool){
     this.setState({popUpDialog: false})
+    if(bool){
+      await this.authAPI.clearToken();
+      this.props.navigation.navigate('Account');
+    }
   }
 
   clickLogout(event){
@@ -147,7 +177,7 @@ class MyProfile extends React.Component {
                 <DatePicker
                     style={{width: width * 0.9, 
                             backgroundColor: "#333333", borderRadius: 10,
-                            justifyContent: 'center', }}
+                            justifyContent: 'center' }}
                     date={this.state.date}
                     disabled={!this.state.edit}
                     mode="date"
@@ -161,6 +191,9 @@ class MyProfile extends React.Component {
                       <FontAwesome name='calendar-check-o' size={16} color='#ffffff' style={{padding: 10}} />
                     }
                     customStyles={{
+                      disabled:{
+                        backgroundColor: "#333333"
+                      },
                       dateIcon: {
                         position: 'absolute',
                         left: 0,
@@ -210,7 +243,7 @@ class MyProfile extends React.Component {
 
                 <Block flex={0.1} middle style={{marginBottom: height * 0.1}}>
                   {updateInfo}
-                  <Button style={styles.passwordBtn} onPress={() => {navigation.navigate("ChangePassword")}}>
+                  <Button color="primary" style={styles.passwordBtn} onPress={() => {navigation.navigate("ChangePassword")}}>
                     <Text bold size={16} color={argonTheme.COLORS.WHITE}>
                       Change Password
                     </Text>
@@ -279,7 +312,6 @@ const styles = StyleSheet.create({
     textAlign: 'left'
   },
   passwordBtn: {
-    backgroundColor: "grey",
     marginTop: 15
   },
   picker: {
