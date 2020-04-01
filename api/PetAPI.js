@@ -83,8 +83,6 @@ export default class PetAPI{
 
         const url = this.globals.serverHost + '/api/pet/customer/'+ customerId;
 
-        const token = await this.authAPI.retrieveToken();
-
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };

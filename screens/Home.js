@@ -18,6 +18,8 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Popup from '../components/Popup';
 import { Avatar } from "react-native-elements";
+import Loader from '../components/Loader';
+
 import AuthAPI from "../api/AuthAPI";
 import PetAPI from "../api/PetAPI";
 
