@@ -17,6 +17,7 @@ import { Button, Icon, Input } from "../components";
 import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Popup from '../components/Popup';
+import Loader from '../components/Loader';
 import { Avatar } from "react-native-elements";
 import AuthAPI from "../api/AuthAPI";
 import PetAPI from "../api/PetAPI";
@@ -53,7 +54,7 @@ class Home extends React.Component {
 
   async retrieveData() {
     let customerId = await this.authAPI.retrieveCustomerId();
-    this.petAPI.getPetByCustomerId("5e7e21a3b2d11d00172337de", (pet) => {
+    this.petAPI.getPetByCustomerId(customerId, (pet) => {
       let petList = [];
       pet.forEach(v => {
         petList.push(v)
