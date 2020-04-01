@@ -18,8 +18,8 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Popup from '../components/Popup';
 import { Avatar } from "react-native-elements";
-import UserProfileAPI from '../api/UserProfileAPI';
 import AuthAPI from "../api/AuthAPI";
+import PetAPI from "../api/PetAPI";
 
 const { width, height } = Dimensions.get("screen");
 
@@ -29,8 +29,10 @@ class Home extends React.Component {
     super(props);
     console.log(this.props.navigation.state.params);
     this.authAPI = new AuthAPI();
-    state = {
+    this.petAPI = new PetAPI();
+    this.state = {
       popUpDialog: false,
+      pets:[]
       // pets: [{
       //         name: "Brownie",
       //         animal: "Dog",
@@ -51,12 +53,9 @@ class Home extends React.Component {
   }
 
   async componentDidMount(){
-    this.userProfileAPI = new UserProfileAPI();
     customerId =await this.authAPI.retrieveCustomerId();
-    this.userProfileAPI.getUserById('5e7e21a3b2d11d00172337de', (res) => {
-      console.log(res);
-    });
-   let pets = this.petAPI.getPetByCustomerId(customerId, (err,res)=>{
+
+   await this.petAPI.getPetByCustomerId(customerId, (err,res)=>{
      if (!err) this.setState({pets:res})
    })
   }
@@ -67,17 +66,15 @@ class Home extends React.Component {
         if(index % 2 == 0 && index + 1 < this.state.pets.length){
             table.push(
               <Block key={index} style={styles.container}>
-                    <TouchableOpacity style={{...styles.cardService, marginRight: 10}} onPress={() => this.props.navigation.navigate('PetBooking')}>
+                    <TouchableOpacity style={{...styles.cardService, marginRight: 10}} onPress={() => this.props.navigation.navigate('PetProfile', item._id)}>
                         <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
-                        <Text style={styles.priceTxt}>{item.animal}</Text>
                         <View style={styles.cardFooter}>
                             <Text style={styles.itemTxt}>{item.name}</Text>
                         </View>
                         </TouchableOpacity>
 
-                        <TouchableOpacity style={{...styles.cardService}}  onPress={() => this.props.navigation.navigate('PetBooking')} >
+                        <TouchableOpacity style={{...styles.cardService}}  onPress={() => this.props.navigation.navigate('PetProfile', item._id)} >
                             <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
-                            <Text style={styles.priceTxt}>{item.animal}</Text>
                         <View style={styles.cardFooter}>
                             <Text style={styles.itemTxt}>{item.name}</Text>
                         </View>
@@ -88,13 +85,12 @@ class Home extends React.Component {
         else if(index % 2 == 0){
             table.push(
                 <Block key={index} style={styles.container}>
-                    <View style={{...styles.cardService}}>
+                    <TouchableOpacity style={{...styles.cardService, marginRight: 10}} onPress={() => this.props.navigation.navigate('PetProfile', item._id)}>
                     <MaterialIcons name='pets' size={40} style={styles.petIcon}/>
-                        <Text style={styles.priceTxt}> {item.animal} </Text>
                         <View style={styles.cardFooter}>
                             <Text style={styles.itemTxt}>{item.name}</Text>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 </Block>
             )
         }
@@ -362,4 +358,3 @@ export default Home;
 // });
 
 // export default Home;
-

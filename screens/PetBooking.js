@@ -8,17 +8,19 @@ import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import AuthAPI from '../api/AuthAPI';
 import BookingAPI from '../api/BookingAPI';
+import PetAPI from '../api/PetAPI';
 
 const { width, height } = Dimensions.get("screen");
 
-export default class PetProfile extends React.Component {
+export default class PetBooking extends React.Component {
 
   constructor(props) {
     super(props);
     this.authAPI = new AuthAPI();
     this.bookingAPI = new BookingAPI();
+    this.petAPI = new PetAPI();
     this.retrieveData = this.retrieveData.bind(this);
-    const {petId} = route.params;
+    //this.petId = route.params;
     // this.state = {   
     //   loading: false,
     //   listData: [
@@ -27,13 +29,13 @@ export default class PetProfile extends React.Component {
     //   ],
     //   error: null,
     // };
+    this.state = {
+      bookingData: [],
+      loading: true,
+    }
   }
 
-  state = {
-    bookedDate: [],
-    bookingData: [],
-    loading: true,
-  }
+
    
   componentDidMount(){
     this.didFocus = this.props.navigation.addListener('willFocus', () => {
@@ -50,8 +52,8 @@ export default class PetProfile extends React.Component {
   async retrieveData(){
     let customerId = await this.authAPI.retrieveCustomerId();
   
-        this.bookingAPI.getBookingByPetId(petId, (bookings) => {
-          let bookedDate = [];
+        this.bookingAPI.getBookingByPetId(this.petId, (bookings) => {
+          let bookingData = [];
           console.log(bookings);
           bookings.forEach(v => {
             let time = new Date(v.time);
@@ -60,13 +62,15 @@ export default class PetProfile extends React.Component {
             let date = time.getDate() < 9 ? "0" + (time.getDate() + 1) : (time.getDate() + 1);
             let parsedDate = time.getFullYear() + "-" + month + "-" + date;
             
-            if(!bookedDate.includes(parsedDate)){
-              bookedDate.push(parsedDate); 
+            if(!bookingData.includes(parsedDate)){
+              let location = this.vendorLocationAPI.getLocationByVendorId(bookings.vendorId)
+              let service = this.serviceAPI.getServiceByVendorId(bookings.serviceId)
+              bookingData.push({bookingId: bookings.Id,time:parsedDate,vendorName:location.name,service:service.name}); 
             }
           }) 
   
           //bookings.sort((a, b) => { return a.time - b.time});
-          this.setState({bookedDate: bookedDate, bookingData: bookings}, () => {
+          this.setState({bookingData: bookingData}, () => {
             this.setState({loading: false})
           })   
         })
@@ -76,7 +80,7 @@ export default class PetProfile extends React.Component {
   //   this.getBookingByPetId();
   // }
 
-  showAlert1() {  
+  showAlert1(bookingId) {  
     Alert.alert(  
         'Delete Booking',  
         'Do you want to delete this booking?',  
@@ -86,7 +90,7 @@ export default class PetProfile extends React.Component {
             onPress: () => console.log('Cancel Pressed'),  
             style: 'cancel',  
         },  
-        {text: 'OK', onPress: this.deleteBookingById},  
+        {text: 'OK', onPress: this.bookingAPI.deleteBookingById(bookingId)},  
         ],  
         {cancelable: false}  
     )  
@@ -107,7 +111,7 @@ export default class PetProfile extends React.Component {
     
 
   render() {
-     let { listData } = this.state;
+     let { bookingData } = this.state;
     const { navigation } = this.props;
   return (
     <ImageBackground source={require("../assets/imgs/background2.gif")} resizeMode='cover' style={{flex: 1, width: '100%', height: '100%'}}>
@@ -132,24 +136,25 @@ export default class PetProfile extends React.Component {
     </View>
     <View style={styles.container}>
     <FlatList
-          keyExtractor={item => item.bookingId}
+          // keyExtractor={item => item.bookingId}
           style={{ marginTop: 0}}
-          data={listData}
-          renderItem={({ item }) => {
+          data={bookingData}
+          renderItem={bookingData.forEach( (item) => {
             return (
               <View>
               <ListItem containerStyle={{backgroundColor: '#003d6d', borderRadius: 50, marginBottom: 10}}
               title={item.time}
               titleStyle={{color:'#ffffff', marginLeft: 15}}
-              subtitle={item.vendorId}
+              subtitle={item.vendorName}
               subtitleStyle={{color:'#ffffff', marginLeft: 15}}
-              leftIcon={<Icon type="font-awesome" color="#ff7343" size={25} name="edit" onPress={this.updateBookingById} />}
-              rightElement={<Icon type="font-awesome" color="#ff7343" size={25} name="trash" onPress={this.showAlert1} />}
+              leftIcon={<Icon type="font-awesome" color="#ff7343" size={25} name="edit" onPress={this.updateBookingById(item.bookingId)} />}
+              rightElement={<Icon type="font-awesome" color="#ff7343" size={25} name="trash" onPress={()=>{
+                this.showAlert1(item.bookingId)}} />}
             //   bottomDivider='true'
               />
               </View>
             );
-          }}
+          })}
         //   ItemSeparatorComponent={this.renderSeperator}
         />
         </View>
