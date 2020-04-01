@@ -121,7 +121,7 @@ class Home extends React.Component {
 
             <View style={{marginBottom: 10 }}>
               <Block center>
-                {this.renderCard()}
+                {/* {this.renderCard()} */}
               </Block>
           </View>
           

@@ -8,13 +8,12 @@ export default class BookingAPI{
         this.authAPI = new AuthAPI();
     }
 
-    createBooking(booking, callback){
-        const token = AuthAPI.retrieveToken();
-
-        const url = this.globals.serverHost + '/api/booking/add';
+    async createBooking(booking, callback){
+        const url = this.globals.serverHost + '/api/booking';
+        const token = await this.authAPI.retrieveToken();
 
         let options = {
-            headers: {token: this.authAPI.retrieveToken(), 'Access-Control-Allow-Origin':'*'}
+            headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
         let body = booking;
