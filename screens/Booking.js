@@ -41,52 +41,15 @@ import MapView from 'react-native-maps';
 import { IntentLauncherAndroid } from 'expo';
 import Tooltip from 'react-native-walkthrough-tooltip';
 
-import DataAPI from '../api/DataAPI';
+import CalendarView from './CalendarView';
+
+import VendorLocationAPI from '../api/VendorLocationAPI';
+import ServiceAPI from '../api/ServiceAPI';
+import AuthAPI from '../api/AuthAPI';
+import BookingAPI from '../api/BookingAPI';
+import PetAPI from '../api/PetAPI';
 
 const { width, height } = Dimensions.get("screen");
-
-const locations = [
-  {
-      "name": "Singapore Turf Club Equine Hospital",
-      "address": "338 Ang Mo Kio Avenue 1 #01-1671",
-      //"coords": {
-          "latitude": 1.422900,
-          "longitude": 103.763064
-      //},
-  },
-  {
-      "name": "AAVC - Animal & Avian Veterinary Clinic",
-      "address": "716 Yishun Street 71 #01-254",
-      //"coords": {
-          "latitude": 1.426181,
-          "longitude": 103.827479
-      //},
-  },
-  {
-      "name": "Acacia Veterinary Clinic",
-      "address": "338 Ang Mo Kio Avenue 1 #01-1671",
-      //"coords": {
-          "latitude": 1.363953,
-          "longitude": 103.849044
-      //},
-  },
-  {
-      "name": "Allpets & Aqualife Vets Pte Ltd ",
-      "address": "24 Jalan Kelulut",
-      //"coords": {
-          "latitude": 1.383402,
-          "longitude": 103.875629
-      //},
-  },
-  {
-      "name": "Amber Veterinary Practice Pte Ltd",
-      "address": "50 Burnfoot Terrace, Frankel Estate",
-      //"coords": {
-          "latitude": 1.312755,
-          "longitude": 103.922726
-      //},
-  }
-]
 
 const secondIndicatorStyles = {
   //#511efa, #606afc, #7880fa: blue
@@ -228,8 +191,8 @@ class Booking extends React.Component {
     this.state = {
       currentPage: 0,
       clinicInput: "",
-      serviceInput: "",
-      petInput: "",
+      serviceInput: null,
+      petInput: null,
       date:"",
       time:"",
       confirmDialogVisible: false,
@@ -241,16 +204,23 @@ class Booking extends React.Component {
       isLoading: true,
       clickMarker: false,
       toolTipVisible: false,
+      isRegister: false,
+      chosenClinic: null,
+      servicesData: null,
+      petsData: null,
     };
-    this.DataAPI = new DataAPI();
+    this.VendorLocationAPI = new VendorLocationAPI();
+    this.serviceAPI = new ServiceAPI();
+    this.authAPI = new AuthAPI();
+    this.bookingAPI = new BookingAPI();
+    this.PetAPI = new PetAPI();
   }
 
   getAllClinics(){
-    this.DataAPI.getAllClinics( (res) => {
-      //console.log("res.data: " + JSON.stringify(res.data));
+    this.VendorLocationAPI.getAllClinics( (res) => {
       if(res != null) {
         this.setState({ 
-          locations: res.data,
+          locations: res,
           isLoading: false
         });
       }
@@ -260,6 +230,32 @@ class Booking extends React.Component {
       }
     });
     //console.log("this.state.locations: " + this.state.locations);
+  }
+
+  getData = async () => {
+    let vendorId = this.state.chosenClinic.vendorId;
+    let customerId = await this.authAPI.retrieveCustomerId();
+
+    await this.serviceAPI.getServiceByVendor(vendorId, (services) => {
+      if(services != null) {
+        this.setState({ servicesData: services });
+      }
+      else{
+        Alert.alert('Error', res,
+          [{text: 'Ok'}])
+      }
+      //console.log("this.state.servicesData: " + JSON.stringify(this.state.servicesData));
+
+      this.PetAPI.getPetByCustomerId(customerId, (pets) => {
+        if(pets != null) {
+          this.setState({ 
+            petsData: pets,
+            isLoading: false
+          });
+        }
+        //console.log("this.state.petsData: " + JSON.stringify(this.state.petsData));
+      })
+    })
   }
 
   onStepPress = position => {
@@ -286,6 +282,7 @@ class Booking extends React.Component {
 
   componentWillMount() {
     this.getAllClinics();
+    //this.getData(this.state.chosenClinic);
   }
 
   async componentDidMount() {
@@ -368,13 +365,19 @@ class Booking extends React.Component {
 
     //console.log("AAAAAAAA");
     //console.log("location chose: " + JSON.stringify(location));
+    if (location.vendorId)
+      this.setState({ isRegister: true });
+    else 
+      this.setState({ isRegister: false });
+
     this.setState({
       destination: location,
       desLatitude: latitude,
       desLongitude: longitude,
       clinicInput: location.name,
       clickMarker: true,
-      toolTipVisible: true,
+      chosenClinic: location,
+      //toolTipVisible: true,
     }, this.mergeCoords);
 
   }
@@ -402,15 +405,15 @@ class Booking extends React.Component {
               //console.log("longitude: " + longitude);
               return (
                 (latitude && longitude) ? 
-                  <Tooltip
-                    animated={true}
-                    arrowSize={{ width: 16, height: 8 }}
-                    backgroundColor="rgba(0,0,0,0)" // Color of the fullscreen background beneath the tooltip.
-                    isVisible={this.state.toolTipVisible}
-                    content={<Text>{location.name}</Text>} //(Must) This is the view displayed in the tooltip
-                    placement="top"  //(Must) top, bottom, left, right, auto.
-                    onClose={() => this.setState({ toolTipVisible: false })}
-                  >
+                  // <Tooltip
+                  //   animated={true}
+                  //   arrowSize={{ width: 16, height: 8 }}
+                  //   backgroundColor="rgba(0,0,0,0)" // Color of the fullscreen background beneath the tooltip.
+                  //   isVisible={this.state.toolTipVisible}
+                  //   content={<Text>{location.name}</Text>} //(Must) This is the view displayed in the tooltip
+                  //   placement="top"  //(Must) top, bottom, left, right, auto.
+                  //   onClose={() => this.setState({ toolTipVisible: false })}
+                  // >
                     <Marker
                       key={idx}
                       coordinate={{ latitude, longitude }}
@@ -419,7 +422,7 @@ class Booking extends React.Component {
                     >
                       {/* <MaterialIcons name='pets' size={30} style={{color: '#885DDA'}}/> */}
                     </Marker>
-                  </Tooltip>
+                  // </Tooltip>
                 : null
               )
             })
@@ -643,6 +646,70 @@ class Booking extends React.Component {
     alert(JSON.stringify(permit));
   }
 
+  showClinicInfo = () => {
+    const clinic = this.state.chosenClinic;
+    //console.log("clinic: " + JSON.stringify(clinic));
+    return (
+      this.state.chosenClinic ?
+        <Block flex={0.8} center style={styles.booking}>
+          <ScrollView>
+            <View style={styles.detailInfo}>
+                <View style={styles.row}>
+                  <Text style={styles.field}>Name: 
+                    <Text style={styles.value}>{" "}{clinic.name}</Text>
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={styles.field}>Type: 
+                    <Text style={styles.value}>{" "}{clinic.type}</Text>
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={styles.field}>Address: 
+                    <Text style={styles.value}>{" "}{clinic.address}</Text>
+                  </Text>
+                </View>
+              
+                <View style={styles.row}>
+                  <Text style={styles.field}>Postal code: 
+                    <Text style={styles.value}>{" "}{clinic.postal_code}</Text>
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={styles.field}>Telephone office 1: 
+                    <Text style={styles.value}>{" "}{clinic.tel_office_1 ? clinic.tel_office_1 : "na"}</Text>
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={styles.field}>Telephone office 2: 
+                    <Text style={styles.value}>{" "}{clinic.tel_office_2 ? clinic.tel_office_2 : "na"}</Text>
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
+                  <Text style={styles.field}>Fax office: 
+                    <Text style={styles.value}>{" "}{clinic.fax_office}</Text>
+                  </Text>
+                </View>
+
+                {!this.state.isRegister &&
+                  <View style={{alignItems: 'center', marginTop:10, marginBottom: 10}}>
+                    <Text style={styles.warningText}>This clinic has not been registered</Text>
+                    <Text style={styles.warningText}>under our system</Text>
+                    <Text style={styles.warningText}>Please contact them directly!</Text>
+                  </View>
+                }
+            </View>
+          </ScrollView>
+        </Block>
+      : null     
+    )
+  }
+
   chooseClinicView = () => {
     const {timeTaken, distance} = this.state;
 
@@ -685,6 +752,7 @@ class Booking extends React.Component {
                   resetValue={false}
                   value={this.state.clinicInput}
                   onFocus={() => this.setState({clickMarker: false})}
+                  onBlur={() => this.setState({clickMarker: true})}
                   textInputProps={this.state.clickMarker ? 
                     {
                       placeholder: "Choose...",
@@ -723,13 +791,6 @@ class Booking extends React.Component {
                     }
                   }
                 />
-                {/* <Block flex middle style={{ elevation: 1, position: "absolute", zIndex: 1}}>
-                  <Button color="primary" style={styles.button} onPress={() => this.setState({ currentPage: 1 })}>
-                    <Text bold size={18} color={argonTheme.COLORS.WHITE}>
-                      Next
-                    </Text>
-                  </Button>
-                </Block>  */}
                  
               </Block>
 
@@ -752,52 +813,29 @@ class Booking extends React.Component {
                 {this.showMap()}
               </Block>
               
-              <Block flex middle style={{ elevation: 1, height: height * 0.3, marginTop: -height * 0.05}}>
-                <Button color="primary" style={styles.button} onPress={() => this.setState({ currentPage: 1 })}>
-                  <Text bold size={18} color={argonTheme.COLORS.WHITE}>
-                    Next
-                  </Text>
-                </Button>
-              </Block> 
-
-              {/* <Block flex style={{ alignItems: 'flex-end'}}>
-                <TouchableOpacity onPress={() => this.setState({ currentPage: 1 })}>
-                  <Block flex middle style={{flexDirection: 'row'}}>
-                    <Text bold style={{color: '#ff0f0f',fontSize: 18, paddingBottom: 4}}>
-                      Next
-                    </Text>
-                    <AntDesign name='doubleright' size={28} color='#ff0f0f' style={{padding: 5}} />
-                  </Block>
-                </TouchableOpacity>
-              </Block> */}
+              {this.state.clickMarker ?
+                <View>
+                  <Text style={styles.headerTxt}>Clinic info</Text>
+                  {this.showClinicInfo()}
+                  
+                  {this.state.isRegister ?
+                    <Block flex middle style={{ elevation: 1, height: height * 0.3, marginTop: -height * 0.1}}>
+                      <Button color="primary" style={styles.button} 
+                        onPress={() => this.setState({ currentPage: 1, 
+                                                        isloading: true }, this.getData)}>
+                        <Text bold size={18} color={argonTheme.COLORS.WHITE}>
+                          Next
+                        </Text>
+                      </Button>
+                    </Block>
+                  : 
+                    <Block flex middle style={{ elevation: 1, height: height * 0.1 }} />
+                  }
+                </View>
+                :
+                <Block flex middle style={{ elevation: 1, height: height * 0.1 }} />
+              }     
             </ScrollView>
-
-            {/* <Block width={width * 0.9} style={{ marginTop: 40}}>
-              <Input
-                borderless 
-                placeholder="Email"
-                iconContent={
-                  <Icon
-                    size={16}
-                    color={'#5E5454'}
-                    name="ic_mail_24px"
-                    family="ArgonExtra"
-                    style={styles.inputIcons}
-                  />
-                }
-                style={{backgroundColor: '#333333'}}
-              />
-            </Block> */}
-
-            {/* <Block flex middle style={{marginBottom: height * 0.08}}>
-              <Button color="primary" style={styles.button} onPress={() => this.setState({ currentPage: 1 })}>
-                <Text bold size={18} color={argonTheme.COLORS.WHITE}>
-                  Next
-                </Text>
-              </Button>
-            </Block>  */}
-            
-
           </KeyboardAvoidingView>
 
         </Block>
@@ -807,6 +845,16 @@ class Booking extends React.Component {
 
   DetailsView = () => {
     var todayDate = new Date().toISOString().slice(0,10);
+
+    // const {date, time} = this.state;
+    // console.log("this.state.date: " + this.state.date);
+    // console.log("this.state.time: " + this.state.time);
+    // let datetime = new Date(this.state.date + "T" + this.state.time + ":00").toString();
+    // var d = this.state.date.split('-');
+    // var t = this.state.time.split(':');
+    // if (date && time) {
+    //   var mydate = new Date(parseInt(d[0]), parseInt(d[1]) - 1, parseInt(d[2]), parseInt(t[0]), parseInt(t[1]), 0, 0); 
+    // }
 
     return (
       <Block flex>
@@ -818,6 +866,16 @@ class Booking extends React.Component {
           >
             <ScrollView style={{ flex: 1, width: width}} keyboardShouldPersistTaps="handled">
               {/* <Block flex={0.3}> */}
+
+              <Block center>
+                <Text color="#E1E1E1" size={20} 
+                      style={{ marginLeft: width * 0.05, marginBottom: 5,
+                               fontWeight: 'bold'}}>
+                  Date   
+                </Text>
+              </Block>
+              
+              <CalendarView vendor={this.state.chosenClinic}/>
 
               <Block>
                 <Text color="#E1E1E1" size={20} 
@@ -845,7 +903,7 @@ class Booking extends React.Component {
                 </Block>
                 <SearchableDropdown
                   onItemSelect={(item) => {
-                    this.setState({ selectedItems: items, serviceInput: item.name });
+                    this.setState({ selectedItems: items, serviceInput: item });
                   }}
                   containerStyle={{ padding: 5, width: width * 0.9, top: 32,
                                      elevation: 1, position: "absolute", zIndex: 5,
@@ -859,7 +917,8 @@ class Booking extends React.Component {
                   }}
                   itemTextStyle={{ color: '#E1E1E1' }}
                   itemsContainerStyle={{ maxHeight: 150 }}
-                  items={services}
+                  //items={services}
+                  items={this.state.servicesData}
                   resetValue={false}
                   value={this.state.serviceInput}
                   textInputProps={
@@ -881,8 +940,24 @@ class Booking extends React.Component {
                   }
                 />
               </Block>
+
+              <Block style={{marginTop: -height * 0.5 + 90}}>
+                <View style={{marginLeft: width * 0.05}}>
+                  <Text style={{fontWeight: "bold", color: "#E1E1E1"}}>Description: 
+                    <Text style={{color:"#E1E1E1"}}>{" "}{this.state.serviceInput ? this.state.serviceInput.description : ""}</Text>
+                  </Text> 
+                </View>
+
+                <View style={{marginLeft: width * 0.05}}>
+                  <Text style={{fontWeight: "bold", color: "#E1E1E1"}}>Price:
+                    <Text style={{color:"#E1E1E1"}}>{" $"}{this.state.serviceInput ? this.state.serviceInput.price : ""}</Text>
+                  </Text> 
+                </View>
+              </Block>
               
-              <Block style={{height: height * 0.5, marginTop: -height * 0.5 + 90}}>
+              <Block style={{height: height * 0.5, marginTop: 10,
+                //marginTop: -height * 0.5 + 90
+                }}>
                 <Block>
                   <Text flex color="#E1E1E1" size={20} 
                         style={{ marginLeft: width * 0.05, marginBottom: 5,
@@ -892,7 +967,7 @@ class Booking extends React.Component {
                 </Block>
                 <SearchableDropdown
                   onItemSelect={(item) => {
-                    this.setState({ selectedItems: items, petInput: item.name });
+                    this.setState({ selectedItems: items, petInput: item });
                   }}
                   containerStyle={{ padding: 5, width: width * 0.9, top: 32,
                                     elevation: 1, position: "absolute", zIndex: 4,
@@ -906,7 +981,8 @@ class Booking extends React.Component {
                   }}
                   itemTextStyle={{ color: '#E1E1E1' }}
                   itemsContainerStyle={{ maxHeight: 150}}
-                  items={pets}
+                  //items={pets}
+                  items={this.state.petsData}
                   resetValue={false}
                   value={this.state.petInput}
                   textInputProps={
@@ -1061,17 +1137,42 @@ class Booking extends React.Component {
     )
   }
 
-  onConfirm = () => {
-    this.setState({
-      confirmDialogVisible: false,
-      successDialogVisible: true,
-    });
-    setTimeout(() => {
-      this.setState({
-        successDialogVisible: false,
-        currentPage: 0,
-      });
-    }, 3000);
+  onConfirm = async () => {
+    let customerId = await this.authAPI.retrieveCustomerId();
+    let vendorId = this.state.chosenClinic.vendorId;
+    const {date, time} = this.state;
+    var d = date.split('-');
+    var t = time.split(':');
+    var mydate = new Date(parseInt(d[0]), parseInt(d[1]) - 1, parseInt(d[2]), parseInt(t[0]), parseInt(t[1]), 0, 0); 
+
+    let booking = new Object({
+      petId: this.state.petInput._id,
+      time: mydate,
+      serviceId: this.state.serviceInput._id,
+      vendorId: vendorId,
+      customerId: customerId,
+    })
+    
+    this.serviceAPI.createBooking(booking, (res) => {
+      if(res){
+        // Alert.alert('Successfully', "Service is created successfully!",
+        // [{text: 'Ok', onPress: () => {this.props.navigation.goBack()}}])
+        this.setState({
+          confirmDialogVisible: false,
+          successDialogVisible: true,
+        });
+        setTimeout(() => {
+          this.setState({
+            successDialogVisible: false,
+            currentPage: 0,
+          });
+        }, 3000);
+      }
+      else{
+        Alert.alert('Error', "Server error",
+        [{text: 'Ok'}])
+      }
+    })
   }
 
   renderPage(currentPage) {
@@ -1099,7 +1200,10 @@ class Booking extends React.Component {
           style={{ width, height, zIndex: 1}}
         >
           {/* <Block flex={0.35} style={{justifyContent:'flex-start'}}> */}
-          <Block flex={0.35} center>
+          <Block style={{marginBottom: -20}}
+            //flex={0.35} 
+            center
+          >
             <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='contain' style={styles.headerImage}>
                 <View style={styles.stepIndicator}>
                   <StepIndicator
@@ -1107,7 +1211,7 @@ class Booking extends React.Component {
                     customStyles={secondIndicatorStyles}
                     stepCount={3}
                     currentPosition={this.state.currentPage}
-                    onPress={this.onStepPress}
+                    //onPress={this.onStepPress}
                     labels={[
                       //'Cart',
                       'Location',
@@ -1120,6 +1224,7 @@ class Booking extends React.Component {
             </ImageBackground> 
           </Block>
           
+
           {!this.state.isLoading && this.renderPage(this.state.currentPage)}
 
           <ConfirmDialog
@@ -1163,8 +1268,8 @@ class Booking extends React.Component {
                 Booked successfully
               </Text>
             </Block>
-          </Dialog>
-          
+          </Dialog>     
+
         </ImageBackground>
       </Block>  
     );
@@ -1174,8 +1279,8 @@ class Booking extends React.Component {
 const styles = StyleSheet.create({
   headerImage: {
     width: width,
-    height: height * 0.25,
-    //justifyContent:'flex-start',
+    height: 230,
+    //height: height * 0.25,
     borderRadius: 4,
     //elevation: 1,
     //overflow: "hidden"
@@ -1242,7 +1347,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff'
   },
   stepIndicator: {
-    marginVertical: 60,
+    marginVertical: 75,
   },
   page: {
     flex: 1,
@@ -1263,7 +1368,65 @@ const styles = StyleSheet.create({
   },
   map: {
     //borderRadius: 20,
-  }
+  },
+  booking: {
+    backgroundColor: "rgba(45, 45, 45, 0.8)",
+    borderRadius: 15,
+    width: "95%",
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+  headerTxt: {
+    fontFamily: "opensans",
+    fontSize: 25,
+    textAlign: 'center',
+    marginTop: 30,
+    fontWeight: "400",
+    color: 'white'
+  },
+  row:{
+    textAlign: "left",
+    width: "100%",
+    marginTop: 10,
+    marginBottom: 10,
+    //paddingTop: 10,
+  },
+  detailInfo: {
+    width: "100%",
+  },
+  field:{
+    fontWeight: '500',
+    fontFamily: 'opensans',
+    fontSize: 17,
+    color: 'white'
+  },
+  value: {
+    fontFamily: 'opensans',
+    fontWeight: '300',
+    marginLeft: 20,
+  },
+  cancelBtn: {
+    alignSelf: 'center', 
+    width: 100,
+    marginTop: 5
+  },
+  backBtn: {
+    position: 'absolute', 
+    marginTop: 50, 
+    marginLeft: 20,
+    alignSelf: 'flex-start',
+    color: 'white'
+  },
+  home: {
+    width: width,    
+    marginTop: 0,
+    paddingBottom: 20
+  },
+  warningText: {
+    fontFamily: 'opensans',
+    fontSize: 15,
+    color: '#ff1414'
+  },
 });
 
 export default Booking;

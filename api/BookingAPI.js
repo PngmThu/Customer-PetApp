@@ -8,18 +8,28 @@ export default class BookingAPI{
         this.authAPI = new AuthAPI();
     }
 
-    createBooking(booking){
-        const token = AuthAPI.retrieveToken();
-
-        const url = this.globals.serverHost + '/api/booking/add';
+    async createBooking(booking, callback){
+        const url = this.globals.serverHost + '/api/booking';
+        const token = await this.authAPI.retrieveToken();
 
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        let body = {booking};
+        let body = booking;
 
-        return axios.post(url, body, options);
+        axios.post(url, body, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(true);
+            }
+            else{
+                callback(false);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data)
+        })
     }
     
     async getBookingById(bookingId, callback){
@@ -31,20 +41,21 @@ export default class BookingAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         }
 
-        console.log(token)
-
         axios.get(url, options)
         .then(res => {
-            callback(res.data)
+            if(res.status == 200){
+                callback(res.data);
+            }
         })
         .catch(err => {
-            console.log(err.response.data)
+            console.log(err.response.data);
+            console.log("error")
         })
 
     }
 
-    getBookingByVendorId(vendorId){
-        const token = AuthAPI.retrieveToken();
+    async getBookingByVendorId(vendorId, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/booking/vendor/' + vendorId;
         
@@ -52,11 +63,19 @@ export default class BookingAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         }
 
-        return axios.get(url,options);
+        axios.get(url, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(res.data);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data);
+        })
     }
 
-    getBookingByCustomerId(customerId){
-        const token = AuthAPI.retrieveToken();
+    async getBookingByCustomerId(customerId, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/booking/customer/' + customerId;
         
@@ -64,11 +83,21 @@ export default class BookingAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         }
 
-        return axios.get(url,options);
+        axios.get(url, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(res.data);
+            }
+            else {console.log("error backend")}
+
+        })
+        .catch(err => {
+            console.log(err.response.data);
+        })
     }
 
-    getBookingByPetId(petId){
-        const token = AuthAPI.retrieveToken();
+    async getBookingByPetId(petId, callback){
+        const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/booking/pet/' + petId;
         
@@ -76,34 +105,59 @@ export default class BookingAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         }
 
-        return axios.get(url,options);
+        axios.get(url, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(res.data);
+                console.log("resdata" +res.data)
+
+            }
+        })
+        .catch(err => {
+            //console.log(err.response.data);
+            console.log(err)
+        })
     }
 
-    deleteBookingById(bookingId){
-        const token = AuthAPI.retrieveToken();
-
+    deleteBookingById(bookingId, callback){
         const url = this.globals.serverHost + '/api/booking/'+ bookingId;
+
+        let options = {
+            headers: {token: this.authAPI.retrievetoken(), 'Access-Control-Allow-Origin':'*'}
+        }
+
+        axios.delete(url, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(true);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data)
+        })
+    }
+
+    async updateBookingById(bookingId, booking, callback){
+        const url = this.globals.serverHost + '/api/booking/'+ bookingId;
+
+        const token = await this.authAPI.retrieveToken();
 
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         }
 
-        return axios.delete(url,options);
+        axios.put(url, booking, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(true);
+            }
+            else{
+                callback(false);
+            }
+        })
+        .catch(err => {
+            console.log(err.response.data)
+        })
     }
-
-    updateBookingById(bookingId, booking){
-        const token = AuthAPI.retrieveToken();
-
-        const url = this.globals.serverHost + '/api/booking/'+ bookingId;
-
-        let options = {
-            headers: {token: token, 'Access-Control-Allow-Origin':'*'}
-        }
-
-        let body = {booking}
-
-        return axios.post(url, body, options)
-
-    }
-
+    
 }

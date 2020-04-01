@@ -12,7 +12,7 @@ export default class DataAPI{
         axios.get(url)
         .then(res => {
             if(res.status == 200){
-                callback(res);
+                callback(res.data);
             }
             else{
                 callback("Cannot retrieve data!")
@@ -38,6 +38,24 @@ export default class DataAPI{
         })
         .catch(err => {
             callback(err.response.data)
+        })
+    }
+
+    getClinicByVendorId(vendorId, callback){
+
+        const url = this.globals.serverHost + '/api/vendorLocation/vendor/' + vendorId;
+
+        axios.get(url)
+        .then(res => {
+            if(res.status == 200){
+                callback(false,res.data);
+            }
+            else{
+                callback(true,"Cannot retrieve data!")
+            }
+        })
+        .catch(err => {
+            callback(true,err.response.data)
         })
     }
 }
