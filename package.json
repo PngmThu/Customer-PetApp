@@ -45,6 +45,7 @@
     "react-native-vector-icons": "^6.6.0",
     "react-native-walkthrough-tooltip": "^1.1.7",
     "react-navigation": "^3.11.0",
+    "react-navigation-transitions": "^1.0.12",
     "rn-viewpager": "^1.2.9",
     "toggle-switch-react-native": "^2.1.0"
   },

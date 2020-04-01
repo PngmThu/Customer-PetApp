@@ -49,4 +49,25 @@ export default class VendorAPI{
             console.log(err.response.data);
         })
     }
+
+    async getVendorById(vendorId, callback){
+        const token = await this.authAPI.retrieveToken();
+
+        const url = this.globals.serverHost + '/api/vendor/' + vendorId;
+        
+        let options = {
+            headers: {token: token, 'Access-Control-Allow-Origin':'*'}
+        }
+
+        axios.get(url,options)
+        .then(res => {
+            if(res.status == 200){
+                callback(res.data);
+            }
+        })
+        .catch(err => {
+            callback(false);
+            console.log(err.response.data);
+        })
+    }
 }

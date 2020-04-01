@@ -5,7 +5,7 @@ import {
   Dimensions,
   StatusBar,
   KeyboardAvoidingView,
-  Picker,
+  Alert,
   View,
   ScrollView
 } from "react-native";
@@ -15,25 +15,24 @@ import { Button, Icon, Input } from "../components";
 import { MaterialIcons, MaterialCommunityIcons, FontAwesome } from '@expo/vector-icons';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Popup from '../components/Popup';
-import DatePicker from "react-native-datepicker";
 import AuthAPI from '../api/AuthAPI'
 import UserProfileAPI from '../api/UserProfileAPI'
-import UserProfileModel from '../models/UserProfileModel'
-
 
 const { width, height } = Dimensions.get("screen");
 
 class MyProfile extends React.Component {
   state = {
-    edit: false, 
+    edit: false,
     popUpDialog: false,
-    name: "",
+    firstName: "",
     email: "",
-    dob: "", 
-    mobile: ""
+    lastName: "",
+    mobile: "",
+    question: "",
+    popUpType: 0
   }
 
-  constructor(props){
+  constructor(props) {
     super(props);
     //console.log(this.props.navigation.state.params);
     this.logout = this.logout.bind(this);
@@ -41,9 +40,14 @@ class MyProfile extends React.Component {
     this.authAPI = new AuthAPI();
     this.userProfileAPI = new UserProfileAPI();
     this.retrieveData = this.retrieveData.bind(this);
+    this.handleUpdateInfo = this.handleUpdateInfo.bind(this);
+    this.clickUpdate = this.clickUpdate.bind(this);
+    this.handleChoice = this.handleChoice.bind(this);
+    this.validateInput = this.validateInput.bind(this);
+    this.customer = new Object();
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.didFocus = this.props.navigation.addListener('willFocus', () => {
       this.setState({ loading: true }, () => {
         this.retrieveData();
@@ -52,45 +56,86 @@ class MyProfile extends React.Component {
 
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.didFocus.remove();
   }
 
-  async retrieveData(user){
+  async retrieveData(user) {
     let customerId = await this.authAPI.retrieveCustomerId();
-    let customer = new UserProfileModel({_id: customerId});
-    
-    this.userProfileAPI.getUserById(customer, (userProfile) => {
-      this.setState({name: userProfile})
-      this.setState({email: userProfile})
-      this.setState({dob: userProfile})
-      this.setState({mobile: userProfile})
+
+    this.userProfileAPI.getUserById(customerId, (userProfile) => {
+      this.customer = userProfile;
+      this.setState({
+        firstName: userProfile.firstName,
+        lastName: userProfile.lastName,
+        email: userProfile.email,
+        mobile: userProfile.mobile
+      })
     })
   }
 
-  async logout(bool){
-    this.setState({popUpDialog: false})
-    if(bool){
-      await this.authAPI.clearToken();
-      this.props.navigation.navigate('Account');
-    }
+  async logout() {
+    await this.authAPI.clearToken();
+    this.props.navigation.navigate('Account');
   }
 
-  clickLogout(event){
-    this.setState({popUpDialog: true})
+  clickLogout() {
+    this.setState({ popUpDialog: true, question: 'Do you want to logout?', popUpType: 1 })
+  }
+
+  clickUpdate() {
+    this.setState({ popUpDialog: true, question: 'Do you want to update profile?', popUpType: 2 })
+  }
+
+  handleUpdateInfo() {
+    if (!this.validateInput()) {
+      return;
+    }
+    this.customer.firstName = this.state.firstName;
+    this.customer.lastName = this.state.lastName;
+    this.customer.mobile = this.state.mobile;
+    this.userProfileAPI.updateUserById(this.customer, this.customer._id, (res) => {
+      if (res == true) {
+        Alert.alert('Successfully', "Your profile is updated successfully!",
+          [{ text: 'OK' }]);
+        this.setState({ edit: false })
+      }
+    })
+  }
+
+  validateInput() {
+    if (!this.state.mobile || !this.state.firstName || !this.state.lastName) {
+      Alert.alert('Error', "Input field can not be empty",
+        [{ text: 'OK' }])
+      return false;
+    }
+    return true;
+  }
+
+  handleChoice(bool) {
+    this.setState({ popUpDialog: false })
+    if (bool) {
+      if (this.state.popUpType == 2) {
+        this.handleUpdateInfo();
+      }
+      else if (this.state.popUpType == 1) {
+        this.logout();
+      }
+    }
   }
 
   render() {
     const { navigation } = this.props;
 
-    if(this.state.edit){
-      var updateInfo = <Button style={styles.loginButton} onPress={() => {navigation.navigate("Home")}}>
-                          <Text bold size={16} color={argonTheme.COLORS.WHITE}>
-                            Update Info
-                          </Text>
-                        </Button>
+    if (this.state.edit) {
+      var updateInfo =
+        <Button style={styles.loginButton} onPress={this.clickUpdate}>
+          <Text bold size={16} color={argonTheme.COLORS.WHITE}>
+            Update Info
+        </Text>
+        </Button>
     }
-    else{
+    else {
       updateInfo = null
     }
 
@@ -100,28 +145,30 @@ class MyProfile extends React.Component {
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1 }}
         >
-        
-        <Popup visible={this.state.popUpDialog} choice={this.logout} question={"Do you want to log out?"}/> 
-        <Block flex={0.2} middle style={{ marginBottom: 10 }} >
-          <ImageBackground source={require("../assets/imgs/Schedule1.png")} resizeMode='contain' style={styles.headerImage}/>
-          <Text color="#ffffff" size={40} style={{ marginLeft: 15 }}>
-            Your info
-          </Text>
-        </Block>
 
-          <ScrollView>
+          <Popup visible={this.state.popUpDialog} choice={this.handleChoice} question={this.state.question} />
+          <Block style={{ position: 'absolute', top: 0 }}>
+            <ImageBackground source={require("../assets/imgs/Schedule1.png")} resizeMode='contain' style={styles.headerImage} />
+            <View style={{ width: width, alignContent: 'center', alignItems: 'center', top: 15 }}>
+              <Text color="#ffffff" size={40} style={{ marginLeft: 10, fontFamily: 'ITCKRIST' }}>
+                Notification
+                </Text>
+            </View>
+          </Block>
+
+          <ScrollView style={{ flex: 1, marginTop: 110 }}>
             <Block flex={0.8} row style={styles.action} >
-              <View style={{alignContent:'flex-start', flex:1, flexDirection: 'row'}} onTouchStart={(event) => {this.clickLogout(event)}}>
+              <View style={{ alignContent: 'flex-start', flex: 1, flexDirection: 'row' }} onTouchStart={(event) => { this.clickLogout(event) }}>
                 <MaterialCommunityIcons name="logout-variant" size={30} style={styles.logoutIcon}></MaterialCommunityIcons>
                 <Text size={20} style={styles.logoutTxt}>Logout</Text>
               </View>
 
-              <View style={{justifyContent:'flex-end', flex: 1, flexDirection: 'row'}}>
+              <View style={{ justifyContent: 'flex-end', flex: 1, flexDirection: 'row' }}>
                 <ToggleSwitch
                   isOn={this.state.edit}
                   onColor={"#333333"}
                   offColor={"#999999"}
-                  onToggle={(isOn) => {this.setState({edit: isOn})}}
+                  onToggle={(isOn) => { this.setState({ edit: isOn }) }}
                 />
                 <Text size={20} style={styles.editTxt}>Edit</Text>
               </View>
@@ -133,12 +180,12 @@ class MyProfile extends React.Component {
                 behavior="padding"
                 enabled
               >
-                <Block width={width * 0.9} style={{marginTop: 20, marginBottom: 15 }}>
+                <Block width={width * 0.9} style={{ marginTop: 20, marginBottom: 15 }}>
                   <Input
                     borderless
-                    placeholder="Your name"
-                    onChangeText={(name) => {this.setState({name})}}
-                    value={this.state.name}
+                    placeholder="First name:"
+                    onChangeText={(firstName) => { this.setState({ firstName }) }}
+                    value={this.state.firstName}
                     editable={this.state.edit}
                     iconContent={
                       <Icon
@@ -149,17 +196,36 @@ class MyProfile extends React.Component {
                         style={styles.inputIcons}
                       />
                     }
-                    style={{backgroundColor: '#333333'}}
+                    style={this.state.edit ? { backgroundColor: '#333333' } : { backgroundColor: '#1f1f1f' }}
                   />
                 </Block>
 
                 <Block width={width * 0.9} style={{ marginBottom: 15 }}>
                   <Input
-                    borderless 
-                    placeholder="Email"
+                    borderless
+                    placeholder="Last name:"
+                    onChangeText={(lastName) => { this.setState({ lastName }) }}
+                    value={this.state.lastName}
                     editable={this.state.edit}
-                    onChangeText={(email) => {this.setState({email})}}
+                    iconContent={
+                      <Icon
+                        size={16}
+                        color={'#ffffff'}
+                        name="hat-3"
+                        family="ArgonExtra"
+                        style={styles.inputIcons}
+                      />
+                    }
+                    style={this.state.edit ? { backgroundColor: '#333333' } : { backgroundColor: '#1f1f1f' }}
+                  />
+                </Block>
+
+                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                  <Input
+                    borderless
+                    placeholder="Email"
                     value={this.state.email}
+                    editable={false}
                     iconContent={
                       <Icon
                         size={16}
@@ -169,65 +235,17 @@ class MyProfile extends React.Component {
                         style={styles.inputIcons}
                       />
                     }
-                    style={{backgroundColor: '#333333'}}
-                  />
-                </Block>
-
-                <Block width={width * 0.9} style={{ marginBottom: 15 }}>
-                <DatePicker
-                    style={{width: width * 0.9, 
-                            backgroundColor: "#333333", borderRadius: 10,
-                            justifyContent: 'center' }}
-                    date={this.state.date}
-                    disabled={!this.state.edit}
-                    mode="date"
-                    placeholder="Date of Birth"
-                    format="YYYY-MM-DD"
-                    minDate="1996-01-01"
-                    maxDate="2022-02-06"
-                    confirmBtnText="Confirm"
-                    cancelBtnText="Cancel"
-                    iconComponent={
-                      <FontAwesome name='calendar-check-o' size={16} color='#ffffff' style={{padding: 10}} />
-                    }
-                    customStyles={{
-                      disabled:{
-                        backgroundColor: "#333333"
-                      },
-                      dateIcon: {
-                        position: 'absolute',
-                        left: 0,
-                        top: 4,
-                        marginLeft: 0,
-                      },
-                      dateInput: {
-                        borderWidth: 0,
-                        alignItems: "flex-start",
-                        padding: 10,
-                        marginLeft: 10,
-                      },
-                      dateText: {
-                        color: "#ffffff",
-                      },
-                      modalStyle: {
-                        backgroundColor: "#333333",
-                      },
-                      modalOverlayStyle: {
-                        backgroundColor: "#333333",
-                      }
-                      // ... You can check the source to find the other keys.
-                    }}
-                    onDateChange={(date) => {this.setState({date: date})}}
+                    style={{ backgroundColor: '#1f1f1f' }}
                   />
                 </Block>
 
                 <Block width={width * 0.9} style={{ marginBottom: 15 }}>
                   <Input
-                    borderless 
+                    borderless
                     placeholder="Phone number"
                     editable={this.state.edit}
-                    onChangeText={(phone) => {this.setState({phone})}}
-                    value={this.state.phone}
+                    onChangeText={(mobile) => { this.setState({ mobile }) }}
+                    value={this.state.mobile}
                     iconContent={
                       <MaterialIcons
                         size={16}
@@ -237,13 +255,13 @@ class MyProfile extends React.Component {
                         style={styles.inputIcons}
                       />
                     }
-                    style={{backgroundColor: '#333333'}}
+                    style={this.state.edit ? { backgroundColor: '#333333' } : { backgroundColor: '#1f1f1f' }}
                   />
                 </Block>
 
-                <Block flex={0.1} middle style={{marginBottom: height * 0.1}}>
+                <Block flex={0.1} middle style={{ marginBottom: height * 0.1 }}>
                   {updateInfo}
-                  <Button color="primary" style={styles.passwordBtn} onPress={() => {navigation.navigate("ChangePassword")}}>
+                  <Button style={styles.passwordBtn} onPress={() => { navigation.navigate("ChangePassword") }}>
                     <Text bold size={16} color={argonTheme.COLORS.WHITE}>
                       Change Password
                     </Text>
@@ -260,15 +278,15 @@ class MyProfile extends React.Component {
 
 const styles = StyleSheet.create({
   home: {
-    width: width,    
-    paddingBottom: 20,
+    width: width,
+    paddingBottom: 20
   },
   headerImage: {
     width: width,
-    height: height,
-    justifyContent:'flex-start',
+    height: 90,
+    justifyContent: 'flex-start',
     borderRadius: 4,
-    position: 'absolute'
+    position: 'absolute',
   },
   registerContainer: {
     width: width * 0.9,  //0.9
@@ -288,12 +306,12 @@ const styles = StyleSheet.create({
   inputIcons: {
     marginRight: 12,
   },
-  logoutIcon:{
+  logoutIcon: {
     color: 'red',
     fontWeight: '200',
   },
   action: {
-    width:"90%",
+    width: "90%",
     alignSelf: 'center',
     marginTop: 10
   },
@@ -312,14 +330,15 @@ const styles = StyleSheet.create({
     textAlign: 'left'
   },
   passwordBtn: {
-    marginTop: 15
+    marginTop: 15,
+    backgroundColor: 'grey'
   },
   picker: {
     width: '100%',
     paddingBottom: 0,
     backgroundColor: 'transparent',
     paddingLeft: 0,
-    transform: [{scaleX: 0.77}, {scaleY: 0.77}],
+    transform: [{ scaleX: 0.77 }, { scaleY: 0.77 }],
     position: 'absolute',
     color: "#cccccc"
   }

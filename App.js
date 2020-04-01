@@ -1,12 +1,12 @@
-import React from 'react';
-import { Image, NetInfo, Alert, Platform, BackHandler } from 'react-native';
+import React, {useEffect} from 'react';
+import { Image, NetInfo, Alert, Platform, BackHandler, StatusBar } from 'react-native';
 import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
 import { Block, GalioProvider } from 'galio-framework';
 import * as Font from 'expo-font';
 import Screens from './navigation/Screens';
 import { Images, articles, argonTheme } from './constants';
-
+import { Notifications } from 'expo';
 // cache app images
 const assetImages = [
   Images.Onboarding,
@@ -40,8 +40,8 @@ export default class App extends React.Component {
 
   componentDidMount(){
     this.CheckConnectivity();
+    this._notificationSubscription = Notifications.addListener(this._handleNotification);
   }
-
 
   CheckConnectivity(){
     // For Android devices
@@ -57,7 +57,7 @@ export default class App extends React.Component {
       });
     }
   };
-  
+
   render() {
     if(!this.state.isLoadingComplete || !this.state.internetConnection) {
       return (
@@ -69,8 +69,8 @@ export default class App extends React.Component {
       );
     } else {
       return (
-        <GalioProvider theme={argonTheme}>
-          <Block flex>
+        <GalioProvider theme={argonTheme} >
+          <Block flex style={{paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0}}>
             <Screens />
           </Block>
         </GalioProvider>
@@ -98,4 +98,6 @@ export default class App extends React.Component {
     this.setState({ isLoadingComplete: true });
   };
 
+  _handleNotification = notification => {
+  };
 }

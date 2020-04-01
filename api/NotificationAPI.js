@@ -35,32 +35,25 @@ export default class NotificationAPI{
         })
     }
 
-    async getNotificationByCustomer(customerId,callback){
+    async getNotificationByCustomerFromTime(customerId, fromTime, callback){
 
-        const url = this.globals.serverHost + '/api/notification/customer/'+customerId;
+        const url = this.globals.serverHost + '/api/notification/customer/'+ customerId + "/" + fromTime;
         const token = await this.authAPI.retrieveToken();
+        
         let options = {
             headers: {'token':token, 'Access-Control-Allow-Origin':'*'}
         };
-        console.log("options: "+options.headers['token'])
-        console.log("aaaaa");
-        await axios.get(url,options)
-             .then(res=>{
-                 if (res.status==200){
-                     console.log(res)
-                     callback(false,res.data);
-                 }
-                 else {
-                     console.log("errr1")
-                     callback(res.data);
-                 }
-             })
-             .catch(err=>{
-                 console.log("error2")
-                 callback(err);
-             })
 
-        console.log('jeljwelrj')
+        axios.get(url, options)
+        .then(res=>{
+            if (res.status==200){
+                callback(res.data);
+            }
+        })
+        .catch(err=>{
+            console.log(err);
+            callback(false)
+        })
     }
 
     getNotificationByPetId(token,petId){

@@ -31,7 +31,7 @@ export default class UserProfileAPI{
         })
     }
 
-    async updateUserById(customer, customerId){
+    async updateUserById(customer, customerId, callback){
         const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/customer/' + customerId;
@@ -54,17 +54,30 @@ export default class UserProfileAPI{
         })
     }
 
-    updatePasswordById(customer, customerId){
-        const token = this.authAPI.retrieveToken();
+    async updatePassword(vendorId, password, callback){
+        const token = await this.authAPI.retrieveToken();
 
-        const url = this.globals.serverHost + '/api/customer/password/' + customerId;
+        const url = this.globals.serverHost + '/api/customer/password/' + vendorId;
 
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        let body = {customer};
-        return axios.post(url, body, options)
+        let body = {password: password};
+
+        axios.put(url, body, options)
+        .then(res => {
+            if(res.status == 200){
+                callback(true);
+            }
+            else{
+                callback(false);
+            }
+        })
+        .catch(err => {
+            callback(false);
+            console.log(err.response.data)
+        })
 
     }
 
@@ -76,8 +89,6 @@ export default class UserProfileAPI{
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
-
-        console.log(token)
 
         axios.get(url, options)
         .then(res => {
