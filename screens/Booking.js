@@ -85,10 +85,6 @@ const getStepIndicatorIconConfig = ({ position, stepStatus }) => {
     size: 15
   }
   switch (position) {
-    // case 0: {
-    //   iconConfig.name = 'shopping-cart'
-    //   break
-    // }
     case 0: {
       iconConfig.name = 'location-on'
       break
@@ -101,89 +97,12 @@ const getStepIndicatorIconConfig = ({ position, stepStatus }) => {
       iconConfig.name = 'payment'
       break
     }
-    // case 4: {
-    //   iconConfig.name = 'track-changes'
-    //   break
-    // }
     default: {
       break
     }
   }
   return iconConfig
 }
-
-var items = [
-  {
-    id: 1,
-    name: 'Jurong Point Clinic',
-  },
-  {
-    id: 2,
-    name: 'Pasir Ris Clinic',
-  },
-  {
-    id: 3,
-    name: 'Yishun Clinic',
-  },
-  {
-    id: 4,
-    name: 'Jurong East Clinic',
-  },
-  {
-    id: 5,
-    name: 'Orchar Clinic',
-  },
-  {
-    id: 6,
-    name: 'Woodlands Clinic',
-  },
-  {
-    id: 7,
-    name: 'Bishan Clinic',
-  },
-  {
-    id: 8,
-    name: 'City Hall Clinic',
-  },
-];
-
-var services = [
-  {
-    id: 1,
-    name: 'Hair Cutting',
-  },
-  {
-    id: 2,
-    name: 'Health Check',
-  },
-  {
-    id: 3,
-    name: 'Beauty Service',
-  },
-  {
-    id: 4,
-    name: 'Massage',
-  },
-  {
-    id: 5,
-    name: 'Nutrition Consultant',
-  },
-];
-
-var pets = [
-  {
-    id: 1,
-    name: 'Momo (Hamster)',
-  },
-  {
-    id: 2,
-    name: 'Tom (Cat)',
-  },
-  {
-    id: 3,
-    name: 'Doggi (Dog)',
-  },
-];
 
 class Booking extends React.Component {
   constructor () {
@@ -894,7 +813,7 @@ class Booking extends React.Component {
                 </Block>
                 <SearchableDropdown
                   onItemSelect={(item) => {
-                    this.setState({ selectedItems: items, serviceInput: item });
+                    this.setState({ serviceInput: item });
                   }}
                   containerStyle={{ padding: 5, width: width * 0.9, top: 32,
                                      elevation: 1, position: "absolute", zIndex: 5,
@@ -958,7 +877,7 @@ class Booking extends React.Component {
                 </Block>
                 <SearchableDropdown
                   onItemSelect={(item) => {
-                    this.setState({ selectedItems: items, petInput: item });
+                    this.setState({ petInput: item });
                   }}
                   containerStyle={{ padding: 5, width: width * 0.9, top: 32,
                                     elevation: 1, position: "absolute", zIndex: 4,

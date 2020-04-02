@@ -63,8 +63,14 @@ const HomeStack = createStackNavigator(
       }
     },
     PetProfile: {
-      screen: PetProfileStack,
+      screen: PetProfile,
       navigationOptions:{
+        header: null
+      }
+    },
+    PetBooking: {
+      screen: PetBooking,
+      navigationOptions: {
         header: null
       }
     }

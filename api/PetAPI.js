@@ -33,10 +33,10 @@ export default class PetAPI{
         })
     }
 
-    async updatePetById(pet, petId, callback){
+    async updatePetById(pet, callback){
         const token = await this.authAPI.retrieveToken();
 
-        const url = this.globals.serverHost + '/api/pet/' + petId;
+        const url = this.globals.serverHost + '/api/pet/' + pet._id;
 
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}

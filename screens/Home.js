@@ -14,7 +14,7 @@ import {
 import { Block, Text, theme } from "galio-framework";
 import { argonTheme } from "../constants";
 import { Button, Icon, Input } from "../components";
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import ToggleSwitch from 'toggle-switch-react-native';
 import Popup from '../components/Popup';
 import Loader from '../components/Loader';
@@ -66,9 +66,13 @@ class Home extends React.Component {
     })
   }
 
-  updatePet(item){
+  goPetProfile(item){
      this.props.navigation.navigate('PetProfile',{pet: item});  
   }
+
+  goPetBooking(item){
+    this.props.navigation.navigate('PetBooking',{pet: item});  
+ }
 
 
   renderCard() {
@@ -78,21 +82,45 @@ class Home extends React.Component {
         var oddItem = this.state.petList[index + 1];
         table.push(
           <Block key={index} style={styles.container}>
-            <TouchableOpacity style={{ ...styles.cardService, marginRight: 10 }} onPress={() => {this.updatePet(item)}}>
-              <MaterialIcons name='pets' size={40} style={styles.petIcon} />
-              <Text style={styles.priceTxt}>{item.animal}</Text>
+            <Block style={{ ...styles.cardService, marginRight: 10 }} >
+              <MaterialIcons name='pets' size={50} style={styles.petIcon} />
+              <Block style={styles.buttonRow}>
+                <Button style={styles.button} onPress={() => {this.goPetProfile(item)}}>
+                  <Text bold size={12} color={"black"}>
+                    Profile
+                  </Text>
+                </Button>
+                <Button style={styles.button} onPress={() => {this.goPetBooking(item)}}>
+                  <Text bold size={12} color={"black"}>
+                    History
+                  </Text>
+                </Button>
+              </Block>
+              {/* <Text style={styles.priceTxt}>{item.animal}</Text> */}
               <View style={styles.cardFooter}>
                 <Text style={styles.itemTxt}>{item.name}</Text>
               </View>
-            </TouchableOpacity>
+            </Block>
 
-            <TouchableOpacity style={{ ...styles.cardService }} onPress={() => {this.updatePet(oddItem)}} >
-              <MaterialIcons name='pets' size={40} style={styles.petIcon} />
-              <Text style={styles.priceTxt}>{oddItem.animal}</Text>
+            <Block style={{ ...styles.cardService }}>
+              <MaterialIcons name='pets' size={50} style={styles.petIcon} />
+              <Block style={styles.buttonRow}>
+                <Button style={styles.button} onPress={() => {this.goPetProfile(oddItem)}}>
+                  <Text bold size={12} color={"black"}>
+                    Profile
+                  </Text>
+                </Button>
+                <Button style={styles.button} onPress={() => {this.goPetBooking(oddItem)}}>
+                  <Text bold size={12} color={"black"}>
+                    History
+                  </Text>
+                </Button>
+              </Block>
+              {/* <Text style={styles.priceTxt}>{oddItem.animal}</Text> */}
               <View style={styles.cardFooter}>
                 <Text style={styles.itemTxt}>{oddItem.name}</Text>
               </View>
-            </TouchableOpacity>
+            </Block>
           </Block>
         )
       }
@@ -100,13 +128,25 @@ class Home extends React.Component {
         table.push(
           
           <Block key={index} style={styles.container}>
-            <TouchableOpacity style={{ ...styles.cardService, marginRight: 10 }} onPress={()=> {this.updatePet(item)}}>
-              <MaterialIcons name='pets' size={40} style={styles.petIcon} />
-              <Text style={styles.priceTxt}>{item.animal}</Text>
+            <Block style={{ ...styles.cardService, marginRight: 10 }}>
+              <MaterialIcons name='pets' size={50} style={styles.petIcon} />
+              <Block style={styles.buttonRow}>
+                <Button style={styles.button} onPress={() => {this.goPetProfile(item)}}>
+                  <Text bold size={12} color={"black"}>
+                    Profile
+                  </Text>
+                </Button>
+                <Button style={styles.button} onPress={() => {this.goPetBooking(item)}}>
+                  <Text bold size={12} color={"black"}>
+                    History
+                  </Text>
+                </Button>
+              </Block>
+              {/* <Text style={styles.priceTxt}>{item.animal}</Text> */}
               <View style={styles.cardFooter}>
                 <Text style={styles.itemTxt}>{item.name}</Text>
               </View>
-            </TouchableOpacity>
+            </Block>
           </Block>
         )
       }
@@ -126,30 +166,25 @@ class Home extends React.Component {
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1 }}
         >
+          <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
+            <View style={{alignItems: 'center', marginTop: 30}}>
+              <Text color="#ffffff" size={30} style={{fontFamily: 'ITCKRIST'}} >
+                Home
+              </Text>
+            </View>
+          </ImageBackground>
 
-          <Block middle >
-            <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='contain' style={styles.headerImage} />
-            <Text color="#ffffff" size={40} style={{ marginRight: 80, marginTop: 40, fontFamily: 'ITCKRIST' }}>
-              Home
-            </Text>
-          </Block>
+          <ScrollView style={{marginTop: 10}}>
+            <View style={{ marginBottom: 10,marginTop: 10 }}>
+              <Block center>
+                {this.renderCard()}
+              </Block>
+            </View>
 
-          <View style={{ marginBottom: 10 }}>
-            <Block center>
-              {this.renderCard()}
-            </Block>
-          </View>
-
-          <Block>
-            <Icon
-              reverse
-              raised
-              name='plus'
-              type='font-awesome'
-              color='#8dc63f'
-              onPress={() => this.props.navigation.navigate('AddPet')}
-            />
-          </Block>
+            <Block style={{height: height * 0.2}} />
+          </ScrollView>
+          <Ionicons name='ios-add-circle' size={60} color='#511efa' style={styles.addIcon} 
+                    onPress={() => this.props.navigation.navigate('AddPet')}/>
         </ImageBackground>
       </Block>
     );
@@ -163,17 +198,13 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     width: width,
-    height: height,
-    justifyContent: 'flex-start',
-    borderRadius: 4,
-    position: 'absolute'
+    height: 120,
   },
   container: {
     width: "90%",
     flexDirection: "row",
     justifyContent: 'space-between',
     marginBottom: 10,
-    marginTop: 50
   },
   cardService: {
     backgroundColor: 'rgba(100, 100, 100, 0.5)',
@@ -185,12 +216,12 @@ const styles = StyleSheet.create({
     flex: 0.5
   },
   petIcon: {
-    marginTop: 30,
+    marginTop: 20,
     color: '#885DDA'
   },
   cardFooter: {
     justifyContent: 'center',
-    marginTop: 15,
+    marginTop: 12,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
     backgroundColor: 'rgba(30, 30, 30, 0.8)',
@@ -224,8 +255,23 @@ const styles = StyleSheet.create({
     bottom: 100
   },
   addIcon: {
-    color: "white",
-    fontWeight: "600",
+    alignSelf: 'flex-end',
+    position: 'absolute',
+    bottom: 110,
+    right: 20,
+  },
+  button: {
+    width: 60,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: "#a0a7fa"
+  },
+  buttonRow: {
+    width: 130, 
+    flexDirection: 'row', 
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    marginTop: 20
   }
 });
 
