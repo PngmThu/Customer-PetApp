@@ -20,6 +20,7 @@ import PetProfile from "../screens/PetProfile";
 import ChangePassword from "../screens/ChangePassword";
 import Notification from "../screens/Notification";
 import PetBooking from "../screens/PetBooking";
+import BookingDetails from "../screens/BookingDetails";
 const { width, height } = Dimensions.get('screen');
 // drawer
 import { MaterialIcons } from '@expo/vector-icons';
@@ -73,7 +74,13 @@ const HomeStack = createStackNavigator(
       navigationOptions: {
         header: null
       }
-    }
+    },
+    BookingDetails: {
+      screen: BookingDetails,
+      navigationOptions: {
+        header: null
+      }
+    },
   },
   {
     transitionConfig: () => {
