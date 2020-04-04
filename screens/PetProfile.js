@@ -10,6 +10,7 @@ import { MaterialIcons, MaterialCommunityIcons, FontAwesome, AntDesign } from '@
 import DatePicker from 'react-native-datepicker';
 import { Dialog } from 'react-native-simple-dialogs';
 import ToggleSwitch from 'toggle-switch-react-native';
+import Loader from '../components/Loader';
 
 import AuthAPI from '../api/AuthAPI';
 import PetAPI from '../api/PetAPI';
@@ -40,8 +41,6 @@ export default class PetProfile extends React.Component {
   }
 
   componentDidMount() {
-    //console.log("this.props.navigation.state.params.pet: " + JSON.stringify(this.props.navigation.state.params.pet));
-    //this.setState({pet: this.props.navigation.state.params.pet});
     this.didFocus = this.props.navigation.addListener('willFocus', () => {
       this.setState({ loading: true }, () => {
         this.retrieveData();
@@ -71,7 +70,8 @@ export default class PetProfile extends React.Component {
       type: pet.type,
       weight: pet.weight.toString(),
       height: pet.height.toString(),
-      date: dateString
+      date: dateString,
+      loading: false,
     })
   }
 
@@ -108,7 +108,7 @@ export default class PetProfile extends React.Component {
             successDialogVisible: false,
           });
           this.props.navigation.goBack();
-        }, 3000);
+        }, 2000);
       }
       else{
         Alert.alert('Error', "Server error",
@@ -146,7 +146,7 @@ export default class PetProfile extends React.Component {
                     successDialogVisible: false,
                   });
                   this.props.navigation.goBack();
-                }, 3000);
+                }, 2000);
               }
               else{
                 Alert.alert('Error', "Server error",
@@ -164,13 +164,13 @@ export default class PetProfile extends React.Component {
     var todayDate = new Date().toISOString().slice(0,10);
 
     return (
-      <ImageBackground source={require("../assets/imgs/background2.gif")} resizeMode='cover' style={{flex: 1, width: '100%', height: '100%'}}>
+      <ImageBackground source={require("../assets/imgs/background2.gif")} resizeMode='cover' style={{flex: 1, width: '100%', height: '100%'}}>      
         <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
           <Block>
-              <MaterialIcons name='keyboard-backspace' size={40} style={{left: 10, top: 30, color: 'white', position: 'absolute'}}
+              <MaterialIcons name='keyboard-backspace' size={40} style={styles.backArrow}
                             onPress={() => this.props.navigation.goBack()}/>
           </Block>
-          <View style={{alignItems: 'center', marginTop: 30}}>
+          <View style={styles.textHeader}>
             <Text color="#ffffff" size={30} style={{fontFamily: 'ITCKRIST'}} >
               Pet Profile
             </Text>
@@ -366,8 +366,18 @@ export default class PetProfile extends React.Component {
 
 const styles = StyleSheet.create({
   headerImage: {
-      width: width,
-      height: 120,
+    width: width,
+    height: 80
+  },
+  textHeader: {
+    alignItems: 'center', 
+    marginTop: 7
+  },
+  backArrow: {
+    left: 10, 
+    top: 10, 
+    color: 'white', 
+    position: 'absolute'
   },
   inputStyle: {
     backgroundColor: "#282828"

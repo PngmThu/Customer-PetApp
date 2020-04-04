@@ -109,8 +109,6 @@ export default class BookingAPI{
         .then(res => {
             if(res.status == 200){
                 callback(res.data);
-                console.log("resdata" +res.data)
-
             }
         })
         .catch(err => {

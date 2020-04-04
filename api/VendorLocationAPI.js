@@ -48,14 +48,14 @@ export default class DataAPI{
         axios.get(url)
         .then(res => {
             if(res.status == 200){
-                callback(false,res.data);
+                callback(res.data);
             }
             else{
-                callback(true,"Cannot retrieve data!")
+                callback("Cannot retrieve data!")
             }
         })
         .catch(err => {
-            callback(true,err.response.data)
+            callback(err.response.data)
         })
     }
 }

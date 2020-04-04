@@ -30,6 +30,24 @@ export default class AddPet extends React.Component {
     this.petAPI = new PetAPI();
   }
 
+  componentDidMount() {
+    this.didFocus = this.props.navigation.addListener('willFocus', () => {
+      this.setState({ 
+        name: "",
+        type: "",
+        weight: "",
+        height: "",
+        date: "",
+        successDialogVisible: false,
+      })
+    })
+
+  }
+
+  componentWillUnmount() {
+    this.didFocus.remove();
+  }
+
   createPet = async () => {
     let customerId = await this.authAPI.retrieveCustomerId();
 
@@ -57,7 +75,7 @@ export default class AddPet extends React.Component {
             successDialogVisible: false,
           });
           this.props.navigation.goBack();
-        }, 3000);
+        }, 2000);
       }
       else{
         Alert.alert('Error', "Server error",
@@ -73,10 +91,10 @@ export default class AddPet extends React.Component {
       <ImageBackground source={require("../assets/imgs/background2.gif")} resizeMode='cover' style={{flex: 1, width: '100%', height: '100%'}}>
         <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
           <Block>
-              <MaterialIcons name='keyboard-backspace' size={40} style={{left: 10, top: 30, color: 'white', position: 'absolute'}}
+              <MaterialIcons name='keyboard-backspace' size={40} style={styles.backArrow}
                             onPress={() => this.props.navigation.goBack()}/>
           </Block>
-          <View style={{alignItems: 'center', marginTop: 30}}>
+          <View style={styles.textHeader}>
             <Text color="#ffffff" size={30} style={{fontFamily: 'ITCKRIST'}} >
               Pet Register
             </Text>
@@ -218,8 +236,18 @@ export default class AddPet extends React.Component {
 
 const styles = StyleSheet.create({
   headerImage: {
-      width: width,
-      height: 120,
+    width: width,
+    height: 80
+  },
+  textHeader: {
+    alignItems: 'center', 
+    marginTop: 7
+  },
+  backArrow: {
+    left: 10, 
+    top: 10, 
+    color: 'white', 
+    position: 'absolute'
   },
   registerContainer: {
     width: width * 0.9,  //0.9
