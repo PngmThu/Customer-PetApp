@@ -68,63 +68,65 @@ export default class PetBooking extends React.Component {
     // }
     //let customerId = await this.authAPI.retrieveCustomerId();
     let petId = this.props.navigation.state.params.pet._id;
-
-    this.bookingAPI.getBookingByPetId(petId, (res1) => {
-      var {bookings, vendors, services, dates, times} = this.state;
-      if (res1) {
-        bookings = res1;
-        //this.setState({bookings: bookings});
-        var counter = 0;
-        while (counter < bookings.length) {
-          let vendorId = bookings[counter].vendorId;
-          let serviceId = bookings[counter].serviceId;
+    console.log(petId)
+    // this.bookingAPI.getBookingByPetId(petId, (res1) => {
+    //   var {bookings, vendors, services, dates, times} = this.state;
+    //   console.log(res1)
+    //   if (res1) {
+    //     bookings = res1;
+    //     console.log(res1)
+    //     //this.setState({bookings: bookings});
+    //     var counter = 0;
+    //     while (counter < bookings.length) {
+    //       let vendorId = bookings[counter].vendorId;
+    //       let serviceId = bookings[counter].serviceId;
           
-          this.vendorAPI.getVendorById(vendorId, (res2) => {
-            if (res2) {
-              //console.log("res2: " + JSON.stringify(res2));
-              vendors.push(res2.name);
-              //this.setState({vendors: vendors});
+    //       this.vendorAPI.getVendorById(vendorId, (res2) => {
+    //         if (res2) {
+    //           //console.log("res2: " + JSON.stringify(res2));
+    //           vendors.push(res2.name);
+    //           //this.setState({vendors: vendors});
 
-              this.serviceAPI.getServiceById(serviceId, (res3) => {
-                if (res3) {
-                  //console.log("res3: " + JSON.stringify(res3));
-                  services.push(res3.name);
-                  //this.setState({service: services});
-                  console.log(bookings[counter]);
-                  var date =  new Date(bookings[counter].time);
-                  const offset = date.getTimezoneOffset();
-                  date = new Date(date.getTime() + (offset * 60 * 1000));
-                  var datetimepart = date.toISOString().split("T");
-                  date = datetimepart[0];
-                  var timePart = datetimepart[1];
-                  var timeParts = timePart.split(":");
-                  var time = timeParts[0] + ":" + timeParts[1];
+    //           this.serviceAPI.getServiceById(serviceId, (res3) => {
+    //             if (res3) {
+    //               //console.log("res3: " + JSON.stringify(res3));
+    //               services.push(res3.name);
+    //               //this.setState({service: services});
+    //               console.log(bookings[counter]);
+    //               var date =  new Date(bookings[counter].time);
+    //               const offset = date.getTimezoneOffset();
+    //               date = new Date(date.getTime() + (offset * 60 * 1000));
+    //               var datetimepart = date.toISOString().split("T");
+    //               date = datetimepart[0];
+    //               var timePart = datetimepart[1];
+    //               var timeParts = timePart.split(":");
+    //               var time = timeParts[0] + ":" + timeParts[1];
 
-                  dates.push(date);
-                  times.push(time)
-                  console.log("counter: " + counter);
-                  console.log("bookings: " + JSON.stringify(bookings));
-                  console.log("services: " + JSON.stringify(services));
-                  console.log("vendors: " + JSON.stringify(vendors));
-                  console.log("times: " + JSON.stringify(times));
-                  console.log("dates: " + JSON.stringify(dates));
-                  counter ++;
-                  if (counter == bookings.length) {
-                    this.setState({
-                      bookings: bookings, 
-                      vendors: vendors, 
-                      services: services, 
-                      dates: dates, 
-                      times: times
-                    });
-                  }
-                }
-              })
-            }
-          })
-        }
-      }
-    })
+    //               dates.push(date);
+    //               times.push(time)
+    //               console.log("counter: " + counter);
+    //               console.log("bookings: " + JSON.stringify(bookings));
+    //               console.log("services: " + JSON.stringify(services));
+    //               console.log("vendors: " + JSON.stringify(vendors));
+    //               console.log("times: " + JSON.stringify(times));
+    //               console.log("dates: " + JSON.stringify(dates));
+    //               counter ++;
+    //               if (counter == bookings.length) {
+    //                 this.setState({
+    //                   bookings: bookings, 
+    //                   vendors: vendors, 
+    //                   services: services, 
+    //                   dates: dates, 
+    //                   times: times
+    //                 });
+    //               }
+    //             }
+    //           })
+    //         }
+    //       })
+    //     }
+    //   }
+    // })
   }
 
   showAlert1(bookingId) {  
@@ -157,55 +159,47 @@ export default class PetBooking extends React.Component {
 
 renderCard() {
   var table = [];
-  var {pet, bookings, services, vendors, times, dates} = this.state;
-
-  console.log("services: " + JSON.stringify(services));
-  console.log("vendors: " + JSON.stringify(vendors));
-  console.log("times: " + times);
-  console.log("dates: " + dates);
-  if (bookings.length != 0 && services.length != 0 && vendors.length != 0 && times.length != 0 && dates.length != 0)
-  this.state.bookings.forEach((item, id) => {
-    table.push(
-      <TouchableOpacity 
-        //onPress={() => this.props.navigation.navigate('BookingDetails',{bookingId: bookings[i]._id})}
-      >
-        <Block flex={0.8} center style={styles.booking}>
-          <View style={styles.detailInfo}>
-            <Text style={{fontFamily: 'ITCKRIST', fontSize: 17, color: 'white', alignSelf: 'center',
-                          paddingTop: 10}}>
-              {pet.name}
+  
+  table.push(
+    <TouchableOpacity key={1}
+      onPress={() => this.props.navigation.navigate('BookingDetails',{bookingId: '5e85996d48c81d0017299e0c'})}
+    >
+      <Block flex={0.8} center style={styles.booking}>
+        <View style={styles.detailInfo}>
+          <Text style={{fontFamily: 'ITCKRIST', fontSize: 17, color: 'white', alignSelf: 'center',
+                        paddingTop: 10}}>
+            {'Cookie'}
+          </Text>
+          <View style={styles.row}>
+            <MaterialCommunityIcons name='notebook' size={20} color='#511efa' 
+                style={{paddingRight: 10}} 
+            />
+            <Text style={styles.field}>
+              {'Grooming'}
             </Text>
-            <View style={styles.row}>
-              <MaterialCommunityIcons name='notebook' size={20} color='#511efa' 
-                  style={{paddingRight: 10}} 
-              />
-              <Text style={styles.field}>
-                {services[id].name}
-              </Text>
-            </View>
-
-            <View style={styles.row}>
-              <Entypo name='back-in-time' size={20} color='#511efa' 
-                    style={{paddingRight: 10}}  
-              />
-              <Text style={styles.field}>
-                {times[id]}{" "}{dates[i]}
-              </Text>
-            </View>
-
-            <View style={styles.lastRow}>
-              <MaterialIcons name='location-on' size={20} color='#511efa' 
-                  style={{paddingRight: 10}} 
-              />
-              <Text style={styles.field}>
-                {vendors[i].name}
-              </Text>
-            </View>
           </View>
-        </Block>
-      </TouchableOpacity>
-    )}
-  ) 
+
+          <View style={styles.row}>
+            <Entypo name='back-in-time' size={20} color='#511efa' 
+                  style={{paddingRight: 10}}  
+            />
+            <Text style={styles.field}>
+              {'19:00'}{" "}{'2020-04-03'}
+            </Text>
+          </View>
+
+          <View style={styles.lastRow}>
+            <MaterialIcons name='location-on' size={20} color='#511efa' 
+                style={{paddingRight: 10}} 
+            />
+            <Text style={styles.field}>
+              {'AAVC - Animal and Avian Veterinary Clinic'}
+            </Text>
+          </View>
+        </View>
+      </Block>
+    </TouchableOpacity>
+  )
   return table;
 }
     

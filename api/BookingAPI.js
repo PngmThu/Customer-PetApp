@@ -98,7 +98,7 @@ export default class BookingAPI{
 
     async getBookingByPetId(petId, callback){
         const token = await this.authAPI.retrieveToken();
-
+        console.log(123)
         const url = this.globals.serverHost + '/api/booking/pet/' + petId;
         
         let options = {
@@ -109,8 +109,6 @@ export default class BookingAPI{
         .then(res => {
             if(res.status == 200){
                 callback(res.data);
-                console.log("resdata" +res.data)
-
             }
         })
         .catch(err => {
