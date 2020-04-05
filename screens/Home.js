@@ -156,6 +156,7 @@ class Home extends React.Component {
 
   render() {
     const { navigation } = this.props;
+
     if (this.state.loading) {
       var loader = <Loader />
     }
@@ -166,10 +167,13 @@ class Home extends React.Component {
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1 }}
         >
+
+          {loader}
+
           <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
-            <View style={{alignItems: 'center', marginTop: 30}}>
+            <View style={styles.textHeader}>
               <Text color="#ffffff" size={30} style={{fontFamily: 'ITCKRIST'}} >
-                Home
+                Your pets
               </Text>
             </View>
           </ImageBackground>
@@ -198,7 +202,11 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     width: width,
-    height: 120,
+    height: 80
+  },
+  textHeader: {
+    alignItems: 'center', 
+    marginTop: 7
   },
   container: {
     width: "90%",
@@ -257,7 +265,7 @@ const styles = StyleSheet.create({
   addIcon: {
     alignSelf: 'flex-end',
     position: 'absolute',
-    bottom: 110,
+    bottom: 120,
     right: 20,
   },
   button: {

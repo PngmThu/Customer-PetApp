@@ -46,11 +46,11 @@ class CalendarView extends React.Component {
 
   componentDidMount(){
     // this.didFocus = this.props.navigation.addListener('willFocus', () => {
-    //   this.setState({loading: true}, () => {
-    //     this.retrieveData();
-    //   })
-    // })
-    this.retrieveData();
+      this.setState({loading: true}, () => {
+        this.retrieveData();
+      })
+    //})
+    //this.retrieveData();
   }
 
   componentWillUnmount(){
@@ -103,7 +103,7 @@ class CalendarView extends React.Component {
       //console.log("this.state.servicesData: " + this.state.servicesData);
       this.scheduleAPI.getUnavailableDateByVendor(vendor, async (unavailable) => {
         let unavailableDate = [];
-        console.log("unavailable: " + JSON.stringify(unavailable));
+        //console.log("unavailable: " + JSON.stringify(unavailable));
         await unavailable.forEach(v => {
           var date =  new Date(v.date);
           const offset = date.getTimezoneOffset();
@@ -118,7 +118,7 @@ class CalendarView extends React.Component {
         }, () => {
           this.calendarRef.current.processDate();
           this.setState({loading: false})
-          console.log("this.state.unavailableDate: " + this.state.unavailableDate);
+          //console.log("this.state.unavailableDate: " + this.state.unavailableDate);
         })  
 
         // this.bookingAPI.getBookingByVendorId(vendorId, (bookings) => {

@@ -2,25 +2,30 @@ import React from 'react';
 import { StyleSheet, Dimensions, ScrollView, ImageBackground, View, } from 'react-native';
 import { Block, theme, Text } from 'galio-framework';
 import Popup from '../components/Popup';
-import { MaterialIcons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialIcons, MaterialCommunityIcons, AntDesign } from '@expo/vector-icons';
 import { Button } from 'galio-framework';
 import BookingAPI from '../api/BookingAPI';
 import ServiceAPI from '../api/ServiceAPI';
 import CustomerAPI from '../api/CustomerAPI';
 import PetAPI from '../api/PetAPI';
+import VendorLocationAPI from '../api/VendorLocationAPI';
+import Loader from '../components/Loader';
+import { Dialog } from 'react-native-simple-dialogs';
+
 const { width, height } = Dimensions.get('screen');
 
 class BookingDetails extends React.Component {
 
   constructor(props) {
     super(props);
-    this.updateBooking = this.updateBooking.bind(this);
+    this.cancelBooking = this.cancelBooking.bind(this);
     this.handleCancel = this.handleCancel.bind(this);
-    this.handleComplete = this.handleComplete.bind(this);
+    //this.handleComplete = this.handleComplete.bind(this);
     this.bookingAPI = new BookingAPI();
     this.serviceAPI = new ServiceAPI();
     this.customerAPI = new CustomerAPI();
     this.petAPI = new PetAPI();
+    this.VendorLocationAPI = new VendorLocationAPI();
   }
 
   state = {
@@ -33,12 +38,18 @@ class BookingDetails extends React.Component {
     pet: new Object(),
     booking: new Object(),
     bookingTime: new Date('2030-01-01'),
-    btnAction: false
+    btnAction: false,
+    vendor: new Object(),
+    loading: false,
+    successDialogVisible: false,
+    canceling: false,
   }
 
   componentDidMount() {
     this.didFocus = this.props.navigation.addListener('willFocus', () => {
-      this.retrieveData();
+      this.setState({ loading: true }, () => {
+        this.retrieveData();
+      })
     })
   }
 
@@ -47,27 +58,31 @@ class BookingDetails extends React.Component {
   }
 
   retrieveData() {
-    this.bookingId = this.props.navigation.state.params.data;
-    this.bookingAPI.getBookingById(this.bookingId, (res) => {
-      let time = new Date(res.time);
+    this.bookingId = this.props.navigation.state.params.bookingId;
+    // if (!this.bookingId) {
+    //   this.props.navigation.goBack();
+    // }
+    this.bookingAPI.getBookingById(this.bookingId, (booking) => {
+      if (booking == false) {
+        this.props.navigation.goBack();
+      }
+      let time = new Date(booking.time);
       let now = new Date();
-      console.log(time);
-      console.log(now);
-      this.setState({ booking: res, bookingTime: time, bookingStatus: res.status })
-      this.customerAPI.getCustomerById(res.customerId, (res) => {
-        if (res != false) {
-          this.setState({ customer: res })
-        }
-      })
+      this.setState({ booking: booking, bookingTime: time, bookingStatus: booking.status })
+      this.customerAPI.getCustomerById(booking.customerId, (res) => {
+        this.setState({ customer: res })
 
-      this.petAPI.getPetById(res.petId, (res) => {
-        if (res != false) {
+        this.petAPI.getPetById(booking.petId, (res) => {
           this.setState({ pet: res })
-        }
-      })
 
-      this.serviceAPI.getServiceById(res.serviceId, (res) => {
-        this.setState({ service: res })
+          this.serviceAPI.getServiceById(booking.serviceId, (res) => {
+            this.setState({ service: res })
+          
+            this.VendorLocationAPI.getClinicByVendorId(booking.vendorId, (res) => {
+              this.setState({vendor: res, loading: false});
+            })
+          })
+        })
       })
     })
   }
@@ -76,24 +91,36 @@ class BookingDetails extends React.Component {
     this.setState({ popUpDialog: true, question: 'Are you sure to cancel this booking', btnAction: false })
   }
 
-  handleComplete() {
-    this.setState({ popUpDialog: true, question: 'Is this booking completed?', btnAction: true })
-  }
+  // handleComplete() {
+  //   this.setState({ popUpDialog: true, question: 'Is this booking completed?', btnAction: true })
+  // }
 
-  updateBooking(bool) {
+  cancelBooking(bool) {
+    this.setState({ canceling: true });
     if (bool) {
       let booking = { ...this.state.booking }
-      if (this.state.btnAction) {
-        booking.status = 'completed';
-        this.setState({ bookingStatus: 'completed' });
-      }
-      else {
-        booking.status = "cancelled";
-        this.setState({ bookingStatus: 'cancelled' });
-      }
+      booking.status = "cancelled";
+      // if (this.state.btnAction) {
+      //   booking.status = 'completed';
+      //   this.setState({ bookingStatus: 'completed' });
+      // }
+      // else {
+      //   booking.status = "cancelled";
+      //   //this.setState({ bookingStatus: 'cancelled' });
+      // }
 
       this.bookingAPI.updateBookingById(booking._id, booking, (res) => {
-        console.log(res);
+        //console.log(res);
+        this.setState({
+          successDialogVisible: true,
+          canceling: false,
+        });
+        setTimeout(() => {
+          this.setState({
+            bookingStatus: 'cancelled',
+            successDialogVisible: false,
+          });
+        }, 2000);
       })
     }
     this.setState({ popUpDialog: false });
@@ -104,9 +131,9 @@ class BookingDetails extends React.Component {
 
     if (this.state.bookingStatus == 'booked') {
       var bookingCancel = <Button color="warning" size={'small'} onPress={() => { this.handleCancel() }} style={styles.cancelBtn}>Cancel</Button>;
-      if (this.state.bookingTime < new Date()) {
-        var bookingComplete = <Button color="#6400cf" size={'small'} onPress={() => { this.handleComplete() }} style={styles.cancelBtn}>Complete</Button>;
-      }
+      // if (this.state.bookingTime < new Date()) {
+      //   var bookingComplete = <Button color="#6400cf" size={'small'} onPress={() => { this.handleComplete() }} style={styles.cancelBtn}>Complete</Button>;
+      // }
     }
     else if (this.state.bookingStatus) {
       bookingCancel =
@@ -121,25 +148,44 @@ class BookingDetails extends React.Component {
       var parsedDOB = dob.getDate() + "/" + (dob.getMonth() + 1) + "/" + dob.getFullYear();
     }
 
+    if (this.state.loading || this.state.canceling) {
+      var loader = <Loader />
+    }
+
     return (
       <Block flex center style={styles.home}>
         <ImageBackground
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1 }}
         >
-          <Popup visible={this.state.popUpDialog} choice={this.updateBooking} question={this.state.question} />
-          <Block style={{ position: 'absolute', top: 0 }}>
+
+          {loader}
+
+          <Popup visible={this.state.popUpDialog} choice={this.cancelBooking} question={this.state.question} />
+          {/* <Block style={{ position: 'absolute', top: 0 }}>
             <ImageBackground source={require("../assets/imgs/Schedule1.png")} resizeMode='contain' style={styles.headerImage} />
             <View style={{ width: width, alignContent: 'center', alignItems: 'center', top: 15 }}>
               <MaterialIcons name='keyboard-backspace' size={40} style={styles.backBtn}
-                onPress={() => navigation.navigate("Home")} />
+                onPress={() => this.props.navigation.goBack()} />
               <Text color="#ffffff" size={38} style={{ marginLeft: 15, fontFamily: 'ITCKRIST' }}>
                 Booking Details
                 </Text>
             </View>
-          </Block>
+          </Block> */}
 
-          <Block flex={1} style={styles.booking}>
+          <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
+            <Block>
+              <MaterialIcons name='keyboard-backspace' size={35} style={styles.backArrow}
+                            onPress={() => this.props.navigation.goBack()}/>
+            </Block>
+            <View style={styles.textHeader}>
+              <Text color="#ffffff" size={30} style={{fontFamily: 'ITCKRIST'}} >
+                {"Booking Details"}
+              </Text>
+            </View>
+          </ImageBackground>
+
+          {!this.state.loading && <Block flex={1} style={styles.booking}>
             <ScrollView style={{ marginBottom: 15 }}>
               <Text style={styles.headerTxt}>Customer info</Text>
               <View style={styles.detailInfo}>
@@ -198,6 +244,12 @@ class BookingDetails extends React.Component {
               <Text style={styles.headerTxt}>Booking info</Text>
               <View style={styles.detailInfo}>
                 <View style={styles.row}>
+                  <Text style={styles.field}>Clinic:
+                      <Text style={styles.value}> {this.state.vendor.name}</Text>
+                  </Text>
+                </View>
+
+                <View style={styles.row}>
                   <Text style={styles.field}>Service:
                       <Text style={styles.value}> {'Grooming'}</Text>
                   </Text>
@@ -217,17 +269,34 @@ class BookingDetails extends React.Component {
                 </View>
 
                 <View style={styles.row}>
-                  <Text style={styles.field}>status:
-                      <Text style={styles.value}> {'booked'}</Text>
+                  <Text style={styles.field}>Status:
+                      <Text style={styles.value}> {this.state.booking.status}</Text>
                   </Text>
                 </View>
               </View>
               <View style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-                {bookingComplete}
+                {/* {bookingComplete} */}
                 {bookingCancel}
               </View>
             </ScrollView>
-          </Block>
+          </Block>}
+
+          <Dialog
+            visible={this.state.successDialogVisible}
+            dialogStyle={{
+              borderRadius: 15, backgroundColor: "#232124", 
+              borderWidth: 4, width: width * 0.7,
+              alignSelf: 'center',
+            }}
+            //onTouchOutside={() => this.setState({successDialogVisible: false})} 
+          >
+            <Block flex middle style={{flexDirection: 'row'}}>
+              <AntDesign name='checkcircleo' size={25} color='#1df232' style={{marginRight: 10, marginBottom: -4 }} />
+              <Text bold style={{color: '#E1E1E1', fontSize: 16, marginBottom: -4}}>
+                Cancelled successfully
+              </Text>
+            </Block>
+          </Dialog>
 
         </ImageBackground>
       </Block>
@@ -243,17 +312,24 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     width: width,
-    height: 90,
-    justifyContent: 'flex-start',
-    borderRadius: 4,
-    position: 'absolute',
+    height: 80
+  },
+  textHeader: {
+    alignItems: 'center', 
+    marginTop: 7
+  },
+  backArrow: {
+    left: 10, 
+    top: 10, 
+    color: 'white', 
+    position: 'absolute'
   },
   booking: {
     backgroundColor: "rgba(45, 45, 45, 0.95)",
     borderRadius: 15,
     width: "95%",
     paddingHorizontal: 20,
-    marginTop: 100,
+    marginTop: 5,
     marginBottom: 120,
     alignSelf: 'center'
   },

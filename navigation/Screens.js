@@ -165,7 +165,7 @@ const HomeTab = createBottomTabNavigator(
           return <MaterialIcons name={name} color={tintColor} size={22} />
         },
         tabBarOptions: {
-          activeBackgroundColor: 'rgba(0,0,0, 0.3)',
+          activeBackgroundColor: 'rgb(20,20,20)',
           activeTintColor: 'white',
           inactiveTintColor: '#fafafa',
           style: styles.container,
@@ -233,11 +233,11 @@ export default AppContainer;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    backgroundColor: 'rgba(45, 45, 45, 0.95)',
     height: 45,
     borderTopWidth: 0
   },
   tab: {
-    borderRadius: 20,
+    borderRadius: 0,
   }
 });

@@ -31,17 +31,15 @@ import SearchableDropdown from 'react-native-searchable-dropdown';
 import DatePicker from 'react-native-datepicker';
 import { Dialog, ConfirmDialog } from 'react-native-simple-dialogs';
 
-//import  MapView  from 'expo';
 import * as Permissions from 'expo-permissions';
 import * as Location from 'expo-location';
 import { Polyline } from '@mapbox/polyline';
-import { Marker }from 'react-native-maps';
+import { Marker, Callout }from 'react-native-maps';
 import MapView from 'react-native-maps';
-//import { Polyline } from 'react-native-maps';
-import { IntentLauncherAndroid } from 'expo';
 import Tooltip from 'react-native-walkthrough-tooltip';
 
 import CalendarView from './CalendarView';
+import Loader from '../components/Loader';
 
 import VendorLocationAPI from '../api/VendorLocationAPI';
 import ServiceAPI from '../api/ServiceAPI';
@@ -52,30 +50,28 @@ import PetAPI from '../api/PetAPI';
 const { width, height } = Dimensions.get("screen");
 
 const secondIndicatorStyles = {
-  //#511efa, #606afc, #7880fa: blue
-  //#ff1414: orange
   stepIndicatorSize: 30,
   currentStepIndicatorSize: 40,
   separatorStrokeWidth: 2.5,
   currentStepStrokeWidth: 3,
-  stepStrokeCurrentColor: '#7880fa', //orange: '#fe7013'
+  stepStrokeCurrentColor: '#7880fa',
   stepStrokeWidth: 3,
   separatorStrokeFinishedWidth: 4,
-  stepStrokeFinishedColor: '#7880fa', //orange: '#fe7013'
-  stepStrokeUnFinishedColor: '#000000', //gray: '#aaaaaa'
-  separatorFinishedColor: '#7880fa', //orange: '#fe7013'
-  separatorUnFinishedColor: '#000000', //gray: '#aaaaaa'
-  stepIndicatorFinishedColor: '#7880fa', //orange: '#fe7013'
-  stepIndicatorUnFinishedColor: '#170b0b',  //'#ffffff'
-  stepIndicatorCurrentColor: '#170b0b', //'#ffffff'
+  stepStrokeFinishedColor: '#7880fa', 
+  stepStrokeUnFinishedColor: '#000000', 
+  separatorFinishedColor: '#7880fa', 
+  separatorUnFinishedColor: '#000000', 
+  stepIndicatorFinishedColor: '#7880fa', 
+  stepIndicatorUnFinishedColor: '#170b0b',  
+  stepIndicatorCurrentColor: '#170b0b', 
   stepIndicatorLabelFontSize: 13,
   currentStepIndicatorLabelFontSize: 13,
-  stepIndicatorLabelCurrentColor: '#7880fa', //orange: '#fe7013'
-  stepIndicatorLabelFinishedColor: '#170b0b', //'#ffffff'
-  stepIndicatorLabelUnFinishedColor: '#000000', //gray: '#aaaaaa'
-  labelColor: '#000000', //grey: '#999999'
+  stepIndicatorLabelCurrentColor: '#7880fa', 
+  stepIndicatorLabelFinishedColor: '#170b0b', 
+  stepIndicatorLabelUnFinishedColor: '#E1E1E1', 
+  labelColor: '#E1E1E1', 
   labelSize: 13,
-  currentStepLabelColor: '#7880fa' //orange: '#fe7013'
+  currentStepLabelColor: '#7880fa' 
 }
 
 const getStepIndicatorIconConfig = ({ position, stepStatus }) => {
@@ -118,7 +114,6 @@ class Booking extends React.Component {
       successDialogVisible: false,
       latitude: null,
       longitude: null,
-      //locations: locations
       locations: null,
       isLoading: true,
       clickMarker: false,
@@ -127,6 +122,8 @@ class Booking extends React.Component {
       chosenClinic: null,
       servicesData: null,
       petsData: null,
+      marker: null,
+      calloutIsRendered: false,
     };
     this.VendorLocationAPI = new VendorLocationAPI();
     this.serviceAPI = new ServiceAPI();
@@ -148,7 +145,6 @@ class Booking extends React.Component {
           [{text: 'Ok'}])
       }
     });
-    //console.log("this.state.locations: " + this.state.locations);
   }
 
   getData = async () => {
@@ -163,16 +159,14 @@ class Booking extends React.Component {
         Alert.alert('Error', res,
           [{text: 'Ok'}])
       }
-      //console.log("this.state.servicesData: " + JSON.stringify(this.state.servicesData));
 
       this.PetAPI.getPetByCustomerId(customerId, (pets) => {
         if(pets != null) {
           this.setState({ 
             petsData: pets,
-            isLoading: false
+            isLoading: false,
           });
         }
-        //console.log("this.state.petsData: " + JSON.stringify(this.state.petsData));
       })
     })
   }
@@ -199,41 +193,54 @@ class Booking extends React.Component {
     )
   }
 
-  componentWillMount() {
-    this.getAllClinics();
-    //this.getData(this.state.chosenClinic);
-  }
+  // componentWillMount() {
+  //   this.getAllClinics();
+  // }
 
   async componentDidMount() {
-    const { status } = await Permissions.getAsync(Permissions.LOCATION)
+    this.didFocus = this.props.navigation.addListener('willFocus', async () => {
+      this.setState({
+        currentPage: 0, chosenClinic: null, clinicInput: "",clickMarker: false, 
+        isRegister: false, coords: null, distance: "", timeTaken: "", isLoading: true,
+      }, () => {
+        if (!this.state.locations)
+          this.getAllClinics();
+        else
+          this.setState({isLoading: false});
+      })
+      const { status } = await Permissions.getAsync(Permissions.LOCATION)
 
-    if (status !== 'granted') {
-      const response = await Permissions.askAsync(Permissions.LOCATION)
-    }
+      if (status !== 'granted') {
+        const response = await Permissions.askAsync(Permissions.LOCATION)
+      }
 
-    let location = await Location.getCurrentPositionAsync({enableHighAccuracy:true});
+      let location = await Location.getCurrentPositionAsync({enableHighAccuracy:true});
 
-    // console.log('latitude is ' + location.coords.latitude.toString())
-    // console.log('longitude is ' + location.coords.longitude.toString())
+      this.getAllClinics();
 
-    this.setState({
-      latitude: location.coords.latitude,
-      longitude: location.coords.longitude,
-    });
+      this.setState({
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude,
+      });
+    })
+    // const { status } = await Permissions.getAsync(Permissions.LOCATION)
 
-    // navigator.geolocation.getCurrentPosition(
-    //   ({ coords: { latitude, longitude } }) => this.setState({ latitude, longitude }, this.mergeCoords),
-    //   (error) => console.log('Error:', error)
-    // )
+    // if (status !== 'granted') {
+    //   const response = await Permissions.askAsync(Permissions.LOCATION)
+    // }
 
-    // const { locations: [ sampleLocation ] } = this.state
+    // let location = await Location.getCurrentPositionAsync({enableHighAccuracy:true});
 
-    // console.log("sampleLocation: " + JSON.stringify(sampleLocation));
+    // this.getAllClinics();
 
     // this.setState({
-    //   desLatitude: sampleLocation.coords.latitude,
-    //   desLongitude: sampleLocation.coords.longitude
-    // }, this.mergeCoords)
+    //   latitude: location.coords.latitude,
+    //   longitude: location.coords.longitude,
+    // });
+  }
+
+  componentWillUnmount() {
+    this.didFocus.remove();
   }
 
   mergeCoords = () => {
@@ -256,14 +263,12 @@ class Booking extends React.Component {
   async getDirections(startLoc, desLoc) {
     try {
       const resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${desLoc}&key=AIzaSyBS41pWqFh2IHMuqYSL23Okzg5br7XUvdg`)
-      //console.log("resp: " + JSON.stringify(resp));
       const respJson = await resp.json();
       const response = respJson.routes[0];
       const distanceTime = response.legs[0];
       const distance = distanceTime.distance.text;
       const timeTaken = distanceTime.duration.text;
       var polyline = require('@mapbox/polyline');
-      // const points = Polyline.decode(respJson.routes[0].overview_polyline.points);
       const points = polyline.decode(respJson.routes[0].overview_polyline.points);
       const coords = points.map(point => {
         return {
@@ -278,12 +283,16 @@ class Booking extends React.Component {
   }
 
   onMarkerPress = location => () => {
-  //onMarkerPress = (id, location) => () => {
-    //const { coords: { latitude, longitude } } = location;
     const { latitude, longitude } = location;
 
-    //console.log("AAAAAAAA");
-    //console.log("location chose: " + JSON.stringify(location));
+    //show tooltip
+    //this.marker.showCallout();
+
+    // if(this.state.calloutIsRendered === true) return;
+    // this.setState({calloutIsRendered: true});
+    // this.marker.showCallout();
+    
+
     if (location.vendorId)
       this.setState({ isRegister: true });
     else 
@@ -296,7 +305,7 @@ class Booking extends React.Component {
       clinicInput: location.name,
       clickMarker: true,
       chosenClinic: location,
-      //toolTipVisible: true,
+      toolTipVisible: true,
     }, this.mergeCoords);
 
   }
@@ -304,41 +313,42 @@ class Booking extends React.Component {
   renderMarkers = () => {
     const { locations } = this.state;
 
-    // const {
-    //   latitude, longitude
-    // } = locations[0];
-
-    //console.log("locations[0]: " + JSON.stringify(locations[0]));
     if (locations)
       return (
         <View>
           {
             locations.map((location, idx) => {
-              // const {
-              //   coords: { latitude, longitude }
-              // } = location
               const latitude = parseFloat(location.latitude);
               const longitude = parseFloat(location.longitude);
-
-              //console.log("latitude: " + latitude);
-              //console.log("longitude: " + longitude);
               return (
                 (latitude && longitude) ? 
-                  // <Tooltip
+                  // <Tooltip key={idx}
                   //   animated={true}
                   //   arrowSize={{ width: 16, height: 8 }}
-                  //   backgroundColor="rgba(0,0,0,0)" // Color of the fullscreen background beneath the tooltip.
+                  //   backgroundColor="rgba(0,0,0,0.5)" // Color of the fullscreen background beneath the tooltip.
                   //   isVisible={this.state.toolTipVisible}
                   //   content={<Text>{location.name}</Text>} //(Must) This is the view displayed in the tooltip
                   //   placement="top"  //(Must) top, bottom, left, right, auto.
                   //   onClose={() => this.setState({ toolTipVisible: false })}
                   // >
-                    <Marker
+                    // <Marker
+                    //   key={idx}
+                    //   coordinate={{ latitude, longitude }}
+                    //   onPress={this.onMarkerPress(location)}
+                    //   pinColor="navy"
+                    // >
+                    <Marker 
                       key={idx}
                       coordinate={{ latitude, longitude }}
                       onPress={this.onMarkerPress(location)}
                       pinColor="navy"
+                      ref={ref => { this.marker = ref; }}
+                      //ref={ref => this.setState({ marker: ref })}
+                      //title={location.name}
                     >
+                      <Callout>
+                        <Text>{location.name}</Text>
+                      </Callout>
                       {/* <MaterialIcons name='pets' size={30} style={{color: '#885DDA'}}/> */}
                     </Marker>
                   // </Tooltip>
@@ -524,8 +534,6 @@ class Booking extends React.Component {
       destination
     } = this.state;
 
-    //console.log('latitude is ' + latitude);
-    //console.log('longitude is ' + longitude);
     if (latitude) {
       return (
         <MapView
@@ -567,7 +575,6 @@ class Booking extends React.Component {
 
   showClinicInfo = () => {
     const clinic = this.state.chosenClinic;
-    //console.log("clinic: " + JSON.stringify(clinic));
     return (
       this.state.chosenClinic ?
         <Block flex={0.8} center style={styles.booking}>
@@ -617,7 +624,7 @@ class Booking extends React.Component {
 
                 {!this.state.isRegister &&
                   <View style={{alignItems: 'center', marginTop:10, marginBottom: 10}}>
-                    <Text style={styles.warningText}>This clinic has not been registered</Text>
+                    <Text style={styles.warningText}>This clinic has not registered</Text>
                     <Text style={styles.warningText}>under our system</Text>
                     <Text style={styles.warningText}>Please contact them directly!</Text>
                   </View>
@@ -632,9 +639,6 @@ class Booking extends React.Component {
   chooseClinicView = () => {
     const {timeTaken, distance} = this.state;
 
-    //console.log("this.showMap(): ", this.showMap());
-    //const test = this.state.clickMarker ? this.state.clinicInput : undefined;
-    //console.log("this.state.clickMarker ? this.state.clinicInput : undefined -> " + test);
     return (
       <Block flex>
         <Block flex middle>
@@ -666,7 +670,6 @@ class Booking extends React.Component {
                   }}
                   itemTextStyle={{ color: '#E1E1E1' }}
                   itemsContainerStyle={{ maxHeight: 150 }}
-                  //items={items}
                   items={this.state.locations}
                   resetValue={false}
                   value={this.state.clinicInput}
@@ -689,21 +692,13 @@ class Booking extends React.Component {
                       placeholder: "Choose...",
                       placeholderTextColor: "#525151",
                       underlineColorAndroid: "transparent",
-                      //value: this.state.clinicInput,
-                      //value: this.state.clickMarker ? this.state.clinicInput : undefined,
-                      //value: undefined,
                       style: {
                           padding: 5,
                           marginLeft: 10,
                           color: "#E1E1E1"
                       },
-                      // onTextChange: text => {
-                      //   const {clinicInput} = this.state;   
-                      //   this.setState({ clinicInput: text });
-                      // }
                     }
                   }
-                  //textInputProps={this.state.clickMarker ? {value: this.state.clinicInput} : undefined}
                   listProps={
                     {
                       nestedScrollEnabled: true,
@@ -738,11 +733,11 @@ class Booking extends React.Component {
                   {this.showClinicInfo()}
                   
                   {this.state.isRegister ?
-                    <Block flex middle style={{ elevation: 1, height: height * 0.3, marginTop: -height * 0.1}}>
+                    <Block flex middle style={{ elevation: 1, height: height * 0.4, marginTop: -90}}>
                       <Button color="primary" style={styles.button} 
-                        onPress={() => this.setState({ currentPage: 1, 
-                                                        isloading: true }, this.getData)}>
-                        <Text bold size={18} color={argonTheme.COLORS.WHITE}>
+                        onPress={() => this.setState({ currentPage: 1, serviceInput: null, petInput: null, date: "", time: "",
+                                                        isLoading: true }, this.getData)}>
+                        <Text bold size={16} color={argonTheme.COLORS.WHITE}>
                           Next
                         </Text>
                       </Button>
@@ -752,7 +747,7 @@ class Booking extends React.Component {
                   }
                 </View>
                 :
-                <Block flex middle style={{ elevation: 1, height: height * 0.1 }} />
+                <Block flex middle style={{ elevation: 1, height: height * 0.15 }} />
               }     
             </ScrollView>
           </KeyboardAvoidingView>
@@ -765,7 +760,6 @@ class Booking extends React.Component {
   DetailsView = () => {
     var todayDate = new Date().toISOString().slice(0,10);
 
-    //console.log("this.state.date: " + this.state.date);
     return (
       <Block flex>
         <Block flex middle>
@@ -775,12 +769,9 @@ class Booking extends React.Component {
             enabled
           >
             <ScrollView style={{ flex: 1, width: width}} keyboardShouldPersistTaps="handled">
-              {/* <Block flex={0.3}> */}
-
               <Block center>
                 <Text color="#E1E1E1" size={20} 
-                      style={{ marginLeft: width * 0.05, marginBottom: 5,
-                               fontWeight: 'bold'}}>
+                      style={{ marginBottom: 5, fontWeight: 'bold'}}>
                   Date   
                 </Text>
               </Block>
@@ -827,7 +818,6 @@ class Booking extends React.Component {
                   }}
                   itemTextStyle={{ color: '#E1E1E1' }}
                   itemsContainerStyle={{ maxHeight: 150 }}
-                  //items={services}
                   items={this.state.servicesData}
                   resetValue={false}
                   value={this.state.serviceInput}
@@ -865,9 +855,7 @@ class Booking extends React.Component {
                 </View>
               </Block>
               
-              <Block style={{height: height * 0.5, marginTop: 10,
-                //marginTop: -height * 0.5 + 90
-                }}>
+              <Block style={{height: height * 0.5, marginTop: 10}}>
                 <Block>
                   <Text flex color="#E1E1E1" size={20} 
                         style={{ marginLeft: width * 0.05, marginBottom: 5,
@@ -891,7 +879,6 @@ class Booking extends React.Component {
                   }}
                   itemTextStyle={{ color: '#E1E1E1' }}
                   itemsContainerStyle={{ maxHeight: 150}}
-                  //items={pets}
                   items={this.state.petsData}
                   resetValue={false}
                   value={this.state.petInput}
@@ -919,60 +906,6 @@ class Booking extends React.Component {
               <Block style={{width: width * 0.9, height: height * 0.4, marginTop: -height * 0.5 + 90, 
                              flexDirection: 'row', justifyContent: 'space-between',
                              alignSelf: 'center'}}>
-                {/* <Block>
-                  <Block>
-                    <Text flex color="#E1E1E1" size={20} 
-                          style={{ marginBottom: 5, fontWeight: 'bold'}}>
-                      Date   
-                    </Text>
-                  </Block>
-                  <DatePicker
-                    style={{width: width * 0.4, height: 50, marginBottom: height * 2, 
-                            backgroundColor: "#282828", borderRadius: 10,
-                            justifyContent: 'center', }}
-                    date={this.state.date}
-                    mode="date"
-                    placeholder="Choose..."
-                    format="YYYY-MM-DD"
-                    //minDate="2016-05-01"
-                    minDate={todayDate}
-                    maxDate="2022-02-06"
-                    confirmBtnText="Confirm"
-                    cancelBtnText="Cancel"
-                    iconComponent={
-                      <FontAwesome name='calendar-check-o' size={20} color='#511efa' style={{padding: 10}} />
-                    }
-                    customStyles={{
-                      dateIcon: {
-                        position: 'absolute',
-                        left: 0,
-                        top: 4,
-                        marginLeft: 0,
-                      },
-                      dateInput: {
-                        borderWidth: 0,
-                        alignItems: "flex-start",
-                        padding: 10,
-                        marginLeft: 10,
-                      },
-                      dateText: {
-                        color: "#E1E1E1",
-                      },
-                      placeholderText: {
-                        color: '#505050'
-                      },
-                      modalStyle: {
-                        backgroundColor: "#282828",
-                      },
-                      modalOverlayStyle: {
-                        backgroundColor: "#282828",
-                      }
-                      // ... You can check the source to find the other keys.
-                    }}
-                    onDateChange={(date) => {this.setState({date: date})}}
-                  />
-                </Block> */}
-
                 <Block>
                   <Block>
                     <Text flex color="#E1E1E1" size={20} 
@@ -1019,11 +952,13 @@ class Booking extends React.Component {
                 </Block>
               </Block>
               
-              <Block style={{width: width * 0.65, height: height * 0.4, marginTop: -height * 0.5 + 90, 
+              <Block style={{width: width * 0.65, height: height * 0.4, marginTop: -height * 0.5 + 70, 
                              flexDirection: 'row', justifyContent: 'center',
                              alignSelf: 'center'}}>
                 <Block flex middle>
-                  <Button color="primary" style={styles.button2} onPress={() => this.setState({ currentPage: 0 })}>
+                  <Button color="primary" style={styles.button2} 
+                          onPress={() => this.setState({ currentPage: 0, chosenClinic: null, clinicInput: "",clickMarker: false, 
+                                                         isRegister: false, coords: null, distance: "", timeTaken: "" })}>
                     <Text bold size={16} color={argonTheme.COLORS.WHITE}>
                       Back
                     </Text>
@@ -1066,8 +1001,6 @@ class Booking extends React.Component {
     this.bookingAPI.createBooking(booking, (res) => {
       console.log("canBook?: ", res);
       if(res){
-        // Alert.alert('Successfully', "Service is created successfully!",
-        // [{text: 'Ok', onPress: () => {this.props.navigation.goBack()}}])
         this.setState({
           confirmDialogVisible: false,
           successDialogVisible: true,
@@ -1076,8 +1009,15 @@ class Booking extends React.Component {
           this.setState({
             successDialogVisible: false,
             currentPage: 0,
+            chosenClinic: null, 
+            clinicInput: "",
+            clickMarker: false, 
+            isRegister: false,
+            coords: null, 
+            distance: "", 
+            timeTaken: ""
           });
-        }, 3000);
+        }, 2000);
       }
       else{
         Alert.alert('Error', "Server error",
@@ -1102,19 +1042,20 @@ class Booking extends React.Component {
   render() {
     const { navigation } = this.props;
 
+    if (this.state.isLoading) {
+      var loader = <Loader />
+    }
+
     return (
-      <Block flex middle >
-        {/* <StatusBar hidden /> */}
-        
+      <Block flex middle > 
         <ImageBackground
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1}}
         >
-          {/* <Block flex={0.35} style={{justifyContent:'flex-start'}}> */}
-          <Block style={{marginBottom: -20}}
-            //flex={0.35} 
-            center
-          >
+          
+          {loader}
+
+          <Block style={{marginBottom: -30}} center>
             <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='contain' style={styles.headerImage}>
                 <View style={styles.stepIndicator}>
                   <StepIndicator
@@ -1122,13 +1063,10 @@ class Booking extends React.Component {
                     customStyles={secondIndicatorStyles}
                     stepCount={3}
                     currentPosition={this.state.currentPage}
-                    //onPress={this.onStepPress}
                     labels={[
-                      //'Cart',
                       'Location',
                       'Details',
                       'Confirm',
-                      //'Track'
                     ]}
                   />
                 </View>
@@ -1155,24 +1093,18 @@ class Booking extends React.Component {
                 onPress: () => this.setState({confirmDialogVisible: false, currentPage: 2}),
                 titleStyle: {color: argonTheme.COLORS.PRIMARY}
             }}
-            dialogStyle={{
-              borderRadius: 20, backgroundColor: "#232124", 
-              //opacity: 0.8,
-              //borderColor: "#37578a",
-              borderWidth: 5, 
-            }}
+            dialogStyle={{borderRadius: 20, backgroundColor: "#232124", borderWidth: 5}}
           />
 
           <Dialog
             visible={this.state.successDialogVisible}
-            //title="Success"
             dialogStyle={{
               borderRadius: 15, backgroundColor: "#232124", 
-              //borderColor: "#1df232",
               borderWidth: 4, width: width * 0.6,
               alignSelf: 'center',
             }}
-            onTouchOutside={() => this.setState({successDialogVisible: false})} >
+            //onTouchOutside={() => this.setState({successDialogVisible: false})} 
+          >
             <Block flex middle style={{flexDirection: 'row'}}>
               <AntDesign name='checkcircleo' size={25} color='#1df232' style={{marginRight: 10, marginBottom: -4 }} />
               <Text bold style={{color: '#E1E1E1', fontSize: 16, marginBottom: -4}}>
@@ -1190,11 +1122,26 @@ class Booking extends React.Component {
 const styles = StyleSheet.create({
   headerImage: {
     width: width,
-    height: 230,
-    //height: height * 0.25,
+    height: 215,
     borderRadius: 4,
-    //elevation: 1,
-    //overflow: "hidden"
+  },
+  // home: {
+  //   width: width,
+  //   paddingBottom: 120
+  // },
+  // headerImage: {
+  //   width: width,
+  //   height: 200
+  // },
+  // textHeader: {
+  //   alignItems: 'center', 
+  //   marginTop: 7
+  // },
+  backArrow: {
+    left: 10, 
+    top: 10, 
+    color: 'white', 
+    position: 'absolute'
   },
   registerContainer: {
     width: width * 0.9,  //0.9
@@ -1258,7 +1205,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff'
   },
   stepIndicator: {
-    marginVertical: 75,
+    marginVertical: 65,
   },
   page: {
     flex: 1,
@@ -1281,7 +1228,7 @@ const styles = StyleSheet.create({
     //borderRadius: 20,
   },
   booking: {
-    backgroundColor: "rgba(45, 45, 45, 0.8)",
+    backgroundColor: "rgba(60, 60, 60, 0.9)",
     borderRadius: 15,
     width: "95%",
     paddingHorizontal: 20,
