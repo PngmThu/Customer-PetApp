@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Argon FREE React Native",
-    "slug": "argon-free-react-native",
+    "name": "CustomerPetApp",
+    "slug": "customerpetapp",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -10,11 +10,11 @@
     ],
     "version": "1.3.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/imgs/logo.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/imgs/loading.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#33333"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -28,6 +28,7 @@
     "android": {
       "googleServicesFile": "./google-services.json",
       "package": "com.petapp"
-    }
+    },
+    "description": ""
   }
 }

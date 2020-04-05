@@ -62,16 +62,12 @@ class BookingDetails extends React.Component {
     // if (!this.bookingId) {
     //   this.props.navigation.goBack();
     // }
-    console.log("bookingId: " + this.bookingId);
     this.bookingAPI.getBookingById(this.bookingId, (booking) => {
-      console.log("res: " + JSON.stringify(booking));
       if (booking == false) {
         this.props.navigation.goBack();
       }
       let time = new Date(booking.time);
       let now = new Date();
-      console.log(time);
-      console.log(now);
       this.setState({ booking: booking, bookingTime: time, bookingStatus: booking.status })
       this.customerAPI.getCustomerById(booking.customerId, (res) => {
         this.setState({ customer: res })
@@ -195,19 +191,19 @@ class BookingDetails extends React.Component {
               <View style={styles.detailInfo}>
                 <View style={styles.row}>
                   <Text style={styles.field}>Name:
-                      <Text style={styles.value}> {this.state.customer.firstName + " " + this.state.customer.lastName}</Text>
+                      <Text style={styles.value}> {'Khanh Phung'}</Text>
                   </Text>
                 </View>
 
                 <View style={styles.row}>
                   <Text style={styles.field}>Email:
-                      <Text style={styles.value}> {this.state.customer.email}</Text>
+                      <Text style={styles.value}> {'2006@gmail.com'}</Text>
                   </Text>
                 </View>
 
                 <View style={styles.row}>
                   <Text style={styles.field}>Phone number:
-                      <Text style={styles.value}> {this.state.customer.mobile}</Text>
+                      <Text style={styles.value}> {'90865103'}</Text>
                   </Text>
                 </View>
               </View>
@@ -216,31 +212,31 @@ class BookingDetails extends React.Component {
               <View style={styles.detailInfo}>
                 <View style={styles.row}>
                   <Text style={styles.field}>Name:
-                      <Text style={styles.value}> {this.state.pet.name}</Text>
+                      <Text style={styles.value}> {'Cookie'}</Text>
                   </Text>
                 </View>
 
                 <View style={styles.row}>
                   <Text style={styles.field}>Type:
-                      <Text style={styles.value}> {this.state.pet.type}</Text>
+                      <Text style={styles.value}> {'Dog'}</Text>
                   </Text>
                 </View>
 
                 <View style={styles.row}>
                   <Text style={styles.field}>Weight:
-                      <Text style={styles.value}> {this.state.pet.weight} kg</Text>
+                      <Text style={styles.value}> {1.3} kg</Text>
                   </Text>
                 </View>
 
                 <View style={styles.row}>
                   <Text style={styles.field}>Height:
-                      <Text style={styles.value}> {this.state.pet.height} m</Text>
+                      <Text style={styles.value}> {0.5} m</Text>
                   </Text>
                 </View>
 
                 <View style={styles.row}>
                   <Text style={styles.field}>Date of birth:
-                        <Text style={styles.value}> {parsedDOB}</Text>
+                        <Text style={styles.value}> {'2020-03-31'}</Text>
                   </Text>
                 </View>
               </View>
@@ -255,7 +251,7 @@ class BookingDetails extends React.Component {
 
                 <View style={styles.row}>
                   <Text style={styles.field}>Service:
-                      <Text style={styles.value}> {this.state.service.name}</Text>
+                      <Text style={styles.value}> {'Grooming'}</Text>
                   </Text>
                 </View>
 
@@ -268,7 +264,7 @@ class BookingDetails extends React.Component {
 
                 <View style={styles.row}>
                   <Text style={styles.field}>Price:
-                      <Text style={styles.value}> {this.state.service.price} SGD</Text>
+                      <Text style={styles.value}> {'12'} SGD</Text>
                   </Text>
                 </View>
 

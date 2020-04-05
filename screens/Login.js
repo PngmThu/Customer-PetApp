@@ -80,7 +80,7 @@ class Login extends React.Component {
             <Block flex={0.85} center>
               <KeyboardAvoidingView
                   behavior="padding" 
-                  keyboardVerticalOffset={100}
+                  keyboardVerticalOffset={300}
               >
                   <ScrollView>
                   <Block width={width * 0.9} style={{ marginBottom: 15 }}>

@@ -173,7 +173,7 @@ class Home extends React.Component {
           <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
             <View style={styles.textHeader}>
               <Text color="#ffffff" size={30} style={{fontFamily: 'ITCKRIST'}} >
-                Home
+                Your pets
               </Text>
             </View>
           </ImageBackground>

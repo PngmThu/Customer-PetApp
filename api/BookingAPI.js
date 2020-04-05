@@ -96,15 +96,13 @@ export default class BookingAPI{
         })
     }
 
-    async getBookingByPetId(petId, callback){
+    async getBookingByPetId(petId, fromTime, callback){
         const token = await this.authAPI.retrieveToken();
-
-        const url = this.globals.serverHost + '/api/booking/pet/' + petId;
+        const url = this.globals.serverHost + '/api/booking/pet/' + petId + '/' + fromTime;
         
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         }
-
         axios.get(url, options)
         .then(res => {
             if(res.status == 200){

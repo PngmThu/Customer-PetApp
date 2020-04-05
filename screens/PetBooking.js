@@ -28,7 +28,7 @@ export default class PetBooking extends React.Component {
     this.serviceAPI = new ServiceAPI();
     this.VendorLocationAPI = new VendorLocationAPI();
     this.retrieveData = this.retrieveData.bind(this);
-
+    this.lastTime = new Date(2030, 1, 1);
     this.state = {
       bookingData: [],
       loading: true,
@@ -44,38 +44,45 @@ export default class PetBooking extends React.Component {
   }
 
 
-   
-  componentDidMount(){
+
+  componentDidMount() {
     this.didFocus = this.props.navigation.addListener('willFocus', () => {
-      this.setState({loading: true}, () => {
-        this.retrieveData();
+      this.setState({ loading: true }, () => {
+        this.lastTime = new Date(2030, 1, 1);
+        this.retrieveData(this.lastTime);
       })
     })
   }
 
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.didFocus.remove();
   }
 
-  retrieveData = () => {
+  retrieveData(fromTime) {
+    this.setState({loading: true})
     let petId = this.props.navigation.state.params.pet._id;
-    var {bookings, vendors, services, dates, times} = this.state;
+    var { vendors, services, dates, times } = this.state;
 
-    this.bookingAPI.getBookingByPetId(petId, async (res1) => {
+    this.bookingAPI.getBookingByPetId(petId, fromTime, async (res1) => {
+
+      if(res1.length == 0){
+        this.setState({loading: false})
+        return;
+      }
       let promises = [];
       var i;
       if (res1) {
-        bookings = res1;
+        var bookings = res1;
         //console.log("res1: " + JSON.stringify(res1));
         var counter = 0;
 
-        for (i = 0 ; i < bookings.length ; i++) {
+        for (i = 0; i < bookings.length; i++) {
           let vendorId = bookings[i].vendorId;
           let serviceId = bookings[i].serviceId;
-          promises.push(new Promise(async (resolve) => this.VendorLocationAPI.getClinicByVendorId(vendorId, (res) => {resolve(res)})));
-          promises.push(new Promise(async (resolve) => this.serviceAPI.getServiceById(serviceId, (res) => {resolve(res)})));
+          promises.push(new Promise(async (resolve) => this.VendorLocationAPI.getClinicByVendorId(vendorId, (res) => { resolve(res) })));
+          promises.push(new Promise(async (resolve) => this.serviceAPI.getServiceById(serviceId, (res) => { resolve(res) })));
 
-          var date =  new Date(bookings[i].time);
+          var date = new Date(bookings[i].time);
           const offset = date.getTimezoneOffset();
           date = new Date(date.getTime() - (offset * 60 * 1000));
           var datetimepart = date.toISOString().split("T");
@@ -85,12 +92,16 @@ export default class PetBooking extends React.Component {
           var time = timeParts[0] + ":" + timeParts[1];
 
           dates.push(date);
-          times.push(time)
+          times.push(time);
         }
+      
+        this.lastTime = new Date(bookings[bookings.length - 1].time);
+        let prev = this.state.bookings.slice();
+        let jointData = prev.concat(bookings);
 
         await Promise.all(promises)
           .then((results) => {
-            for (var i = 0 ; i < results.length ; i++) {
+            for (var i = 0; i < results.length; i++) {
               if (results[i].address) {    //vendor
                 vendors.push(results[i]);
               } else {                     //service
@@ -99,15 +110,16 @@ export default class PetBooking extends React.Component {
             }
           })
           .catch((e) => {
-              // Handle errors here
+            // Handle errors here
           }
-        );
-        
+          );
+
+
         this.setState({
-          bookings: bookings, 
-          vendors: vendors, 
-          services: services, 
-          dates: dates, 
+          bookings: jointData,
+          vendors: vendors,
+          services: services,
+          dates: dates,
           times: times,
           loading: false,
         });
@@ -121,22 +133,24 @@ export default class PetBooking extends React.Component {
 
   renderCard() {
     var table = [];
-    var {pet, bookings, services, vendors, times, dates} = this.state;
+    var { pet, bookings, services, vendors, times, dates } = this.state;
 
     this.state.bookings.forEach((item, id) => {
       table.push(
         <TouchableOpacity key={id}
-          onPress={() => this.props.navigation.navigate('BookingDetails',{bookingId: bookings[id]._id})}
+          onPress={() => this.props.navigation.navigate('BookingDetails', { bookingId: bookings[id]._id })}
         >
           <Block flex={0.8} center style={styles.booking}>
             <View style={styles.detailInfo}>
-              <Text style={{fontFamily: 'ITCKRIST', fontSize: 17, color: 'white', alignSelf: 'center',
-                            paddingTop: 10}}>
+              <Text style={{
+                fontFamily: 'ITCKRIST', fontSize: 17, color: 'white', alignSelf: 'center',
+                paddingTop: 10
+              }}>
                 {pet.name}
               </Text>
               <View style={styles.row}>
-                <MaterialCommunityIcons name='notebook' size={20} color='#7396f5' 
-                    style={{paddingRight: 10}} 
+                <MaterialCommunityIcons name='notebook' size={20} color='#7396f5'
+                  style={{ paddingRight: 10 }}
                 />
                 <Text style={styles.field}>
                   {services[id].name}
@@ -144,8 +158,8 @@ export default class PetBooking extends React.Component {
               </View>
 
               <View style={styles.row}>
-                <Entypo name='back-in-time' size={20} color='#7396f5' 
-                      style={{paddingRight: 10}}  
+                <Entypo name='back-in-time' size={20} color='#7396f5'
+                  style={{ paddingRight: 10 }}
                 />
                 <Text style={styles.field}>
                   {dates[id]}{" at "}{times[id]}
@@ -153,8 +167,8 @@ export default class PetBooking extends React.Component {
               </View>
 
               <View style={styles.row}>
-                <MaterialIcons name='location-on' size={20} color='#7396f5' 
-                    style={{paddingRight: 10}} 
+                <MaterialIcons name='location-on' size={20} color='#7396f5'
+                  style={{ paddingRight: 10 }}
                 />
                 <Text style={styles.field}>
                   {vendors[id].name}
@@ -162,8 +176,8 @@ export default class PetBooking extends React.Component {
               </View>
 
               <View style={styles.lastRow}>
-                <MaterialIcons name='cloud-done' size={20} color='#7396f5' 
-                    style={{paddingRight: 10}} 
+                <MaterialIcons name='cloud-done' size={20} color='#7396f5'
+                  style={{ paddingRight: 10 }}
                 />
                 <Text style={styles.field}>
                   {this.capitalizeFirstLetter(bookings[id].status)}
@@ -172,16 +186,17 @@ export default class PetBooking extends React.Component {
             </View>
           </Block>
         </TouchableOpacity>
-      )}
-    ) 
+      )
+    }
+    )
     return table;
   }
-    
+
 
   render() {
-     let { bookingData } = this.state;
+    let { bookingData } = this.state;
     const { navigation } = this.props;
-    var {pet, loading} = this.state;
+    var { pet, loading } = this.state;
 
     if (this.state.loading) {
       var loader = <Loader />
@@ -199,28 +214,40 @@ export default class PetBooking extends React.Component {
           <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
             <Block>
               <MaterialIcons name='keyboard-backspace' size={35} style={styles.backArrow}
-                            onPress={() => this.props.navigation.goBack()}/>
+                onPress={() => this.props.navigation.goBack()} />
             </Block>
             <View style={styles.textHeader}>
-              <Text color="#ffffff" size={30} style={{fontFamily: 'ITCKRIST'}} >
+              <Text color="#ffffff" size={30} style={{ fontFamily: 'ITCKRIST' }} >
                 {"Booking History"}
               </Text>
             </View>
           </ImageBackground>
 
-          <ScrollView style={{marginTop: 10}}>
-            <View style={{marginTop: -20}}>
-              {!loading && this.renderCard()}
+          <ScrollView
+            onScroll={({ nativeEvent }) => {
+              if (isCloseToBottom(nativeEvent)) {
+                this.retrieveData(this.lastTime)
+              }
+            }}
+            scrollEventThrottle={400}
+            style={{ marginTop: 10 }}>
+            <View style={{ marginTop: -20 }}>
+              {this.renderCard()}
             </View>
 
-            <Block style={{height: height * 0.2}} />
+            <Block style={{ height: height * 0.2 }} />
           </ScrollView>
-          
+
         </ImageBackground>
       </Block>
     );
   }
 }
+
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+  const paddingToBottom = 20;
+  return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -240,23 +267,23 @@ const styles = StyleSheet.create({
     height: 80
   },
   textHeader: {
-    alignItems: 'center', 
+    alignItems: 'center',
     marginTop: 7
   },
   backArrow: {
-    left: 10, 
-    top: 10, 
-    color: 'white', 
+    left: 10,
+    top: 10,
+    color: 'white',
     position: 'absolute'
   },
-  row:{
+  row: {
     width: width * 0.8,
     paddingTop: 10,
     flexDirection: 'row',
     alignSelf: 'center',
     alignItems: 'center',
   },
-  lastRow:{
+  lastRow: {
     width: width * 0.8,
     paddingTop: 10,
     paddingBottom: 10,
@@ -267,7 +294,7 @@ const styles = StyleSheet.create({
   detailInfo: {
     width: "100%",
   },
-  field:{
+  field: {
     fontFamily: 'opensans',
     paddingRight: width * 0.05,
     fontSize: 15,

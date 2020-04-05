@@ -110,7 +110,6 @@ export default class AuthAPI{
     async registerDevice(token, userId){
         const url = this.globals.serverHost + '/api/serviceNotification';
         let deviceId = await Notifications.getExpoPushTokenAsync();
-        console.log(deviceId);
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*', Accept: 'application/json'}
         };
