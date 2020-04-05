@@ -21,13 +21,14 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 
 import { Avatar } from 'react-native-elements';
 
-import { MaterialIcons, Entypo, AntDesign, FontAwesome } from '@expo/vector-icons';
+import { MaterialIcons, Entypo, AntDesign, FontAwesome, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import { ViewPager } from 'rn-viewpager'
 
 import StepIndicator from 'react-native-step-indicator'
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons'
 import SearchableDropdown from 'react-native-searchable-dropdown';
+import CustomeSearchableDropdown from '../components/CustomSearchableDropdown';
 import DatePicker from 'react-native-datepicker';
 import { Dialog, ConfirmDialog } from 'react-native-simple-dialogs';
 
@@ -100,12 +101,14 @@ const getStepIndicatorIconConfig = ({ position, stepStatus }) => {
   return iconConfig
 }
 
+var _this;
+
 class Booking extends React.Component {
   constructor () {
     super()
     this.state = {
       currentPage: 0,
-      clinicInput: "",
+      clinicInput: new Object(),
       serviceInput: null,
       petInput: null,
       date:"",
@@ -130,6 +133,10 @@ class Booking extends React.Component {
     this.authAPI = new AuthAPI();
     this.bookingAPI = new BookingAPI();
     this.PetAPI = new PetAPI();
+    this.onMarkerPress = this.onMarkerPress.bind(this);
+    //this.chooseClinicView = this.chooseClinicView.bind(this);
+    //this.renderPage = this.renderPage.bind(this);
+    _this = this;
   }
 
   getAllClinics(){
@@ -200,7 +207,7 @@ class Booking extends React.Component {
   async componentDidMount() {
     this.didFocus = this.props.navigation.addListener('willFocus', async () => {
       this.setState({
-        currentPage: 0, chosenClinic: null, clinicInput: "",clickMarker: false, 
+        currentPage: 0, chosenClinic: null, clinicInput: new Object() ,clickMarker: false, 
         isRegister: false, coords: null, distance: "", timeTaken: "", isLoading: true,
       }, () => {
         if (!this.state.locations)
@@ -282,17 +289,13 @@ class Booking extends React.Component {
     }
   }
 
-  onMarkerPress = location => () => {
+  //onMarkerPress = (location, idx) => () => {
+  onMarkerPress = (location) => {
     const { latitude, longitude } = location;
 
     //show tooltip
-    //this.marker.showCallout();
-
-    // if(this.state.calloutIsRendered === true) return;
-    // this.setState({calloutIsRendered: true});
-    // this.marker.showCallout();
+    _this[location._id].showCallout();
     
-
     if (location.vendorId)
       this.setState({ isRegister: true });
     else 
@@ -302,7 +305,7 @@ class Booking extends React.Component {
       destination: location,
       desLatitude: latitude,
       desLongitude: longitude,
-      clinicInput: location.name,
+      clinicInput: location,
       clickMarker: true,
       chosenClinic: location,
       toolTipVisible: true,
@@ -340,18 +343,17 @@ class Booking extends React.Component {
                     <Marker 
                       key={idx}
                       coordinate={{ latitude, longitude }}
-                      onPress={this.onMarkerPress(location)}
+                      onPress={this.onMarkerPress.bind(this, location)}
                       pinColor="navy"
-                      ref={ref => { this.marker = ref; }}
-                      //ref={ref => this.setState({ marker: ref })}
-                      //title={location.name}
+                      ref={ref => { this[location._id] = ref; }} 
                     >
-                      <Callout>
-                        <Text>{location.name}</Text>
+                      <Callout tooltip={true}>
+                        <View style={styles.tooltipStyle}>
+                          <MaterialCommunityIcons name='dog' size={20} style={{color: '#ff4f4f', padding: 5}} />
+                          <Text color='white' style={{paddingRight: 5}}>{location.name}</Text>
+                        </View>
                       </Callout>
-                      {/* <MaterialIcons name='pets' size={30} style={{color: '#885DDA'}}/> */}
                     </Marker>
-                  // </Tooltip>
                 : null
               )
             })
@@ -637,7 +639,8 @@ class Booking extends React.Component {
   }
 
   chooseClinicView = () => {
-    const {timeTaken, distance} = this.state;
+    const {timeTaken, distance, clinicInput } = this.state;
+    //const clinicInput = _this.state.clinicInput;
 
     return (
       <Block flex>
@@ -655,9 +658,10 @@ class Booking extends React.Component {
               </Block>
 
               <Block middle style={{height: height * 0.5}}>
-                <SearchableDropdown
-                  onItemSelect={(item) => { 
-                    this.setState({ clinicInput: item.name }, this.onMarkerPress(item));
+                {/* <SearchableDropdown */}
+                <CustomeSearchableDropdown
+                  onItemSelect={(item, idx) => { 
+                    this.setState({ clinicInput: item }, this.onMarkerPress(item));
                   }}
                   containerStyle={{ padding: 5, width: width * 0.8, top: height * 0.02,
                                      elevation: 1, position: "absolute", zIndex: 2,
@@ -668,11 +672,12 @@ class Booking extends React.Component {
                     backgroundColor: '#030205',
                     borderRadius: 10,
                   }}
-                  itemTextStyle={{ color: '#E1E1E1' }}
+                  //itemTextStyle={{ color: item.vendorId ? '#E1E1E1' : "#ff6666" }}
+                  //itemTextStyle={{ color: '#E1E1E1' }}
                   itemsContainerStyle={{ maxHeight: 150 }}
                   items={this.state.locations}
                   resetValue={false}
-                  value={this.state.clinicInput}
+                  value={clinicInput.name}
                   onFocus={() => this.setState({clickMarker: false})}
                   onBlur={() => this.setState({clickMarker: true})}
                   textInputProps={this.state.clickMarker ? 
@@ -680,11 +685,11 @@ class Booking extends React.Component {
                       placeholder: "Choose...",
                       placeholderTextColor: "#525151",
                       underlineColorAndroid: "transparent",
-                      value: this.state.clinicInput,
+                      value: clinicInput.name,
                       style: {
                           padding: 5,
                           marginLeft: 10,
-                          color: "#E1E1E1"
+                          color: clinicInput.vendorId ? "#E1E1E1" : "#ff6666"
                       },
                     }
                       :
@@ -790,7 +795,7 @@ class Booking extends React.Component {
                               marginBottom: 10, borderRadius: 10, backgroundColor: "#282828"}}>
                 <Text style={{padding: 10,color: '#E1E1E1',
                           marginLeft: 10}}>
-                  {this.state.clinicInput}
+                  {this.state.clinicInput.name}
                 </Text>
               </Block>
 
@@ -957,7 +962,7 @@ class Booking extends React.Component {
                              alignSelf: 'center'}}>
                 <Block flex middle>
                   <Button color="primary" style={styles.button2} 
-                          onPress={() => this.setState({ currentPage: 0, chosenClinic: null, clinicInput: "",clickMarker: false, 
+                          onPress={() => this.setState({ currentPage: 0, chosenClinic: null, clinicInput: new Object() ,clickMarker: false, 
                                                          isRegister: false, coords: null, distance: "", timeTaken: "" })}>
                     <Text bold size={16} color={argonTheme.COLORS.WHITE}>
                       Back
@@ -1010,7 +1015,7 @@ class Booking extends React.Component {
             successDialogVisible: false,
             currentPage: 0,
             chosenClinic: null, 
-            clinicInput: "",
+            clinicInput: new Object(),
             clickMarker: false, 
             isRegister: false,
             coords: null, 
@@ -1030,6 +1035,7 @@ class Booking extends React.Component {
     switch(currentPage) {
       case 0:
         return (<this.chooseClinicView />);
+        //return {chooseClinicView.bind(this)};
       case 1:
         return (<this.DetailsView />);
       case 2:
@@ -1284,6 +1290,13 @@ const styles = StyleSheet.create({
     fontFamily: 'opensans',
     fontSize: 15,
     color: '#ff1414'
+  },
+  tooltipStyle: {
+    backgroundColor: "rgba(60, 60, 60, 0.9)", 
+    flexDirection: "row",
+    alignSelf: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
   },
 });
 
