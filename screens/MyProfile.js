@@ -34,7 +34,6 @@ class MyProfile extends React.Component {
 
   constructor(props) {
     super(props);
-    //console.log(this.props.navigation.state.params);
     this.logout = this.logout.bind(this);
     this.clickLogout = this.clickLogout.bind(this);
     this.authAPI = new AuthAPI();
@@ -147,16 +146,16 @@ class MyProfile extends React.Component {
         >
 
           <Popup visible={this.state.popUpDialog} choice={this.handleChoice} question={this.state.question} />
-          <Block style={{ position: 'absolute', top: 0 }}>
-            <ImageBackground source={require("../assets/imgs/Schedule1.png")} resizeMode='contain' style={styles.headerImage} />
-            <View style={{ width: width, alignContent: 'center', alignItems: 'center', top: 15 }}>
-              <Text color="#ffffff" size={40} style={{ marginLeft: 10, fontFamily: 'ITCKRIST' }}>
-                Notification
-                </Text>
-            </View>
-          </Block>
 
-          <ScrollView style={{ flex: 1, marginTop: 110 }}>
+          <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
+            <View style={styles.textHeader}>
+              <Text color="#ffffff" size={30} style={{fontFamily: 'ITCKRIST'}} >
+                Your Profile
+              </Text>
+            </View>
+          </ImageBackground>
+
+          <ScrollView style={{marginTop: 5}}>
             <Block flex={0.8} row style={styles.action} >
               <View style={{ alignContent: 'flex-start', flex: 1, flexDirection: 'row' }} onTouchStart={(event) => { this.clickLogout(event) }}>
                 <MaterialCommunityIcons name="logout-variant" size={30} style={styles.logoutIcon}></MaterialCommunityIcons>
@@ -166,7 +165,7 @@ class MyProfile extends React.Component {
               <View style={{ justifyContent: 'flex-end', flex: 1, flexDirection: 'row' }}>
                 <ToggleSwitch
                   isOn={this.state.edit}
-                  onColor={"#333333"}
+                  onColor={"#511efa"}
                   offColor={"#999999"}
                   onToggle={(isOn) => { this.setState({ edit: isOn }) }}
                 />
@@ -267,6 +266,8 @@ class MyProfile extends React.Component {
                     </Text>
                   </Button>
                 </Block>
+
+                <Block flex middle style={{ elevation: 1, height: height * 0.15 }} />
               </KeyboardAvoidingView>
             </Block>
           </ScrollView>
@@ -283,11 +284,19 @@ const styles = StyleSheet.create({
   },
   headerImage: {
     width: width,
-    height: 90,
-    justifyContent: 'flex-start',
-    borderRadius: 4,
-    position: 'absolute',
+    height: 80
   },
+  textHeader: {
+    alignItems: 'center', 
+    marginTop: 7
+  },
+  // headerImage: {
+  //   width: width,
+  //   height: 90,
+  //   justifyContent: 'flex-start',
+  //   borderRadius: 4,
+  //   position: 'absolute',
+  // },
   registerContainer: {
     width: width * 0.9,  //0.9
     height: height * 0.78,

@@ -73,7 +73,6 @@ export default class PetBooking extends React.Component {
       var i;
       if (res1) {
         var bookings = res1;
-        //console.log("res1: " + JSON.stringify(res1));
         var counter = 0;
 
         for (i = 0; i < bookings.length; i++) {

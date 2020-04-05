@@ -59,11 +59,9 @@ export default class PetProfile extends React.Component {
 
     var date = new Date(pet.dateOfBirth);
     const offset = date.getTimezoneOffset();
-    date = new Date(date.getTime() + (offset * 60 * 1000));
+    date = new Date(date.getTime() - (offset * 60 * 1000));
     var dateString = date.toISOString().split("T")[0];
 
-    // var localDate = new Date(date.getTime() - date.getTimezoneOffset()*60*1000);
-    // console.log("localDate: " + localDate.toString());
     this.setState({
       petId: pet._id,
       name: pet.name,
@@ -99,7 +97,6 @@ export default class PetProfile extends React.Component {
     })
 
     this.petAPI.updatePetById(pet, (res) => {
-      console.log("Can update pet?: ", res);
       if (res) {
         this.setState({
           message: "Updated successfully!",
@@ -121,8 +118,35 @@ export default class PetProfile extends React.Component {
   }
 
   validateInput() {
-    if (!this.state.name || !this.state.species || !this.state.weight || !this.state.height || !this.state.date) {
-      Alert.alert('Error', "Input field can not be empty",
+    var str = "";
+    if (!this.state.name)
+      str += "name";
+    if (!this.state.species) {
+      if (str == "")
+        str += "species";
+      else
+        str += ", species";
+    }
+    if (!this.state.weight) {
+      if (str == "")
+        str += "weight";
+      else
+        str += ", weight";
+    }
+    if (!this.state.height) {
+      if (str == "")
+        str += "height";
+      else
+        str += ", height";
+    }
+    if (!this.state.date) {
+      if (str == "")
+        str += "date of birth";
+      else
+        str += ", date of birth";
+    }
+    if (str != "") {
+      Alert.alert('Error', "Input field can not be empty: " + str,
         [{ text: 'OK' }])
       return false;
     }
@@ -229,12 +253,11 @@ export default class PetProfile extends React.Component {
 
                 <ToggleSwitch
                   isOn={this.state.edit}
-                  onColor={"green"}
+                  onColor={"#511efa"}
                   offColor={"#999999"}
                   label="Edit"
                   labelStyle={{
                     color: "white", fontWeight: "100",
-                    //marginLeft: 240, marginTop: 20, marginBottom: 10 
                   }}
                   size="medium"
                   onToggle={(isOn) => { this.setState({ edit: isOn }) }}
@@ -317,6 +340,7 @@ export default class PetProfile extends React.Component {
                   borderless
                   editable={this.state.edit}
                   placeholder="Breed"
+                  placeholderTextColor='#505050'
                   onChangeText={(breed) => { this.setState({ breed }) }}
                   value={this.state.breed}
                   iconContent={

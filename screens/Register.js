@@ -82,26 +82,32 @@ class Register extends React.Component {
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1 }}
         >
-          <Block flex={0.3} middle>
-            <ImageBackground source={require("../assets/imgs/headerRegister.png")} resizeMode='contain' style={styles.headerImage}>
-                <Block flex middle>
-                    <MaterialIcons name='keyboard-backspace' size={40} style={{left: -170, top: -35, color:'white'}}
+          {/* <Block flex={0.3} middle> */}
+          <Block flex={0.3}>
+            <ImageBackground source={require("../assets/imgs/headerRegister.png")} resizeMode='stretch' style={styles.headerImage}>
+                {/* <Block flex middle> */}
+                <Block>
+                    <MaterialIcons name='keyboard-backspace' size={40} style={styles.backArrow}
+                                    //style={{left: -170, top: -35, color:'white'}}
                                   onPress={() => navigation.navigate('Login')}/>
                 </Block>
             </ImageBackground> 
           </Block>
 
           <Block flex={0.7}>
-            <Block flex={0.1}>
+            {/* <Block flex={0.1}>
               <Text style={{ marginLeft: 15, fontSize: 32, fontWeight: 'bold', color:'white'}}>
                 Create an account
               </Text>
-            </Block>
+            </Block> */}
 
-            <Block flex={0.9} center style={{paddingBottom: 50}}>
-                <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={300}>
-                  <ScrollView>
-                    <Block width={width * 0.9} style={{marginTop: 20, marginBottom: 15 }}>
+            <Block flex={1} center style={{marginTop: 10, paddingBottom: 50}}>
+                <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={200}>
+                  <ScrollView style={{width: width}}>
+                    <Text style={{ marginLeft: 15, fontSize: 32, fontWeight: 'bold', color:'white'}}>
+                      Create an account
+                    </Text>
+                    <Block center width={width * 0.9} style={{marginTop: 20, marginBottom: 15 }}>
                       <Input
                         borderless
                         placeholder="First name"
@@ -120,7 +126,7 @@ class Register extends React.Component {
                       />
                     </Block>
 
-                    <Block width={width * 0.9} style={{marginBottom: 15 }}>
+                    <Block center width={width * 0.9} style={{marginBottom: 15 }}>
                       <Input
                         borderless
                         placeholder="Last name"
@@ -139,7 +145,7 @@ class Register extends React.Component {
                       />
                     </Block>
 
-                    <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                    <Block center width={width * 0.9} style={{ marginBottom: 15 }}>
                       <Input
                         borderless 
                         placeholder="Email"
@@ -158,7 +164,7 @@ class Register extends React.Component {
                       />
                     </Block>
 
-                    <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                    <Block center width={width * 0.9} style={{ marginBottom: 15 }}>
                       <Input
                         password
                         viewPass
@@ -178,7 +184,7 @@ class Register extends React.Component {
                         style={{backgroundColor: '#333333'}}
                       />                 
                     </Block> 
-                    <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                    <Block center width={width * 0.9} style={{ marginBottom: 15 }}>
                       <Input
                         password
                         viewPass
@@ -217,18 +223,29 @@ class Register extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  // headerImage: {
+  //   //width: '100%',
+  //   //height: undefined,
+  //   //aspectRatio: 1,
+  //   width: width,
+  //   height: height,
+  //   //marginTop: -10,
+  //   //scaleX: 1.2,
+  //   justifyContent:'flex-start',
+  //   borderRadius: 4,
+  //   //elevation: 1,
+  //   //overflow: "hidden"
+  // },
   headerImage: {
-    //width: '100%',
-    //height: undefined,
-    //aspectRatio: 1,
     width: width,
-    height: height,
-    //marginTop: -10,
-    //scaleX: 1.2,
+    height: 200,
     justifyContent:'flex-start',
-    borderRadius: 4,
-    //elevation: 1,
-    //overflow: "hidden"
+  },
+  backArrow: {
+    left: 15,
+    top: 40,
+    color: 'white',
+    position: 'absolute'
   },
   registerContainer: {
     width: width * 0.9,  //0.9

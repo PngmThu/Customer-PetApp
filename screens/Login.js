@@ -71,19 +71,25 @@ class Login extends React.Component {
           </Block>
 
           <Block flex>
-            <Block flex={0.15}>
+            {/* <Block flex={0.15}>
               <Text color="#E1E1E1" size={32} style={{ marginLeft: 15, fontWeight: 'bold'}}>
                 Welcome to PetWorld
               </Text>
-            </Block>
+            </Block> */}
             
             <Block flex={0.85} center>
               <KeyboardAvoidingView
                   behavior="padding" 
-                  keyboardVerticalOffset={300}
+                  keyboardVerticalOffset={200}
               >
-                  <ScrollView>
-                  <Block width={width * 0.9} style={{ marginBottom: 15 }}>
+                <ScrollView style={{width: width}}>
+                  <Block flex={0.15}>
+                    <Text color="#E1E1E1" size={30} style={{ marginLeft: 15, fontWeight: 'bold'}}>
+                      Welcome to PetWorld
+                    </Text>
+                  </Block>
+
+                  <Block center width={width * 0.9} style={{ marginBottom: 15 }}>
                     <Input
                       borderless 
                       placeholder="Email"
@@ -101,7 +107,7 @@ class Login extends React.Component {
                       style={{backgroundColor: '#333333'}}
                     />
                   </Block>
-                  <Block width={width * 0.9}>
+                  <Block center width={width * 0.9}>
                     <Input
                       password
                       viewPass
@@ -121,13 +127,14 @@ class Login extends React.Component {
                       }
                       style={{backgroundColor: '#333333'}}
                     /> 
-                    <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
-                      <Text style={{color: argonTheme.COLORS.PRIMARY,fontSize: 14,textAlign: 'right'}}>
-                        Forget Password?
-                      </Text>
-                    </TouchableOpacity>
-
                   </Block> 
+                  <TouchableOpacity onPress={() => navigation.navigate("ForgetPassword")}>
+                    <Text style={{color: argonTheme.COLORS.PRIMARY,fontSize: 14,textAlign: 'right',
+                                  marginRight: width * 0.05}}>
+                      Forget Password?
+                    </Text>
+                  </TouchableOpacity>
+
                   <Block flex middle>
                     <Button color="primary" style={styles.loginButton} onPress={this.login}>
                       <Text bold size={14} color={argonTheme.COLORS.WHITE}>

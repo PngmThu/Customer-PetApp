@@ -9,6 +9,7 @@ import {
   View
 } from "react-native";
 import { Block, Checkbox, Text, theme } from "galio-framework";
+import { TouchableOpacity, ScrollView } from "react-native-gesture-handler";
 
 import { Button, 
   Icon, 
@@ -49,19 +50,13 @@ class ResetPassword extends React.Component {
     const { navigation } = this.props;
 
     return (
-      // <Block flex middle >
-      <Block flex middle >
-        {/* <StatusBar hidden /> */}
-        
+      <Block flex middle >       
         <ImageBackground
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1}}
         >
-          {/* <Block flex={0.4} middle > */}
-          <Block flex={0.15} style={{justifyContent:'flex-start'}}>
-            {/* <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='contain' style={styles.headerImage}> */}
-            <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='contain' style={styles.headerImage}>
-                {/* <Block flex middle> */}
+          <Block style={{justifyContent:'flex-start'}}>
+            <ImageBackground source={require("../assets/imgs/headerForgetPassword.png")} resizeMode='stretch' style={styles.headerImage}>
                 <Block flex>
                     {/* <MaterialIcons name='keyboard-backspace' size={40} style={{left: -170, top: -65}} */}
                     <MaterialIcons name='keyboard-backspace' size={40} style={{left: 15, top: 35, color: 'white'}}
@@ -71,52 +66,55 @@ class ResetPassword extends React.Component {
           </Block>
 
           <Block flex>
-          <KeyboardAvoidingView
-                style={{ flex: 1 }}
-                behavior="padding"
-                keyboardVerticalOffset={0}
-              >
-            <Block flex middle>
-              <Image source={require("../assets/imgs/sendEmail.png")} resizeMode='contain' 
-                       style={{width: width * 0.9, height: "100%"}}/>
-            </Block>
-            <Block flex={0.2} middle >
-              <Text color="#E1E1E1" size={22} style={{fontWeight: 'bold', marginTop: -20}}>
-              Fill your email and we will send you 
-              </Text>
-              <Text color="#E1E1E1" size={22} style={{fontWeight: 'bold'}}>
-              a link to reset your password
-              </Text>
-            </Block>
-
-            <Block flex center>
-                <Block width={width * 0.9} style={{ marginTop: 40}}>
-                  <Input
-                    borderless 
-                    placeholder="Email"
-                    onChangeText={(email) => {this.setState({email})}}
-                    value={this.state.email}
-                    iconContent={
-                      <Icon
-                        size={16}
-                        color={'#5E5454'}
-                        name="ic_mail_24px"
-                        family="ArgonExtra"
-                        style={styles.inputIcons}
-                      />
-                    }
-                    style={{backgroundColor: '#333333'}}
+            <KeyboardAvoidingView
+              style={{ flex: 1 }}
+              behavior="padding"
+              keyboardVerticalOffset={0}
+            >
+              <ScrollView>
+                <Block flex middle>
+                  <Image source={require("../assets/imgs/sendEmail.png")} resizeMode='contain' 
+                          style={{width: width * 0.9, height: height * 0.4}}
                   />
                 </Block>
-
-                <Block flex middle style={{marginBottom: height * 0.08}}>
-                  <Button color="primary" style={styles.button} onPress={this.forgetPwd}>
-                    <Text bold size={18} color={argonTheme.COLORS.WHITE}>
-                      Send Email
-                    </Text>
-                  </Button>
+                <Block flex={0.2} middle >
+                  <Text color="#E1E1E1" size={20} style={{fontWeight: 'bold'}}>
+                  Fill your email and we will send you 
+                  </Text>
+                  <Text color="#E1E1E1" size={20} style={{fontWeight: 'bold'}}>
+                  a link to reset your password
+                  </Text>
                 </Block>
-              </Block>
+
+                <Block flex center>
+                  <Block width={width * 0.9} style={{ marginTop: 40}}>
+                    <Input
+                      borderless 
+                      placeholder="Email"
+                      onChangeText={(email) => {this.setState({email})}}
+                      value={this.state.email}
+                      iconContent={
+                        <Icon
+                          size={16}
+                          color={'#5E5454'}
+                          name="ic_mail_24px"
+                          family="ArgonExtra"
+                          style={styles.inputIcons}
+                        />
+                      }
+                      style={{backgroundColor: '#333333'}}
+                    />
+                  </Block>
+
+                  <Block flex middle style={{marginBottom: height * 0.1}}>
+                    <Button color="primary" style={styles.button} onPress={this.forgetPwd}>
+                      <Text bold size={18} color={argonTheme.COLORS.WHITE}>
+                        Send Email
+                      </Text>
+                    </Button>
+                  </Block>
+                </Block>
+              </ScrollView>
             </KeyboardAvoidingView>
           </Block>
         </ImageBackground>
@@ -128,11 +126,7 @@ class ResetPassword extends React.Component {
 const styles = StyleSheet.create({
   headerImage: {
     width: width * 0.5,
-    height: height * 0.15,
-    //justifyContent:'flex-start',
-    borderRadius: 4,
-    //elevation: 1,
-    //overflow: "hidden"
+    height: 100
   },
   registerContainer: {
     width: width * 0.9,  //0.9

@@ -52,7 +52,47 @@ export default class AddPet extends React.Component {
     this.didFocus.remove();
   }
 
+  validateInput() {
+    var str = "";
+    if (!this.state.name)
+      str += "name";
+    if (!this.state.species) {
+      if (str == "")
+        str += "species";
+      else
+        str += ", species";
+    }
+    if (!this.state.weight) {
+      if (str == "")
+        str += "weight";
+      else
+        str += ", weight";
+    }
+    if (!this.state.height) {
+      if (str == "")
+        str += "height";
+      else
+        str += ", height";
+    }
+    if (!this.state.date) {
+      if (str == "")
+        str += "date of birth";
+      else
+        str += ", date of birth";
+    }
+    if (str != "") {
+      Alert.alert('Error', "Input field can not be empty: " + str,
+        [{ text: 'OK' }])
+      return false;
+    }
+    return true;
+  }
+
   createPet = async () => {
+    if (!this.validateInput()) {
+      return;
+    }
+
     let customerId = await this.authAPI.retrieveCustomerId();
 
     const { date } = this.state;
@@ -276,9 +316,10 @@ export default class AddPet extends React.Component {
                 }}
                 date={this.state.date}
                 mode="date"
+                placeholder="Choose..."
                 format="YYYY-MM-DD"
                 minDate="1996-01-01"
-                maxDate="2022-02-06"
+                maxDate={todayDate}
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 showIcon={false}
@@ -294,6 +335,9 @@ export default class AddPet extends React.Component {
                   },
                   dateText: {
                     color: "#ffffff",
+                  },
+                  placeholderText: {
+                    color: '#505050'
                   },
                   modalStyle: {
                     backgroundColor: "#1f1f1f",

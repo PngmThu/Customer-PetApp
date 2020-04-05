@@ -37,7 +37,6 @@ class Home extends React.Component {
     this.petAPI = new PetAPI();
     this.authAPI = new AuthAPI();
     this.retrieveData = this.retrieveData.bind(this);
-    //console.log(this.props.navigation.state.params);
   }
 
   componentDidMount() {
@@ -96,7 +95,7 @@ class Home extends React.Component {
                   </Text>
                 </Button>
               </Block>
-              {/* <Text style={styles.priceTxt}>{item.animal}</Text> */}
+
               <View style={styles.cardFooter}>
                 <Text style={styles.itemTxt}>{item.name}</Text>
               </View>
@@ -116,7 +115,7 @@ class Home extends React.Component {
                   </Text>
                 </Button>
               </Block>
-              {/* <Text style={styles.priceTxt}>{oddItem.animal}</Text> */}
+
               <View style={styles.cardFooter}>
                 <Text style={styles.itemTxt}>{oddItem.name}</Text>
               </View>
@@ -178,8 +177,8 @@ class Home extends React.Component {
             </View>
           </ImageBackground>
 
-          <ScrollView style={{marginTop: 10}}>
-            <View style={{ marginBottom: 10,marginTop: 10 }}>
+          <ScrollView style={{marginTop: 5}}>
+            <View style={{ marginBottom: 10 }}>
               <Block center>
                 {this.renderCard()}
               </Block>

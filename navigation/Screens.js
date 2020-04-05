@@ -238,6 +238,6 @@ const styles = StyleSheet.create({
     borderTopWidth: 0
   },
   tab: {
-    borderRadius: 0,
+    borderRadius: 20,
   }
 });

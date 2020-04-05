@@ -8,7 +8,8 @@ import {
   Image,
   View,
   ScrollView, 
-  Platform
+  Platform,
+  Alert
 } from "react-native";
 import { Block, Checkbox, Text, theme } from "galio-framework";
 
@@ -987,7 +988,41 @@ class Booking extends React.Component {
     )
   }
 
+  validateInput() {
+    var str = "";
+    if (!this.state.date)
+      str += "date";
+    if (!this.state.serviceInput) {
+      if (str == "")
+        str += "service";
+      else
+        str += ", service";
+    }
+    if (!this.state.petInput) {
+      if (str == "")
+        str += "pet";
+      else
+        str += ", pet";
+    }
+    if (!this.state.time) {
+      if (str == "")
+        str += "time";
+      else
+        str += ", time";
+    }
+    if (str != "") {
+      Alert.alert('Error', "Input field can not be empty: " + str,
+        [{ text: 'OK' }])
+      return false;
+    }
+    return true;
+  }
+
   onConfirm = async () => {
+    if (!this.validateInput()) {
+      return;
+    }
+
     let customerId = await this.authAPI.retrieveCustomerId();
     let vendorId = this.state.chosenClinic.vendorId;
     const {date, time} = this.state;

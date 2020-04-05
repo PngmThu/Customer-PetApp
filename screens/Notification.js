@@ -150,17 +150,15 @@ class Notification extends React.Component {
           source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1 }}
         >
-
           {loader}
 
-          <Block style={{ position: 'absolute', top: 0 }}>
-            <ImageBackground source={require("../assets/imgs/Schedule1.png")} resizeMode='contain' style={styles.headerImage} />
-            <View style={{ width: width, alignContent: 'center', alignItems: 'center', top: 15 }}>
-              <Text color="#ffffff" size={40} style={{ marginLeft: 10, fontFamily: 'ITCKRIST' }}>
+          <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
+            <View style={styles.textHeader}>
+              <Text color="#ffffff" size={30} style={{fontFamily: 'ITCKRIST'}} >
                 Notification
-                </Text>
+              </Text>
             </View>
-          </Block>
+          </ImageBackground>
 
           <ScrollView
             flex={1}
@@ -170,7 +168,7 @@ class Notification extends React.Component {
               }
             }}
             scrollEventThrottle={400}
-            style={{ width: "100%", marginBottom: 100, marginTop: 100 }}>
+            style={{ width: "100%", marginTop: 5 }}>
 
             <Block center>
               <KeyboardAvoidingView
@@ -201,12 +199,20 @@ const styles = StyleSheet.create({
     width: width,
     paddingBottom: 20
   },
+  // headerImage: {
+  //   width: width,
+  //   height: 90,
+  //   justifyContent: 'flex-start',
+  //   borderRadius: 4,
+  //   position: 'absolute',
+  // },
   headerImage: {
     width: width,
-    height: 90,
-    justifyContent: 'flex-start',
-    borderRadius: 4,
-    position: 'absolute',
+    height: 80
+  },
+  textHeader: {
+    alignItems: 'center', 
+    marginTop: 7
   },
   inputIcons: {
     alignSelf: 'center',
