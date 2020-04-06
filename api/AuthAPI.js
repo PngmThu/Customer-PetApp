@@ -1,76 +1,81 @@
-import {AsyncStorage} from 'react-native';
+import { AsyncStorage } from 'react-native';
 import axios from 'axios';
 import Globals from '../globals/globals';
 import { Notifications } from 'expo';
-export default class AuthAPI{
-    constructor(){
+export default class AuthAPI {
+    constructor() {
         this.globals = new Globals();
     }
 
-    login(email, password, callback){
+    /**
+     * @param {string} email - this is email of user.
+     * @param {string} password - this is user's password.
+     * @param {function} callback- this is callback function to catch the result.
+     */
+    login(email, password, callback) {
         const url = this.globals.serverHost + '/api/auth/login/customer';
 
         let options = {
-            headers: {'Access-Control-Allow-Origin':'*'}
+            headers: { 'Access-Control-Allow-Origin': '*' }
         };
 
-        let body = {email: email.trim(), password: password};
+        let body = { email: email.trim(), password: password };
         axios.post(url, body, options)
-        .then(res => {
-            if(res.status == 200){
-                this.registerDevice(res.data.token, res.data.id);
-                this.storeToken(res.data.token);
-                this.storeCustomerId(res.data.id);
-                callback(true);
-            }
-            else{
-                callback("Authentication error!")
-            }
-        })
-        .catch(err => {
-            console.log(err.response.data)
-            callback(err.response.data)
-        })
+            .then(res => {
+                if (res.status == 200) {
+                    this.registerDevice(res.data.token, res.data.id);
+                    this.storeToken(res.data.token);
+                    this.storeCustomerId(res.data.id);
+                    callback(true);
+                }
+                else {
+                    callback("Authentication error!")
+                }
+            })
+            .catch(err => {
+                console.log(err.response.data)
+                callback(err.response.data)
+            })
     }
 
-    forgetPassword(email, callback){
+    forgetPassword(email, callback) {
         const url = this.globals.serverHost + '/api/auth/password/customer';
 
         let options = {
-            headers: {'Access-Control-Allow-Origin':'*'}
+            headers: { 'Access-Control-Allow-Origin': '*' }
         };
-        let body = {email: email};
+        let body = { email: email };
         axios.post(url, body, options)
-        .then(res => {
-            if(res.status == 200){
-                this.storeToken(res.data.token);
-                callback(true);
-            }
-            else{
-                callback("Authentication error!")
-            }
-        })
-        .catch(err => {
-            callback(err.response.data)
-        })
+            .then(res => {
+                if (res.status == 200) {
+                    this.storeToken(res.data.token);
+                    callback(true);
+                }
+                else {
+                    callback("Authentication error!")
+                }
+            })
+            .catch(err => {
+                callback(err.response.data)
+            })
     }
 
-    async storeToken(token){
-        try{
+    async storeToken(token) {
+        try {
             await AsyncStorage.setItem('token', token);
         }
-        catch(err){
+        catch (err) {
             console.log(err);
         }
     }
 
-    async retrieveToken(){
+    async retrieveToken() {
         try {
             const value = await AsyncStorage.getItem('token');
             if (value !== null) {
-              return value
+                return value
             }
-            else{
+            else {
                 return null
             }
         } catch (error) {
@@ -78,27 +83,27 @@ export default class AuthAPI{
         }
     }
 
-    async clearToken(){
+    async clearToken() {
         await AsyncStorage.removeItem('token');
         await AsyncStorage.removeItem('id');
     }
 
-    async storeCustomerId(id){
-        try{
+    async storeCustomerId(id) {
+        try {
             await AsyncStorage.setItem('id', id);
         }
-        catch(err){
+        catch (err) {
             console.log(err);
         }
     }
 
-    async retrieveCustomerId(){
+    async retrieveCustomerId() {
         try {
             const value = await AsyncStorage.getItem('id');
             if (value !== null) {
-              return value
+                return value
             }
-            else{
+            else {
                 return null
             }
         } catch (error) {
@@ -106,20 +111,20 @@ export default class AuthAPI{
         }
     }
 
-    async registerDevice(token, userId){
+    async registerDevice(token, userId) {
         const url = this.globals.serverHost + '/api/serviceNotification';
         let deviceId = await Notifications.getExpoPushTokenAsync();
         let options = {
-            headers: {token: token, 'Access-Control-Allow-Origin':'*', Accept: 'application/json'}
+            headers: { token: token, 'Access-Control-Allow-Origin': '*', Accept: 'application/json' }
         };
 
-        let body = {userId: userId, deviceId: deviceId};
+        let body = { userId: userId, deviceId: deviceId };
 
         axios.post(url, body, options)
-        .then(res => {
-        })
-        .catch(err => {
-            callback(err.response.data)
-        })
+            .then(res => {
+            })
+            .catch(err => {
+                callback(err.response.data)
+            })
     }
 }

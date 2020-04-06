@@ -88,7 +88,7 @@ export default class AddPet extends React.Component {
     return true;
   }
 
-  createPet = async () => {
+  async createPet() {
     if (!this.validateInput()) {
       return;
     }
