@@ -35,7 +35,7 @@ class CalendarComponent extends React.Component {
         }
 
         markedDate[this.todayDate()] = {selected: true, customStyles: today}
-
+        console.log(this.todayDate());
         this.setState({markedDate})
     }
 
@@ -75,6 +75,9 @@ class CalendarComponent extends React.Component {
             month = "0" + month;
         }
         let day = currentDate.getDate();
+        if(day < 10){
+            day = "0" + day;
+        }
         return year + "-" + month + "-" + day;
     }
 
