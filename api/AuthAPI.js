@@ -28,9 +28,8 @@ export default class AuthAPI{
             }
         })
         .catch(err => {
-            console.log(err)
-
-            //callback(err.response.data)
+            console.log(err.response.data)
+            callback(err.response.data)
         })
     }
 
@@ -118,7 +117,6 @@ export default class AuthAPI{
 
         axios.post(url, body, options)
         .then(res => {
-            console.log(res);
         })
         .catch(err => {
             callback(err.response.data)

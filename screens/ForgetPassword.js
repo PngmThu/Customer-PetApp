@@ -52,7 +52,7 @@ class ResetPassword extends React.Component {
     return (
       <Block flex middle >       
         <ImageBackground
-          source={require("../assets/imgs/background2.gif")}
+          source={require("../assets/imgs/galaxy_bg.jpg")}
           style={{ width, height, zIndex: 1}}
         >
           <Block style={{justifyContent:'flex-start'}}>

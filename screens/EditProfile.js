@@ -34,7 +34,7 @@ class EditProfile extends React.Component {
         {/* <StatusBar hidden /> */}
         
         <ImageBackground
-          source={require("../assets/imgs/background2.gif")}
+          source={require("../assets/imgs/galaxy_bg.jpg")}
           style={{ width, height, zIndex: 1}}
         >
           {/* <Block flex={0.4} middle > */}

@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "CustomerPetApp",
-    "slug": "customerpetapp",
+    "name": "PetWorldCustomer",
+    "slug": "petworldcustomer",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
@@ -29,6 +29,6 @@
       "googleServicesFile": "./google-services.json",
       "package": "com.petapp"
     },
-    "description": ""
+    "description": "PetWorld platform for customers to book services and manage their pets"
   }
 }

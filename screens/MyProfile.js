@@ -3,7 +3,7 @@ import {
   StyleSheet,
   ImageBackground,
   Dimensions,
-  StatusBar,
+  Keyboard,
   KeyboardAvoidingView,
   Alert,
   View,
@@ -29,7 +29,8 @@ class MyProfile extends React.Component {
     lastName: "",
     mobile: "",
     question: "",
-    popUpType: 0
+    popUpType: 0,
+    keyboardHeight: 0
   }
 
   constructor(props) {
@@ -44,6 +45,7 @@ class MyProfile extends React.Component {
     this.handleChoice = this.handleChoice.bind(this);
     this.validateInput = this.validateInput.bind(this);
     this.customer = new Object();
+    this._keyboardDidShow = this._keyboardDidShow.bind(this);
   }
 
   componentDidMount() {
@@ -52,11 +54,19 @@ class MyProfile extends React.Component {
         this.retrieveData();
       })
     })
-
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow,
+    );
   }
 
   componentWillUnmount() {
     this.didFocus.remove();
+    this.keyboardDidShowListener.remove();
+  }
+
+  _keyboardDidShow(e){
+    this.setState({keyboardHeight: e.endCoordinates.height});
   }
 
   async retrieveData(user) {
@@ -141,7 +151,7 @@ class MyProfile extends React.Component {
     return (
       <Block flex center style={styles.home}>
         <ImageBackground
-          source={require("../assets/imgs/background2.gif")}
+          source={require("../assets/imgs/galaxy_bg.jpg")}
           style={{ width, height, zIndex: 1 }}
         >
 
@@ -177,6 +187,7 @@ class MyProfile extends React.Component {
               <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior="padding"
+                keyboardVerticalOffset={this.state.keyboardHeight}
                 enabled
               >
                 <Block width={width * 0.9} style={{ marginTop: 20, marginBottom: 15 }}>

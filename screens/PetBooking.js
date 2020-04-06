@@ -204,7 +204,7 @@ export default class PetBooking extends React.Component {
     return (
       <Block flex center style={styles.home}>
         <ImageBackground
-          source={require("../assets/imgs/background2.gif")}
+          source={require("../assets/imgs/galaxy_bg.jpg")}
           style={{ width: width, height: height, zIndex: 1 }}
         >
 

@@ -54,7 +54,7 @@ export default class UserProfileAPI{
         })
     }
 
-    async updatePassword(vendorId, password, callback){
+    async updatePassword(vendorId, newPwd, oldPwd, callback){
         const token = await this.authAPI.retrieveToken();
 
         const url = this.globals.serverHost + '/api/customer/password/' + vendorId;
@@ -63,7 +63,7 @@ export default class UserProfileAPI{
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
         };
 
-        let body = {password: password};
+        let body = {password: newPwd, oldPwd: oldPwd};
 
         axios.put(url, body, options)
         .then(res => {
@@ -75,8 +75,8 @@ export default class UserProfileAPI{
             }
         })
         .catch(err => {
-            callback(false);
-            console.log(err.response.data)
+            callback(err.response.data);
+            console.log(err.response.data);
         })
 
     }

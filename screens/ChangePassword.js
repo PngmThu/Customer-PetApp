@@ -5,7 +5,7 @@ import {
   Dimensions,
   StatusBar,
   KeyboardAvoidingView,
-  Picker,
+  Keyboard,
   View,
   ScrollView,
   Alert
@@ -23,7 +23,8 @@ class ChangePassword extends React.Component {
     popUpDialog: false,
     oldPwd: "",
     newPwd: "",
-    rePwd: ""
+    rePwd: "",
+    keyboardHeight: 0
   }
 
   constructor(props) {
@@ -32,18 +33,37 @@ class ChangePassword extends React.Component {
     this.clickSave = this.clickSave.bind(this);
     this.updatePwd = this.updatePwd.bind(this);
     this.userProfileAPI = new UserProfileAPI();
+    this._keyboardDidShow = this._keyboardDidShow.bind(this);
+  }
+  componentDidMount() {
+    this.keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      this._keyboardDidShow,
+    );
+  }
+
+  componentWillUnmount() {
+    this.keyboardDidShowListener.remove();
+  }
+
+  _keyboardDidShow(e) {
+    this.setState({ keyboardHeight: e.endCoordinates.height });
   }
 
   async updatePwd(bool) {
     if (bool) {
       if (this.validatePwd()) {
         let customerId = await this.userProfileAPI.authAPI.retrieveCustomerId();
-        this.userProfileAPI.updatePassword(customerId, this.state.newPwd, async (res) => {
+        this.userProfileAPI.updatePassword(customerId, this.state.newPwd, this.state.oldPwd, async (res) => {
           if (res == true) {
             Alert.alert('Successful', "Password is updated succesfully!",
               [{ text: 'OK' }]);
             await this.userProfileAPI.authAPI.clearToken();
             this.props.navigation.navigate('Account');
+          }
+          else {
+            Alert.alert('Error', res,
+              [{ text: 'OK' }]);
           }
         })
       }
@@ -76,7 +96,7 @@ class ChangePassword extends React.Component {
     return (
       <Block flex center style={styles.home}>
         <ImageBackground
-          source={require("../assets/imgs/background2.gif")}
+          source={require("../assets/imgs/galaxy_bg.jpg")}
           style={{ width, height, zIndex: 1 }}
         >
 
@@ -95,6 +115,7 @@ class ChangePassword extends React.Component {
               <KeyboardAvoidingView
                 style={{ flex: 1 }}
                 behavior="padding"
+                keyboardVerticalOffset={this.state.keyboardHeight}
                 enabled
               >
                 <Block width={width * 0.9} style={{ marginTop: 120, marginBottom: 15 }}>
