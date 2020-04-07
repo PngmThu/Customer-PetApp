@@ -9,7 +9,7 @@ export default class BookingAPI{
     }
 
     /**
-     * create new booking object
+     * create new booking object.
      * @param {string} booking - this is the booking object to be created.
      * @param {function} callback - this is callback function to catch the result.
      */
@@ -38,7 +38,7 @@ export default class BookingAPI{
     }
     
     /**
-     * retrieve booking object by id
+     * retrieve booking object by id.
      * @param {string} bookingId - this is the booking id to be searched for in the database.
      * @param {function} callback - this is callback function to catch the result.
      */
@@ -65,7 +65,7 @@ export default class BookingAPI{
     }
 
     /**
-     * retrieve all booking objects by vendor id
+     * retrieve all booking objects by vendor id.
      * @param {string} vendorId - this is the vendor id to be searched for to retrieve booking object in the database.
      * @param {function} callback - this is callback function to catch the result.
      */
@@ -90,7 +90,7 @@ export default class BookingAPI{
     }
 
     /**
-     * retrieve all booking objects by customer id
+     * retrieve all booking objects by customer id.
      * @param {string} customerId - this is the customer id to be searched for to retrieve booking object in the database.
      * @param {function} callback - this is callback function to catch the result.
      */
@@ -117,9 +117,9 @@ export default class BookingAPI{
     }
 
     /**
-     * retrieve all booking objects by pet id
+     * retrieve all booking objects by pet id from a time onwards.
      * @param {string} petId - this is the customer id to be searched for to retrieve booking object in the database.
-     * @param {string} fromTime - this is the time period to filter the bookings objects retrieved.
+     * @param {string} fromTime - this is the start time period to filter the bookings objects retrieved.
      * @param {function} callback - this is callback function to catch the result.
      */
     async getBookingByPetId(petId, fromTime, callback){
@@ -142,7 +142,7 @@ export default class BookingAPI{
     }
 
     /**
-     * delete booking object by booking id
+     * delete booking object by booking id.
      * @param {string} bookingId - this is the booking id to be searched for to delete booking object in the database.
      * @param {function} callback - this is callback function to catch the result.
      */
@@ -165,7 +165,7 @@ export default class BookingAPI{
     }
 
     /**
-     * update booking object by booking id
+     * update booking object by booking id.
      * @param {string} bookingId - this is the booking id to be searched for to update booking object in the database.
      * @param {string} booking - this is a booking object to update the existing booking in the database.
      * @param {function} callback - this is callback function to catch the result.
