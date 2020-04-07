@@ -8,6 +8,7 @@ export default class AuthAPI {
     }
 
     /**
+     * login verification.
      * @param {string} email - this is email of user.
      * @param {string} password - this is user's password.
      * @param {function} callback- this is callback function to catch the result.
@@ -38,6 +39,11 @@ export default class AuthAPI {
             })
     }
 
+    /**
+     * send reset password.
+     * @param {string} email - this is email of user.
+     * @param {function} callback- this is callback function to catch the result.
+     */
     forgetPassword(email, callback) {
         const url = this.globals.serverHost + '/api/auth/password/customer';
 
@@ -60,6 +66,10 @@ export default class AuthAPI {
             })
     }
 
+    /**
+     * store the token for login session.
+     * @param {string} token - this is the token for user login session.
+     */
     async storeToken(token) {
         try {
             await AsyncStorage.setItem('token', token);
@@ -69,6 +79,9 @@ export default class AuthAPI {
         }
     }
 
+    /**
+     * retrieve the token for login session.
+     */
     async retrieveToken() {
         try {
             const value = await AsyncStorage.getItem('token');
@@ -88,6 +101,11 @@ export default class AuthAPI {
         await AsyncStorage.removeItem('id');
     }
 
+
+    /**
+     * store id of customer
+     * @param {string} id - this is the customer id.
+     */
     async storeCustomerId(id) {
         try {
             await AsyncStorage.setItem('id', id);
@@ -97,6 +115,9 @@ export default class AuthAPI {
         }
     }
 
+    /**
+     * retrieve id of customer
+     */
     async retrieveCustomerId() {
         try {
             const value = await AsyncStorage.getItem('id');
@@ -111,6 +132,11 @@ export default class AuthAPI {
         }
     }
 
+    /**
+     * tag device id to user id
+     * @param {string} token - this is the token for user login session.
+     * @param {string} userId - this is the id user enters for registeration.
+     */
     async registerDevice(token, userId) {
         const url = this.globals.serverHost + '/api/serviceNotification';
         let deviceId = await Notifications.getExpoPushTokenAsync();

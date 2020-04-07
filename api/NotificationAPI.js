@@ -7,6 +7,9 @@ export default class NotificationAPI{
         this.authAPI = new AuthAPI();
     }
 
+    /**
+    * create new notification object.
+    */
     postNotification(Notification){
 
         const url = this.globals.serverHost + '/api/notification/add';
@@ -19,6 +22,11 @@ export default class NotificationAPI{
         return axios.post(url, body, options)
     }
 
+    /**
+     * retrieve notification object by id.
+     * @param {string} token - this is the token for user login session.
+     * @param {string} id - this is the id for a particular notificaiton object.
+     */
     async getNotificationById(token,id){
 
         const url = this.globals.serverHost + '/api/notification/'+id;
@@ -35,6 +43,12 @@ export default class NotificationAPI{
         })
     }
 
+    /**
+     * retrieve all notification object within a time period for a particular customer.
+     * @param {string} customerId - this is the customer id to be searched for to retrieve notification object in the database.
+     * @param {string} fromTime - this is the time period to filter the notification objects retrieved.
+     * @param {function} callback - this is callback function to catch the result.
+     */
     async getNotificationByCustomerFromTime(customerId, fromTime, callback){
 
         const url = this.globals.serverHost + '/api/notification/customer/'+ customerId + "/" + fromTime;
@@ -56,6 +70,11 @@ export default class NotificationAPI{
         })
     }
 
+    /**
+     * retrieve notification object by pet id.
+     * @param {string} token - this is the token for user login session.
+     * @param {string} petId -id of pet to query for notification objects.
+     */
     getNotificationByPetId(token,petId){
 
         const url = this.globals.serverHost + '/api/notification/pet/'+petId;

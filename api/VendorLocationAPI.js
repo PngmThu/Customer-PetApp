@@ -6,6 +6,10 @@ export default class DataAPI{
         this.globals = new Globals();
     }
 
+    /**
+     * retrieve a list of information for all clinics 
+     * @param {function} callback - this is callback function to catch the result.
+     */
     getAllClinics(callback){
         const url = this.globals.serverHost + '/api/vendorLocation';
 
@@ -23,6 +27,11 @@ export default class DataAPI{
         })
     }
 
+    /**
+     * retrieve the clinic information by name.
+     * @param {string} clinicName - this is the name of the clinic to be retrieved.
+     * @param {function} callback - this is callback function to catch the result.
+     */
     getClinicByName(clinicName, callback){
         clinicName = encodeURIComponent(clinicName.trim())
         const url = this.globals.serverHost + '/api/vendorLocation/' + clinicName;
@@ -41,6 +50,11 @@ export default class DataAPI{
         })
     }
 
+    /**
+     * retrieve the clinic information by vendor id.
+     * @param {string} vendorId - this is the vendor's id to be querried. 
+     * @param {function} callback - this is callback function to catch the result.
+     */
     getClinicByVendorId(vendorId, callback){
 
         const url = this.globals.serverHost + '/api/vendorLocation/vendor/' + vendorId;

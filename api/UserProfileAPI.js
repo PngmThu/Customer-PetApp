@@ -8,6 +8,11 @@ export default class UserProfileAPI{
         this.authAPI = new AuthAPI();
     }
 
+    /**
+     * create a new customer object.
+     * @param {object} customer - this is the customer object to be created with customer profile attributes.
+     * @param {function} callback - this is callback function to catch the result.
+     */
     async createCustomer(customer, callback){
         const token = await this.authAPI.retrieveToken();
 
@@ -31,6 +36,12 @@ export default class UserProfileAPI{
         })
     }
 
+    /**
+     * update user account by their account id.
+     * @param {object} customer - this is the updated customer object to be updated into the database.
+     * @param {string} customerId - this is the id of the object to be updated.
+     * @param {function} callback - this is callback function to catch the result.
+     */
     async updateUserById(customer, customerId, callback){
         const token = await this.authAPI.retrieveToken();
 
@@ -54,10 +65,17 @@ export default class UserProfileAPI{
         })
     }
 
-    async updatePassword(vendorId, newPwd, oldPwd, callback){
+    /**
+     * to change password for user.
+     * @param {string} customerId - this is the customer id for password change.
+     * @param {string} newPwd - this is the new password to be changed to.
+     * @param {string} oldPwd - this is the old passowrd of the user to be replaced.
+     * @param {function} callback - this is callback function to catch the result.
+     */
+    async updatePassword(customerId, newPwd, oldPwd, callback){
         const token = await this.authAPI.retrieveToken();
 
-        const url = this.globals.serverHost + '/api/customer/password/' + vendorId;
+        const url = this.globals.serverHost + '/api/customer/password/' + customerId;
 
         let options = {
             headers: {token: token, 'Access-Control-Allow-Origin':'*'}
@@ -81,6 +99,11 @@ export default class UserProfileAPI{
 
     }
 
+    /**
+     * retrieve the user profile which is the customer object.
+     * @param {string} customerId - this is the id of the customer to be retrieve.
+     * @param {function} callback - this is callback function to catch the result.
+     */
     async getUserById(customerId, callback){
         const token = await this.authAPI.retrieveToken();
 

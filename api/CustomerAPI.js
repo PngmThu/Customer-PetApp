@@ -8,6 +8,10 @@ export default class CustomerAPI{
         this.authAPI = new AuthAPI();
     }
 
+    /**
+     * @param {string} customerId - this is the customer id to be searched for to retrieve customer object in the database.
+     * @param {function} callback - this is callback function to catch the result.
+     */
     async getCustomerById(customerId, callback){
         const token = await this.authAPI.retrieveToken();
 
