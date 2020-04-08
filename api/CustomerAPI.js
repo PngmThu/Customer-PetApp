@@ -9,6 +9,7 @@ export default class CustomerAPI{
     }
 
     /**
+     * get customer object by id
      * @param {string} customerId - this is the customer id to be searched for to retrieve customer object in the database.
      * @param {function} callback - this is callback function to catch the result.
      */

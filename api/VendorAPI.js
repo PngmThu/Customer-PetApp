@@ -62,7 +62,7 @@ export default class VendorAPI{
     /**
      * retrieve vendor object by the id.
      * @param {string} vendorId - this is the vendor id to be querried for in the database.
-     * @param {*} callback - this is callback function to catch the result.
+     * @param {funciton} callback - this is callback function to catch the result.
      */
     async getVendorById(vendorId, callback){
         const token = await this.authAPI.retrieveToken();

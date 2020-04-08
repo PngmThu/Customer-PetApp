@@ -10,7 +10,7 @@ export default class ScheduleAPI {
     }
 
     /**
-     * mark a date as unavailable by creating the date and vendor as attributes of an object.
+     * mark a date as unavailable by creating the date and vendor as attributes of a schedule object.
      * @param {date} unavailableDate - this is the date to be marked unavailable.
      * @param {function} callback - this is callback function to catch the result.
      */
@@ -39,7 +39,7 @@ export default class ScheduleAPI {
     }
 
     /**
-     * get a list of all unavailable dates from a vendor
+     * retrieve a list of all unavailable dates from a vendor.
      * @param {object} vendor - this is the vendor to have unavailable date added 
      * @param {*} callback - this is callback function to catch the result.
      */
@@ -62,6 +62,11 @@ export default class ScheduleAPI {
             })
     }
 
+    /**
+     * delete an available date to make a data available.
+     * @param {string} id - this is the id of schedule object to be deleted.
+     * @param {function} callback - this is callback function to catch the result.
+     */
     deleteUnavailableDateById(id, callback) {
         const url = this.globals.serverHost + '/api/schedule/' + id;
 

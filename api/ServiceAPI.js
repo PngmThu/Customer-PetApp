@@ -8,6 +8,11 @@ export default class ServiceAPI{
         this.authAPI = new AuthAPI();
     }
 
+    /**
+     * retrieve list of services offered by a vendor
+     * @param {string} vendorId - this is the vendor id to be querried. 
+     * @param {function} callback - this is callback function to catch the result.
+     */
     async getServiceByVendor(vendorId, callback){
 
         const url = this.globals.serverHost + '/api/services/vendor/' + vendorId;
@@ -28,6 +33,11 @@ export default class ServiceAPI{
         })
     }
 
+    /**
+     * retrieve service object by id.
+     * @param {string} serviceId - this is the id of a particular service object.
+     * @param {function} callback - this is callback function to catch the result.
+     */
     async getServiceById(serviceId, callback){
 
         const url = this.globals.serverHost + '/api/services/' + serviceId;
@@ -48,6 +58,11 @@ export default class ServiceAPI{
         })
     }
 
+    /**
+     * create service object.
+     * @param {string} service - this is a new object of service to be created.
+     * @param {function} callback - this is callback function to catch the result.
+     */
     async createNewService(service, callback){
         const url = this.globals.serverHost + '/api/services/';
         const token = await this.authAPI.retrieveToken();
@@ -70,6 +85,11 @@ export default class ServiceAPI{
         })
     }
 
+    /**
+     * update service object
+     * @param {object} service - this is service object to be updated in the database.
+     * @param {function} callback - this is callback function to catch the result.
+     */
     async updateService(service, callback){
         const url = this.globals.serverHost + '/api/services/'+ service._id;
         const token = await this.authAPI.retrieveToken();
@@ -92,6 +112,10 @@ export default class ServiceAPI{
         })
     }
 
+    /**
+     * delete service by id
+     * @param {string} serviceId - this is the id of service to be deleted.
+     */
     async deleteService(serviceId){
         const url = this.globals.serverHost + '/api/services/'+ serviceId;
 
