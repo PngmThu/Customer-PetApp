@@ -55,6 +55,9 @@ class Login extends React.Component {
     this.setState({ keyboardHeight: e.endCoordinates.height });
   }
 
+  /**
+   * to log in to the customer account
+   */
   login() {
     this.setState({ loading: true })
     this.authAPI.login(this.state.email, this.state.password, (res) => {
@@ -69,6 +72,9 @@ class Login extends React.Component {
     })
   }
 
+  /**
+   * render Login screen
+   */
   render() {
     const { navigation } = this.props;
     if (this.state.loading) {

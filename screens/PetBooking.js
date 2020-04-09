@@ -58,6 +58,10 @@ export default class PetBooking extends React.Component {
     this.didFocus.remove();
   }
 
+  /**
+   * to retrieve the bookings for the pet
+   * @param {Date} fromTime - this is the start time from when the bookings are retrieved
+   */
   retrieveData(fromTime) {
     this.setState({loading: true})
     let petId = this.props.navigation.state.params.pet._id;
@@ -126,10 +130,17 @@ export default class PetBooking extends React.Component {
     })
   }
 
+  /**
+   * to capitalize the first letter of a string
+   * @param {string} string - this is the string in which the first letter is to be capitalized
+   */
   capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
+  /**
+   * render bookings in card layout
+   */
   renderCard() {
     var table = [];
     var { pet, bookings, services, vendors, times, dates } = this.state;
@@ -192,6 +203,9 @@ export default class PetBooking extends React.Component {
   }
 
 
+  /**
+   * render PetBooking screen
+   */
   render() {
     let { bookingData } = this.state;
     const { navigation } = this.props;

@@ -20,6 +20,9 @@ export default class AuthLoadingScreen extends React.Component {
     };
 
     // Render any loading content that you like here
+    /**
+     * render AuthLoading screen
+     */
     render() {
         return (
             <View style={{backgroundColor: '#333333'}}>

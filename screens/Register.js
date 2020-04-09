@@ -41,6 +41,9 @@ class Register extends React.Component {
     rePassword: "",
   }
 
+  /**
+   * to handle account registration and display alert if any input field is empty or if there is password mismatch
+   */
   handleRegister(){
     if(!this.state.email || !this.state.firstName || !this.state.password || !this.state.lastName){
       Alert.alert('Error', "Input field can not be empty",
@@ -73,6 +76,9 @@ class Register extends React.Component {
     })
   }
   
+  /**
+   * render Register screen
+   */
   render() {
     const { navigation } = this.props;
     return (

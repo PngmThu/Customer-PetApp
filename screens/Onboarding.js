@@ -14,6 +14,9 @@ import argonTheme from "../constants/Theme";
 import Images from "../constants/Images";
 
 class Onboarding extends React.Component {
+  /**
+   * render Onboarding screen
+   */
   render() {
     const { navigation } = this.props;
 

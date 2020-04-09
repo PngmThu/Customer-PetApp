@@ -69,6 +69,10 @@ class MyProfile extends React.Component {
     this.setState({keyboardHeight: e.endCoordinates.height});
   }
 
+  /**
+   * to retrieve the profile data of the customer
+   * @param {object} user - this is the customer object
+   */
   async retrieveData(user) {
     let customerId = await this.authAPI.retrieveCustomerId();
 
@@ -83,19 +87,31 @@ class MyProfile extends React.Component {
     })
   }
 
+  /**
+   * to log out of the customer account
+   */
   async logout() {
     await this.authAPI.clearToken();
     this.props.navigation.navigate('Account');
   }
 
+  /**
+   * to ask for confirmation to log out of customer account
+   */
   clickLogout() {
     this.setState({ popUpDialog: true, question: 'Do you want to logout?', popUpType: 1 })
   }
 
+  /**
+   * to ask for confirmation to update customer profile
+   */
   clickUpdate() {
     this.setState({ popUpDialog: true, question: 'Do you want to update profile?', popUpType: 2 })
   }
 
+  /**
+   * to handle profile updation and display alert after successfully updating profile
+   */
   handleUpdateInfo() {
     if (!this.validateInput()) {
       return;
@@ -112,6 +128,9 @@ class MyProfile extends React.Component {
     })
   }
 
+  /**
+   * to validate input of profile details and display alert if any necessary input field is empty 
+   */
   validateInput() {
     if (!this.state.mobile || !this.state.firstName || !this.state.lastName) {
       Alert.alert('Error', "Input field can not be empty",
@@ -121,6 +140,10 @@ class MyProfile extends React.Component {
     return true;
   }
 
+  /**
+   * to handle the choice of updating the profile
+   * @param {boolean} bool - this is the boolean parameter 
+   */
   handleChoice(bool) {
     this.setState({ popUpDialog: false })
     if (bool) {
@@ -133,6 +156,9 @@ class MyProfile extends React.Component {
     }
   }
 
+  /**
+   * render MyProfile screen
+   */
   render() {
     const { navigation } = this.props;
 

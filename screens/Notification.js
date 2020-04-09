@@ -49,6 +49,9 @@ class Notification extends React.Component {
     })
   }
 
+  /**
+   * to retrieve the notifications for a customer
+   */
   async retrieveData() {
     let customerId = await this.authAPI.retrieveCustomerId();
     let now = new Date();
@@ -62,6 +65,9 @@ class Notification extends React.Component {
     })
   }
 
+  /**
+   * to retrieve new notifications
+   */
   async loadMoreData() {
     let customerId = await this.authAPI.retrieveCustomerId();
     if (!this.state.loading) {
@@ -81,10 +87,18 @@ class Notification extends React.Component {
     }
   }
 
+  /**
+   * to retrieve the booking details linked to the notification 
+   * @param {var} index - this is the index of the notification data in the array 
+   */
   scheduleDetail(index) {
     this.props.navigation.navigate("ScheduleDetails", { data: this.state.notiData[index].bookingId });
   }
 
+  /**
+   * to handle the notification data (booking details)
+   * @param {var} notifs - this is the array of the notification data
+   */
   handleNotiData(notifs) {
     var result = [];
     var count = 0;
@@ -137,6 +151,9 @@ class Notification extends React.Component {
     this.lastTime = new Date(notifs[notifs.length - 1].createdAt) - 1000;
   }
 
+  /**
+   * render Notification screen
+   */
   render() {
     const { navigation } = this.props;
 

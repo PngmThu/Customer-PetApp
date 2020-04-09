@@ -33,6 +33,9 @@ class ResetPassword extends React.Component {
     this.forgetPwd = this.forgetPwd.bind(this);
   }
 
+  /**
+   * to reset password and send email to customer
+   */
   forgetPwd(){
     this.authAPI.forgetPassword(this.state.email, (res) => {
       if(res == true){
@@ -46,6 +49,9 @@ class ResetPassword extends React.Component {
     })
   }
 
+  /**
+   * render ForgetPassword screen
+   */
   render() {
     const { navigation } = this.props;
 

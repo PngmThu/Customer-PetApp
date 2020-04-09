@@ -7,6 +7,9 @@ import { Images, argonTheme } from '../constants/';
 import { HeaderHeight } from "../constants/utils";
 
 export default class Pro extends React.Component {
+  /**
+   * render Pro screen
+   */
   render() {
     const { navigation } = this.props;
 
