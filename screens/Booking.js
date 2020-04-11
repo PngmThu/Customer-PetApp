@@ -651,7 +651,7 @@ class Booking extends React.Component {
             behavior="padding"
             enabled
           >
-            <ScrollView style={{ flex: 1, width: width}} keyboardShouldPersistTaps="handled">
+            <ScrollView style={{ flex: 1, width: width, marginTop: 5 }} keyboardShouldPersistTaps="handled">
               <Block flex={0.3}>
                 <Text color="#E1E1E1" size={30} style={{ marginLeft: 15, fontWeight: 'bold'}}>
                   Choose a clinic
@@ -774,7 +774,7 @@ class Booking extends React.Component {
             behavior="padding"
             enabled
           >
-            <ScrollView style={{ flex: 1, width: width}} keyboardShouldPersistTaps="handled">
+            <ScrollView style={{ flex: 1, width: width, marginTop: 5 }} keyboardShouldPersistTaps="handled">
               <Block center>
                 <Text color="#E1E1E1" size={20} 
                       style={{ marginBottom: 5, fontWeight: 'bold'}}>
@@ -1096,8 +1096,9 @@ class Booking extends React.Component {
           
           {loader}
 
-          <Block style={{marginBottom: -30}} center>
-            <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='contain' style={styles.headerImage}>
+          {/* <Block style={{marginBottom: -30}} center> */}
+          <Block center>
+            <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
                 <View style={styles.stepIndicator}>
                   <StepIndicator
                     renderStepIndicator={this.renderStepIndicator}
@@ -1163,7 +1164,7 @@ class Booking extends React.Component {
 const styles = StyleSheet.create({
   headerImage: {
     width: width,
-    height: 215,
+    height: 200,
     borderRadius: 4,
   },
   // home: {
