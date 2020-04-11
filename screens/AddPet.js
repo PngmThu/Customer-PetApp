@@ -132,7 +132,7 @@ export default class AddPet extends React.Component {
     var todayDate = new Date().toISOString().slice(0, 10);
 
     return (
-      <ImageBackground source={require("../assets/imgs/galaxy_bg.jpg")} resizeMode='cover' style={{ flex: 1, width: '100%', height: '100%' }}>
+      <ImageBackground source={require("../assets/imgs/background2.gif")} resizeMode='cover' style={{ flex: 1, width: '100%', height: '100%' }}>
         <ImageBackground source={require("../assets/imgs/headerBooking.png")} resizeMode='stretch' style={styles.headerImage}>
           <Block>
             <MaterialIcons name='keyboard-backspace' size={40} style={styles.backArrow}

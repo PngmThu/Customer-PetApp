@@ -79,7 +79,7 @@ class Register extends React.Component {
       <Block flex middle >
         
         <ImageBackground
-          source={require("../assets/imgs/galaxy_bg.jpg")}
+          source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1 }}
         >
           {/* <Block flex={0.3} middle> */}
