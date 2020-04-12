@@ -82,7 +82,7 @@ class Login extends React.Component {
 
         <ImageBackground
           // source={Images.GalaxyBackground} //Images.RegisterBackground
-          source={require("../assets/imgs/galaxy_bg.jpg")}
+          source={require("../assets/imgs/background2.gif")}
           style={{ width, height, zIndex: 1 }}
         >
           {loader}
