@@ -2,6 +2,9 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 
+/**
+ * render Calendar component
+ */
 class CalendarComponent extends React.Component {
 
     state= {
@@ -20,6 +23,9 @@ class CalendarComponent extends React.Component {
     componentDidMount(){
     }
 
+    /**
+     * format date style
+     */
     processDate(){
         //var bookedDate = this.props.bookedDate;
         var unavailableDate = this.props.unavailableDate;
@@ -39,6 +45,10 @@ class CalendarComponent extends React.Component {
         this.setState({markedDate})
     }
 
+    /**
+     * 
+     * @param {string} clickedDate date user chooses on the screen
+     */
     updateDate(clickedDate){
         console.log("clickedDate: " + clickedDate);
         var markedDate = {...this.state.markedDate};
@@ -58,6 +68,10 @@ class CalendarComponent extends React.Component {
         this.setState({markedDate: markedDate, chosenDay: clickedDate});
     }
 
+    /**
+     * 
+     * @param {string} day date to be changed status
+     */
     setDate(day){
         if(!this.state.markedDate[day.dateString] || this.state.markedDate[day.dateString].customStyles != unavailable){
             this.props.toggleDateStatus(false, day.dateString);
@@ -67,6 +81,10 @@ class CalendarComponent extends React.Component {
         }
     }
 
+    /**
+     * get today date in string format
+     * @returns today date in YYYY-MM-DD
+     */
     todayDate(){
         let currentDate = new Date();
         let year = currentDate.getFullYear()
@@ -81,10 +99,17 @@ class CalendarComponent extends React.Component {
         return year + "-" + month + "-" + day;
     }
 
+    /**
+     * 
+     * @param {string} day date user scroll to
+     */
     scrollTo(day){
         this.props.scrollTo(day.dateString);
     }
 
+    /**
+     * render function
+     */
     render() {
         const theme={
             calendarBackground: '#rgba(45, 45, 45, 0.8)',

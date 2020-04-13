@@ -2,6 +2,9 @@ import Dialog, { DialogFooter, DialogButton, DialogContent } from 'react-native-
 import {Text, View, StyleSheet} from "react-native";
 import React from "react";
 
+/**
+ * render pop up component
+ */
 class Popup extends React.Component{
     constructor(props){
         super(props);

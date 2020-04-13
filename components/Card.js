@@ -6,7 +6,9 @@ import { Block, Text, theme } from 'galio-framework';
 
 import { argonTheme } from '../constants';
 
-
+/**
+ * render card component
+ */
 class Card extends React.Component {
   render() {
     const { navigation, item, horizontal, full, style, ctaColor, imageStyle } = this.props;

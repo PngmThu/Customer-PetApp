@@ -7,6 +7,9 @@ import { Input } from "galio-framework";
 import Icon from './Icon';
 import { argonTheme } from "../constants";
 
+/**
+ * render input component
+ */
 class ArInput extends React.Component {
   render() {
     const { shadowless, success, error } = this.props;

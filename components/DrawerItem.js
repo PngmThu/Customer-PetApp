@@ -5,6 +5,9 @@ import { Block, Text, theme } from "galio-framework";
 import Icon from "./Icon";
 import argonTheme from "../constants/Theme";
 
+/**
+ * render drawer item component
+ */
 class DrawerItem extends React.Component {
   renderIcon = () => {
     const { title, focused } = this.props;

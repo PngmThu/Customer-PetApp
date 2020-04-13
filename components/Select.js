@@ -7,6 +7,9 @@ import { Block, Text } from 'galio-framework';
 import Icon from './Icon';
 import { argonTheme } from '../constants';
 
+/**
+ * render dropdown component
+ */
 class DropDown extends React.Component {
   state = {
     value: 1,
