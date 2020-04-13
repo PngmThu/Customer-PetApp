@@ -140,6 +140,9 @@ class Booking extends React.Component {
     _this = this;
   }
 
+  /**
+   * to retrieve all the vendors
+   */
   getAllClinics(){
     this.VendorLocationAPI.getAllClinics( (res) => {
       if(res != null) {
@@ -268,6 +271,11 @@ class Booking extends React.Component {
     }
   }
 
+  /**
+   * to get the directions from the start location to the destination location
+   * @param {string} startLoc - this is the start location 
+   * @param {string} desLoc - this is the destination location
+   */
   async getDirections(startLoc, desLoc) {
     try {
       const resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${desLoc}&key=AIzaSyBS41pWqFh2IHMuqYSL23Okzg5br7XUvdg`)
@@ -988,6 +996,9 @@ class Booking extends React.Component {
     )
   }
 
+   /**
+   * to validate input of booking details and display alert if any input field is empty
+   */
   validateInput() {
     var str = "";
     if (!this.state.date)
@@ -1038,6 +1049,7 @@ class Booking extends React.Component {
       customerId: customerId,
     })
     
+
     this.bookingAPI.createBooking(booking, (res) => {
       console.log("canBook?: ", res);
       if(res){
@@ -1066,6 +1078,10 @@ class Booking extends React.Component {
     })
   }
 
+  /**
+   * to display the current page 
+   * @param {var} currentPage - this is the current page that the customer is viewing
+   */
   renderPage(currentPage) {
     switch(currentPage) {
       case 0:
@@ -1080,6 +1096,9 @@ class Booking extends React.Component {
     }
   }
 
+  /**
+   * render Booking screen
+   */
   render() {
     const { navigation } = this.props;
 

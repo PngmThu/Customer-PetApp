@@ -25,6 +25,9 @@ const { width, height } = Dimensions.get("screen");
 const headerImg = require("../assets/imgs/headerLogin.png");
 
 class EditProfile extends React.Component {
+  /**
+   * render EditProfile screen
+   */
   render() {
     const { navigation } = this.props;
 

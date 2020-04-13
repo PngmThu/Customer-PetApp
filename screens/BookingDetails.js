@@ -56,6 +56,9 @@ class BookingDetails extends React.Component {
     this.didFocus.remove();
   }
 
+  /**
+   * to retrieve the details of a booking
+  */
   retrieveData() {
     this.bookingId = this.props.navigation.state.params.bookingId;
 
@@ -84,10 +87,17 @@ class BookingDetails extends React.Component {
     })
   }
 
+  /**
+   * to ask for confirmation to cancel a booking
+  */
   handleCancel() {
     this.setState({ popUpDialog: true, question: 'Are you sure to cancel this booking', btnAction: false })
   }
 
+  /**
+   * to cancel a booking
+   * @param {boolean} bool - this is the boolean parameter 
+  */
   cancelBooking(bool) {
     this.setState({ canceling: true });
     if (bool) {
@@ -109,7 +119,10 @@ class BookingDetails extends React.Component {
     }
     this.setState({ popUpDialog: false });
   }
-
+  
+  /**
+   * render BookingDetails screen
+  */
   render() {
     const { navigation } = this.props;
 

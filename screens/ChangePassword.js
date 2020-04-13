@@ -50,6 +50,10 @@ class ChangePassword extends React.Component {
     this.setState({ keyboardHeight: e.endCoordinates.height });
   }
 
+  /**
+   * to update password of the customer and display alert if changed successfully or otherwise
+   * @param {boolean} bool - this is the boolean parameter 
+   */
   async updatePwd(bool) {
     if (bool) {
       if (this.validatePwd()) {
@@ -71,6 +75,9 @@ class ChangePassword extends React.Component {
     this.setState({ popUpDialog: false })
   }
 
+  /**
+   * to validate input of password and display alert if any input field is empty or if there is password mismatch
+   */
   validatePwd() {
     if (this.state.newPwd != this.state.rePwd) {
       Alert.alert('Error', "New password not match",
@@ -86,10 +93,18 @@ class ChangePassword extends React.Component {
 
     return true;
   }
+
+  /**
+   * to save the change of password 
+   * @param {object} event - this is the change password event
+   */
   clickSave(event) {
     this.setState({ popUpDialog: true })
   }
 
+  /**
+   * render ChangePassword screen
+   */
   render() {
     const { navigation } = this.props;
 

@@ -44,6 +44,11 @@ class CalendarView extends React.Component {
     })
   }
 
+  /**
+   * to check if chosen date is not marked and ask customer for confirmation to choose date 
+   * @param {boolean} marked - denotes if the chosen date is marked
+   * @param {Date} date- this is the date that the customer has chosen
+  */
   toggleDateStatus(marked, date){
     this.setState({clickedDate: date});
 
@@ -60,6 +65,10 @@ class CalendarView extends React.Component {
     }
   }
 
+  /**
+   * to update the status of the date
+   * @param {boolean} bool - denotes the status of the date
+  */
   dateStatusChoice(bool){
 
     if(bool){
@@ -69,6 +78,10 @@ class CalendarView extends React.Component {
     this.setState({popUpDialog: false});
   }
 
+  /**
+   * to retrieve the calendar for the month
+   * @param {string} month - this is the month which is displayed
+  */
   async retrieveData(month){
     let vendorId = this.props.vendor.vendorId;
     let vendor = new VendorModel({_id: vendorId});
@@ -95,6 +108,11 @@ class CalendarView extends React.Component {
     })
   }
 
+  /**
+   * to compare two dates
+   * @param {Date} date1 - this is the first date to be compared
+   * @param {Date} date2 - this is the second date to be compared
+  */
   compareDate(date1, date2){
     if(date1.getMonth() == date2.getMonth() && date1.getDate() == date2.getDate() && date1.getFullYear() == date2.getFullYear()){
       return true;
@@ -103,6 +121,9 @@ class CalendarView extends React.Component {
     return false;
   }
 
+  /**
+   * render CalendarView screen
+  */
   render() {
     const { navigation } = this.props;
 

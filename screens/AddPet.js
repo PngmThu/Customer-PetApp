@@ -52,6 +52,9 @@ export default class AddPet extends React.Component {
     this.didFocus.remove();
   }
 
+  /**
+   * to validate input of pet details and display alert if any input field is empty
+   */
   validateInput() {
     var str = "";
     if (!this.state.name)
@@ -88,6 +91,9 @@ export default class AddPet extends React.Component {
     return true;
   }
 
+  /**
+   * to create a pet with the pet details
+   */
   async createPet() {
     if (!this.validateInput()) {
       return;
@@ -128,6 +134,9 @@ export default class AddPet extends React.Component {
     })
   }
 
+/**
+ * render AddPet screen
+ */
   render() {
     var todayDate = new Date().toISOString().slice(0, 10);
 

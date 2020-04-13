@@ -54,6 +54,9 @@ export default class PetProfile extends React.Component {
 
   }
 
+  /**
+   * to retrieve the profile of the pet 
+   */
   retrieveData() {
     const pet = this.props.navigation.state.params.pet;
 
@@ -117,6 +120,9 @@ export default class PetProfile extends React.Component {
 
   }
 
+  /**
+   * to validate the input of pet profile details and display alert if any input field is empty
+   */
   validateInput() {
     var str = "";
     if (!this.state.name)
@@ -153,6 +159,10 @@ export default class PetProfile extends React.Component {
     return true;
   }
 
+  /**
+   * to delete a pet
+   * @param {string} petId - this is the id of the pet to be deleted
+   */
   deletePet(petId) {
     Alert.alert(
       'Delete Pet',
@@ -198,6 +208,10 @@ export default class PetProfile extends React.Component {
         return null
     }
   }
+  
+  /**
+   * render PetProfile screen
+   */
   render() {
 
     if (this.state.species) {

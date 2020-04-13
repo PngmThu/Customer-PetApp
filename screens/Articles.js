@@ -36,6 +36,9 @@ const categories = [
   }
 ];
 
+/**
+ * render Articles screen
+ */
 class Articles extends React.Component {
   renderProduct = (item, index) => {
     const { navigation } = this.props;

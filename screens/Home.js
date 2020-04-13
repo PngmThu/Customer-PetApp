@@ -52,6 +52,9 @@ class Home extends React.Component {
     this.didFocus.remove();
   }
 
+  /**
+   * to retrieve the pets owned by the customer
+   */
   async retrieveData() {
     let customerId = await this.authAPI.retrieveCustomerId();
     this.petAPI.getPetByCustomerId(customerId, (pet) => {
@@ -65,15 +68,25 @@ class Home extends React.Component {
     })
   }
 
+  /**
+   * to go to the profile of the pet
+   * @param {object} item - this is the pet object
+   */
   goPetProfile(item){
      this.props.navigation.navigate('PetProfile',{pet: item});  
   }
 
+  /**
+   * to go to the bookings for the pet
+   * @param {object} item - this is the pet object
+   */
   goPetBooking(item){
     this.props.navigation.navigate('PetBooking',{pet: item});  
  }
 
-
+  /**
+   * render pets in card layout
+   */
   renderCard() {
     var table = [];
     this.state.petList.forEach((item, index) => {
@@ -153,6 +166,9 @@ class Home extends React.Component {
     return table
   }
 
+  /**
+   * render Home screen
+   */
   render() {
     const { navigation } = this.props;
 
